@@ -8,7 +8,7 @@ namespace instituto93.Domain.Interfaces
 {
     public interface ILocalidad 
     {
-        string Id { get; set; }
+        int Id { get; set; }
         string Nombre { get; set; }
     }
 }
