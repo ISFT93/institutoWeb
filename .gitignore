@@ -1,4 +1,7 @@
+﻿################################################################################
+# Este archivo .gitignore ha sido creado automáticamente por Microsoft(R) Visual Studio.
+################################################################################
+
 bin/
-obj/
+obj
 .vs/
-/instituto93.Controller/appsettings.json
