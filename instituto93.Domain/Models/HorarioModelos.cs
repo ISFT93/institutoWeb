@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace instituto93.Domain.Models
 {
-    internal class HorarioModelos
+    public class HorarioModelos
     {
     }
 }
