@@ -74,3 +74,5 @@
 /instituto93.Data/obj/Debug/net8.0/instituto93.Data.GeneratedMSBuildEditorConfig.editorconfig
 /.vs/WEB/v17
 /instituto93.Application/obj/Debug/net8.0/instituto93.Application.GeneratedMSBuildEditorConfig.editorconfig
+/instituto93.Controller/appsettings.json
+/instituto93.Controller/obj/Debug/net9.0/rpswa.dswa.cache.json
