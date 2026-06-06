@@ -1,3 +1,4 @@
+using instituto93.Application;
 using instituto93.Data;
 using instituto93.Data.Repositories;
 using Microsoft.OpenApi.Models;
@@ -12,7 +13,9 @@ builder.Configuration["Jwt:Secret"] ??= "4d6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddScoped<UsuarioRepository>();
+builder.Services.AddTransient<instituto93.Data.Conexion>();
+builder.Services.AddScoped<instituto93.Data.Repositories.ILocalidadRepository, instituto93.Data.Repositories.LocalidadRepository>();
+builder.Services.AddScoped<ILocalidadService, LocalidadService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
