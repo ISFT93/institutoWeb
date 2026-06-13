@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace instituto93.Domain.Models
 {
+    //Mourdad Ignacio
     public class HorariosModelo : ModeloBase
     {
         [Clave]
