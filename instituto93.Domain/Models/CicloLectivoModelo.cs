@@ -8,5 +8,7 @@ namespace instituto93.Domain.Models
 {
     internal class CicloLectivoModelo
     {
+        //Lautaro Mansilla
+
     }
 }
