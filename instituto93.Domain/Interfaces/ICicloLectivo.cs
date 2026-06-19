@@ -1,15 +1,13 @@
-﻿using instituto93.Domain.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace instituto93.Domain.Models
+namespace instituto93.Domain.Interfaces
 {
-    public class CicloLectivoModelo:ICicloLectivo
+    public interface ICicloLectivo
     {
-        //Lautaro Mansilla
         public int AnioLectivo { get; set; }
 
         public int CantidadSemana { get; set; }
