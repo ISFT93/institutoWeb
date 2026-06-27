@@ -1,16 +1,16 @@
-﻿using System;
+﻿using instituto93.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace instituto93.Domain.Interfaces
+namespace instituto93.Domain.Models
 {
-    public class MateriasModelo
+    public class MateriasModelo:IMateriasModelo
     {
-        
+        // Romero Alejo
         public int MateriaId { get; set; }
-        
         
         public string Nombre { get; set; }
         public int AnioCarreraId { get; set; }
