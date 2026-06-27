@@ -4,10 +4,10 @@ namespace instituto93.Data.Repositories.Interfaces
 {
     public interface IPersonalRepository
     {
-        Task<IEnumerable<PersonalModelo>> GetAllAsync(CancellationToken cancellationToken = default);
-        Task<PersonalModelo?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
-        Task<int> CreateAsync(PersonalModelo personal, CancellationToken cancellationToken = default);
-        Task<bool> UpdateAsync(PersonalModelo personal, CancellationToken cancellationToken = default);
+        Task<IEnumerable<Personal>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<Personal?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+        Task<int> CreateAsync(Personal personal, CancellationToken cancellationToken = default);
+        Task<bool> UpdateAsync(Personal personal, CancellationToken cancellationToken = default);
         Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default);
     }
 }

@@ -17,9 +17,9 @@ namespace instituto93.Data.Repositories
             _conexion = conexion ?? throw new ArgumentNullException(nameof(conexion));
         }
 
-        public async Task<IEnumerable<PersonalModelo>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Personal>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var lista = new List<PersonalModelo>();
+            var lista = new List<Personal>();
             const string sql = "SELECT PersonalId, Nombre, Apellido, NumeroDocumento FROM PersonalModelo";
 
             try
@@ -30,7 +30,7 @@ namespace instituto93.Data.Repositories
                 using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
                 while (await reader.ReadAsync(cancellationToken))
                 {
-                    lista.Add(new PersonalModelo
+                    lista.Add(new Personal
                     {
                         PersonalId = reader.GetInt32(0),
                         Nombre = reader.GetString(1),
@@ -48,7 +48,7 @@ namespace instituto93.Data.Repositories
             return lista;
         }
 
-        public async Task<PersonalModelo?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        public async Task<Personal?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             const string sql = "SELECT PersonalId, Nombre, Apellido, NumeroDocumento FROM Personal WHERE PersonalId = @id";
             try
@@ -60,7 +60,7 @@ namespace instituto93.Data.Repositories
                 using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
                 if (await reader.ReadAsync(cancellationToken))
                 {
-                    return new PersonalModelo
+                    return new Personal
                     {
                         PersonalId = reader.GetInt32(0),
                         Nombre = reader.GetString(1),
@@ -76,7 +76,7 @@ namespace instituto93.Data.Repositories
             }
         }
         // NumeroDocumento, Nombre, Apellido, FechaNacimiento, Sexo, Titulo, TramoPedagogico -- obligatorios
-        public async Task<int> CreateAsync(PersonalModelo personal, CancellationToken cancellationToken = default)
+        public async Task<int> CreateAsync(Personal personal, CancellationToken cancellationToken = default)
         {
             if (personal == null) throw new ArgumentNullException(nameof(personal));
             // const string sql = "INSERT INTO Personal (descripcion) VALUES (@descripcion); SELECT CAST(SCOPE_IDENTITY() AS INT);";
@@ -102,9 +102,9 @@ namespace instituto93.Data.Repositories
             }
         }
 
-        public async Task<bool> UpdateAsync(PersonalModelo personal, CancellationToken cancellationToken = default)
+        public async Task<bool> UpdateAsync(Personal personal, CancellationToken cancellationToken = default)
         {
-            if (PersonalModelo == null) throw new ArgumentNullException(nameof(PersonalModelo));
+            if (PersonalModelo == null) throw new ArgumentNullException(nameof(Personal));
             const string sql = "UPDATE Personal SET NumeroDocumento = @NumeroDocumento, Nombre = @Nombre, Apellido = @Apellido, FechaNacimiento = @FechaNacimiento, Sexo = @Sexo, Titulo = @Titulo, TramoPedagogico = @TramoPedagogico WHERE PersonalId = @id";
             try
             {

@@ -13,20 +13,20 @@ namespace instituto93.Application
             _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-        public async Task<List<PersonalModelo>> GetPersonalAsync(CancellationToken cancellationToken = default)
+        public async Task<List<Personal>> GetPersonalAsync(CancellationToken cancellationToken = default)
         {
             var result = await _repo.GetAllAsync(cancellationToken);
             return result.ToList();
         }
 
-        public Task<PersonalModelo?> GetPersonalByIdAsync(int id, CancellationToken cancellationToken = default)
+        public Task<Personal?> GetPersonalByIdAsync(int id, CancellationToken cancellationToken = default)
             => _repo.GetByIdAsync(id, cancellationToken);
 
 
-        public Task<int> CreatePersonalAsync(PersonalModelo personal, CancellationToken cancellationToken = default)
+        public Task<int> CreatePersonalAsync(Personal personal, CancellationToken cancellationToken = default)
             => _repo.CreateAsync(personal, cancellationToken);
 
-        public Task<bool> UpdatePersonalAsync(PersonalModelo personal, CancellationToken cancellationToken = default)
+        public Task<bool> UpdatePersonalAsync(Personal personal, CancellationToken cancellationToken = default)
             => _repo.UpdateAsync(personal, cancellationToken);
 
 

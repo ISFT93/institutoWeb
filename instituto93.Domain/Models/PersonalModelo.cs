@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace instituto93.Domain.Models
 {
-    public class PersonalModelo:IPersonal
+    public class Personal : IPersonal
     {
 
         public int PersonalId { get; set; }
