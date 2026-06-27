@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using instituto93.Domain.Interfaces;    
 
 namespace instituto93.Domain.Models
 {
-    public class CursoMaterias
+    public class CursoMaterias:ICursoMaterias
     {
         public string CursoMateriaId { get; set; }
         public string MateriaId { get; set; }

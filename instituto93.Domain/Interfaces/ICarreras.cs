@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using instituto93.Domain.Interfaces;
+using instituto93.Domain.Models;
 
-namespace instituto93.Domain.Models
+namespace instituto93.Domain.Interfaces
 {
-    //Nieto Facundo
-    public class CarrerasModelo : ICarreras
+    public interface ICarreras
     {
         public int CarreraId { get; set; }
         public string Nombre { get; set; }
