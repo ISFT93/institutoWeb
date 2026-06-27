@@ -1,14 +1,12 @@
-﻿using instituto93.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
-namespace instituto93.Domain.Models
+namespace instituto93.Domain.Interfaces
 {
-    public class PersonalModelo:IPersonal
+    public interface IPersonal
     {
 
         public int PersonalId { get; set; }
