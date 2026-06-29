@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace instituto93.Domain.Models
 {
-    internal class AlumnosCarrerasModelo
+    // Acevedo Cecilia
+    public class AlumnosCarreras
     {
-        //[Clave]
         public int AlumnoCarreraId { get; set; }
         public int CarreraId { get; set; }
         public int AlumnoId { get; set; }
