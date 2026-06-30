@@ -47,7 +47,7 @@ namespace instituto93.Data.Repositories
         }
         public async Task<CargosModelo?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            const string sql = "SELECT CargoId, Descripcion, Activo, TipoAsignacionId, TipoAplicacionId FROM Cargos WHERE id = @id";
+            const string sql = "SELECT CargoId, Descripcion, Activo, TipoAsignacionId, TipoAplicacionId FROM Cargos WHERE CargoId = @id";
             try
             {
                 await _conexion.OpenAsync(cancellationToken);
@@ -103,6 +103,7 @@ namespace instituto93.Data.Repositories
                 await _conexion.OpenAsync(cancellationToken);
                 using var cmd = _conexion.Conector.CreateCommand();
                 cmd.Parameters.AddWithValue("@id", cargo.CargoId);
+                cmd.CommandText = sql;
                 cmd.Parameters.AddWithValue("@descripcion", cargo.Descripcion ?? string.Empty);
                 cmd.Parameters.AddWithValue("@Activo", cargo.Activo);
                 cmd.Parameters.AddWithValue("@TipoAsignacionId", cargo.TipoAsignacionId);
