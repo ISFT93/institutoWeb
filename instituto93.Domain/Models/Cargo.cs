@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace instituto93.Domain.Models
 {
     //Alumno : Ruiz Besson Dilan
-    public class CargosModelo : ICargos
+    public class Cargo : ICargo
     {
         public int CargoId { get; set; }
         public string Descripcion { get; set; }
