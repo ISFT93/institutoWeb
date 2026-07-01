@@ -10,6 +10,7 @@ namespace instituto93.Domain.Models
     //Ibarra Valentino
     public class LibroActasModelo : ILibroActas
     {
+        //[Clave]
         public int LibroActaId { get; set; }
         public int LibroNumero { get; set; }
         public int FolioNumero { get; set; }
