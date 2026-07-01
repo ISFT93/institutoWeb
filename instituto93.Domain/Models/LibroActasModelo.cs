@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace instituto93.Domain.Models
 {
+    //Ibarra Valentino
     public class LibroActasModelo : ILibroActas
     {
         public int LibroActaId { get; set; }

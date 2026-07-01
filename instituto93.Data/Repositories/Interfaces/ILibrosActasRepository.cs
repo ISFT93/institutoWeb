@@ -7,6 +7,7 @@ using instituto93.Domain.Models;
 
 namespace instituto93.Data.Repositories.Interfaces
 {
+    //Ibarra Valentino
     public interface ILibrosActasRepository
     {
         Task<IEnumerable<LibroActasModelo>> GetAllAsync(CancellationToken cancellationToken = default);

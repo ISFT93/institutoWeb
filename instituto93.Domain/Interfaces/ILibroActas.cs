@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace instituto93.Domain.Interfaces
 {
+    //Ibarra Valentino
     public interface ILibroActas
     {
         int LibroActaId { get; set; }

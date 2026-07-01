@@ -5,6 +5,7 @@ using instituto93.Application.Interfaces;
 
 namespace instituto93.Controller.Controllers
 {
+    //Ibarra Valentino
     [ApiController]
     [Route("[controller]")]
     public class LibroActasController : ControllerBase
@@ -17,7 +18,7 @@ namespace instituto93.Controller.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Localidad>>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<List<LibroActasModelo>>> Get(CancellationToken cancellationToken)
         {
             try
             {
