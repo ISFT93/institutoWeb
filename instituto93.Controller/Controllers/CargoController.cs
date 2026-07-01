@@ -19,7 +19,7 @@ namespace instituto93.Controller.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<CargosModelo>>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<List<Cargo>>> Get(CancellationToken cancellationToken)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace instituto93.Controller.Controllers
             }
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<CargosModelo>> GetById(int id, CancellationToken cancellationToken)
+        public async Task<ActionResult<Cargo>> GetById(int id, CancellationToken cancellationToken)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace instituto93.Controller.Controllers
             }
         }
         [HttpPost]
-        public async Task<ActionResult<int>> CreateCargo(CargosModelo cargo, CancellationToken cancellationToken)
+        public async Task<ActionResult<int>> CreateCargo(Cargo cargo, CancellationToken cancellationToken)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace instituto93.Controller.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<int>> UpdateCargo(CargosModelo cargo, CancellationToken cancellationToken)
+        public async Task<ActionResult<int>> UpdateCargo(Cargo cargo, CancellationToken cancellationToken)
         {
             try
             {

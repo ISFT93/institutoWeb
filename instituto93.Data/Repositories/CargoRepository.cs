@@ -15,9 +15,9 @@ namespace instituto93.Data.Repositories
         {
             _conexion = conexion ?? throw new ArgumentNullException(nameof(conexion));
         }
-        public async Task<IEnumerable<CargosModelo>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Cargo>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var lista = new List<CargosModelo>();
+            var lista = new List<Cargo>();
             const string sql = "SELECT CargoId, Descripcion, Activo, TipoAsignacionId, TipoAplicacionId FROM Cargos";
 
             try
@@ -28,7 +28,7 @@ namespace instituto93.Data.Repositories
                 using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
                 while (await reader.ReadAsync(cancellationToken))
                 {
-                    lista.Add(new CargosModelo
+                    lista.Add(new Cargo
                     {
                         CargoId = reader.GetInt32(0),
                         Descripcion = reader.GetString(1),
@@ -45,7 +45,7 @@ namespace instituto93.Data.Repositories
 
             return lista;
         }
-        public async Task<CargosModelo?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        public async Task<Cargo?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             const string sql = "SELECT CargoId, Descripcion, Activo, TipoAsignacionId, TipoAplicacionId FROM Cargos WHERE CargoId = @id";
             try
@@ -57,7 +57,7 @@ namespace instituto93.Data.Repositories
                 using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
                 if (await reader.ReadAsync(cancellationToken))
                 {
-                    return new CargosModelo
+                    return new Cargo
                     {
                         CargoId = reader.GetInt32(0),
                         Descripcion = reader.GetString(1),
@@ -73,7 +73,7 @@ namespace instituto93.Data.Repositories
                 _conexion.Close();
             }
         }
-        public async Task<int> CreateAsync(CargosModelo cargo, CancellationToken cancellationToken = default)
+        public async Task<int> CreateAsync(Cargo cargo, CancellationToken cancellationToken = default)
         {
             if (cargo == null) throw new ArgumentNullException(nameof(cargo));
             const string sql = "INSERT INTO Cargos (Descripcion, Activo, TipoAsignacionId, TipoAplicacionId) VALUES (@descripcion, @Activo, @TipoAsignacionId, @TipoAplicacionId); SELECT CAST(SCOPE_IDENTITY() AS INT)";
@@ -94,7 +94,7 @@ namespace instituto93.Data.Repositories
                 _conexion.Close();
             }
         }
-        public async Task<bool> UpdateAsync(CargosModelo cargo, CancellationToken cancellationToken = default)
+        public async Task<bool> UpdateAsync(Cargo cargo, CancellationToken cancellationToken = default)
         {
             if (cargo == null) throw new ArgumentNullException(nameof(cargo));
             const string sql = "UPDATE Cargos SET Descripcion = @descripcion, Activo = @Activo, TipoAsignacionId = @TipoAsignacionId, TipoAplicacionId = @TipoAplicacionId WHERE CargoId = @id";
