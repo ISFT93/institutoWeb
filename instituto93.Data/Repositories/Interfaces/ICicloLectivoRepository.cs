@@ -20,6 +20,3 @@ namespace instituto93.Data.Repositories.Interfaces
         Task<bool> DeleteAsync(int anioLectivo, CancellationToken cancellationToken = default);
     }
 }
-
-    }
-}

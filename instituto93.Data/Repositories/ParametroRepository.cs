@@ -3,18 +3,18 @@ using instituto93.Domain.Models;
 
 namespace instituto93.Data.Repositories
 {
-    public class ParametrosRepository : IParametrosRepository
+    public class ParametroRepository : IParametroRepository
     {
         private readonly Conexion _conexion;
 
-        public ParametrosRepository(Conexion conexion)
+        public ParametroRepository(Conexion conexion)
         {
             _conexion = conexion ?? throw new ArgumentNullException(nameof(conexion));
         }
 
-        public async Task<IEnumerable<Parametros>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Parametro>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var lista = new List<Parametros>();
+            var lista = new List<Parametro>();
             const string sql = "SELECT ParametroId, Nombre, Descripcion, Valor, TipoId, Activo FROM Parametros";
 
             try
@@ -36,7 +36,7 @@ namespace instituto93.Data.Repositories
             return lista;
         }
 
-        public async Task<Parametros?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        public async Task<Parametro?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             const string sql = "SELECT ParametroId, Nombre, Descripcion, Valor, TipoId, Activo FROM Parametros WHERE ParametroId = @ParametroId";
 
@@ -61,7 +61,7 @@ namespace instituto93.Data.Repositories
         /// Equivalente a ObtenerParametro del DAO legacy. Devuelve el primer parámetro
         /// activo con el nombre indicado.
         /// </summary>
-        public async Task<Parametros?> GetByNameAsync(string nombre, CancellationToken cancellationToken = default)
+        public async Task<Parametro?> GetByNameAsync(string nombre, CancellationToken cancellationToken = default)
         {
             const string sql = "SELECT ParametroId, Nombre, Descripcion, Valor, TipoId, Activo "
                              + "FROM Parametros WHERE Nombre = @Nombre AND Activo = 1";
@@ -83,7 +83,7 @@ namespace instituto93.Data.Repositories
             }
         }
 
-        public async Task<int> CreateAsync(Parametros parametros, CancellationToken cancellationToken = default)
+        public async Task<int> CreateAsync(Parametro parametros, CancellationToken cancellationToken = default)
         {
             if (parametros == null) throw new ArgumentNullException(nameof(parametros));
             const string sql = "INSERT INTO Parametros (Nombre, Descripcion, Valor, TipoId, Activo) "
@@ -109,7 +109,7 @@ namespace instituto93.Data.Repositories
             }
         }
 
-        public async Task<bool> UpdateAsync(Parametros parametros, CancellationToken cancellationToken = default)
+        public async Task<bool> UpdateAsync(Parametro parametros, CancellationToken cancellationToken = default)
         {
             if (parametros == null) throw new ArgumentNullException(nameof(parametros));
             const string sql = "UPDATE Parametros SET Valor = @Valor, Activo = @Activo WHERE ParametroId = @ParametroId";
@@ -135,7 +135,7 @@ namespace instituto93.Data.Repositories
         /// Equivalente a ActualizarParametros del DAO legacy. Actualiza Valor y Activo
         /// de cada parámetro en la lista.
         /// </summary>
-        public async Task<bool> UpdateRangeAsync(IEnumerable<Parametros> parametros, CancellationToken cancellationToken = default)
+        public async Task<bool> UpdateRangeAsync(IEnumerable<Parametro> parametros, CancellationToken cancellationToken = default)
         {
             if (parametros == null) throw new ArgumentNullException(nameof(parametros));
             int rows = 0;
@@ -181,7 +181,7 @@ namespace instituto93.Data.Repositories
             }
         }
 
-        private static Parametros MapFromReader(System.Data.Common.DbDataReader reader) => new()
+        private static Parametro MapFromReader(System.Data.Common.DbDataReader reader) => new()
         {
             ParametroId = reader.GetInt32(0),
             Nombre      = reader.GetString(1),
