@@ -19,10 +19,9 @@ namespace instituto93.Domain.Interfaces
         string? EstadoCivil { get; set; }
         string Sexo { get; set; }
 
-        DateTime? FechaNacimiento { get; set; }
-        string? LocalidadNacimiento { get; set; }
-        string? PaisNacimiento { get; set; }
-
+        DateTime FechaNacimiento { get; set; }
+        string LocalidadNacimiento { get; set; }
+        string PaisNacimiento { get; set; }
         string Calle { get; set; }
         string? Numero { get; set; }
         string? Piso { get; set; }

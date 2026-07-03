@@ -1,8 +1,12 @@
-using instituto93.Domain.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace instituto93.Domain.Models
+namespace instituto93.Domain.Interfaces
 {
-    public class Parametros:IParametros
+    public interface IParametro
     {
         public int ParametroId { get; set; }
         public string Nombre { get; set; }

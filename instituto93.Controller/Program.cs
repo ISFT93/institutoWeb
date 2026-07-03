@@ -16,6 +16,8 @@ builder.Services.AddControllers();
 builder.Services.AddTransient<instituto93.Data.Conexion>();
 builder.Services.AddScoped<instituto93.Data.Repositories.ILocalidadRepository, instituto93.Data.Repositories.LocalidadRepository>();
 builder.Services.AddScoped<ILocalidadService, LocalidadService>();
+builder.Services.AddScoped<instituto93.Data.Repositories.ICargosRepository, instituto93.Data.Repositories.CargosRepository>();
+builder.Services.AddScoped<ICargosService, CargosService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {

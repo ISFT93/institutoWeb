@@ -12,15 +12,15 @@ namespace instituto93.Controller.Controllers
     [Route("[controller]")]
     public class ParametrosController : ControllerBase
     {
-        private readonly IParametrosService _service;
+        private readonly IParametroService _service;
 
-        public ParametrosController(IParametrosService service)
+        public ParametrosController(IParametroService service)
         {
             _service = service;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Parametros>>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<List<Parametro>>> Get(CancellationToken cancellationToken)
         {
             try
             {

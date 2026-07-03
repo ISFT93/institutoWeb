@@ -1,4 +1,5 @@
-﻿using System;
+﻿using instituto93.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace instituto93.Domain.Models
 {
-    public class LibroActasModelo
+    //Ibarra Valentino
+    public class LibroActasModelo : ILibroActas
     {
         //[Clave]
         public int LibroActaId { get; set; }

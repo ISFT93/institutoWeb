@@ -13,7 +13,7 @@ namespace instituto93.Domain.Models
         public string NumeroDocumento { get; set; }
         public string EstadoCivil { get; set; }
         public string Sexo { get; set; }
-        public DateTime? FechaNacimiento { get; set; }
+        public DateTime FechaNacimiento { get; set; }
         public string LocalidadNacimiento { get; set; }
         public string PaisNacimiento { get; set; }
         public string Calle { get; set; }
