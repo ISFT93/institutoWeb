@@ -9,17 +9,17 @@ namespace instituto93.Controller.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AlumnosController : ControllerBase
+    public class AlumnoController : ControllerBase
     {
-        private readonly IAlumnosService _service; // <- usar la interfaz
+        private readonly IAlumnoService _service; // <- usar la interfaz
 
-        public AlumnosController(IAlumnosService service)
+        public AlumnoController(IAlumnoService service)
         {
             _service = service;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<AlumnosModelo>>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<List<AlumnoModelo>>> Get(CancellationToken cancellationToken)
         {
             try
             {

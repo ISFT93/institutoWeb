@@ -8,18 +8,18 @@ using Microsoft.Data.SqlClient;
 namespace instituto93.Data.Repositories
 //lopez melany
 {
-    public class AlumnosRepository : IAlumnosRepository
+    public class AlumnoRepository : IAlumnoRepository
     {
         private readonly Conexion _conexion;
 
-        public AlumnosRepository(Conexion conexion)
+        public AlumnoRepository(Conexion conexion)
         {
             _conexion = conexion ?? throw new ArgumentNullException(nameof(conexion));
         }
 
-        public async Task<IEnumerable<AlumnosModelo>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<AlumnoModelo>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var lista = new List<AlumnosModelo>();
+            var lista = new List<AlumnoModelo>();
             const string sql = @"
                 SELECT
                     AlumnoId, Apellido, Nombre, TipoDocumento, NumeroDocumento, EstadoCivil, Sexo,
@@ -35,15 +35,15 @@ namespace instituto93.Data.Repositories
                 using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
                 while (await reader.ReadAsync(cancellationToken))
                 {
-                    lista.Add(new AlumnosModelo
+                    lista.Add(new AlumnoModelo
                     {
-                        AlumnoId = reader.IsDBNull(reader.GetOrdinal("AlumnoId")) ? 0 : reader.GetInt32(reader.GetOrdinal("AlumnoId")),
-                        Apellido = reader.IsDBNull(reader.GetOrdinal("Apellido")) ? null : reader.GetString(reader.GetOrdinal("Apellido")),
-                        Nombre = reader.IsDBNull(reader.GetOrdinal("Nombre")) ? null : reader.GetString(reader.GetOrdinal("Nombre")),
-                        TipoDocumento = reader.IsDBNull(reader.GetOrdinal("TipoDocumento")) ? null : reader.GetString(reader.GetOrdinal("TipoDocumento")),
-                        NumeroDocumento = reader.IsDBNull(reader.GetOrdinal("NumeroDocumento")) ? null : reader.GetString(reader.GetOrdinal("NumeroDocumento")),
+                        AlumnoId = reader.GetInt32(reader.GetOrdinal("AlumnoId")),
+                        Apellido = reader.GetString(reader.GetOrdinal("Apellido")),
+                        Nombre = reader.GetString(reader.GetOrdinal("Nombre")),
+                        TipoDocumento = reader.GetString(reader.GetOrdinal("TipoDocumento")),
+                        NumeroDocumento = reader.GetSqlString(reader.GetOrdinal("NumeroDocumento")),
                         EstadoCivil = reader.IsDBNull(reader.GetOrdinal("EstadoCivil")) ? null : reader.GetString(reader.GetOrdinal("EstadoCivil")),
-                        Sexo = reader.IsDBNull(reader.GetOrdinal("Sexo")) ? null : (char?)reader.GetString(reader.GetOrdinal("Sexo"))[0],
+                        Sexo = reader.IsDBNull(reader.GetOrdinal("Sexo")) ? default(char) : reader.GetString(reader.GetOrdinal("Sexo"))[0],
                         FechaNacimiento = reader.IsDBNull(reader.GetOrdinal("FechaNacimiento")) ? null : (DateTime?)reader.GetDateTime(reader.GetOrdinal("FechaNacimiento")),
                         LocalidadNacimiento = reader.IsDBNull(reader.GetOrdinal("LocalidadNacimiento")) ? null : reader.GetString(reader.GetOrdinal("LocalidadNacimiento")),
                         PaisNacimiento = reader.IsDBNull(reader.GetOrdinal("PaisNacimiento")) ? null : reader.GetString(reader.GetOrdinal("PaisNacimiento")),
@@ -58,7 +58,7 @@ namespace instituto93.Data.Repositories
                         Telefono = reader.IsDBNull(reader.GetOrdinal("Telefono")) ? null : reader.GetString(reader.GetOrdinal("Telefono")),
                         Celular = reader.IsDBNull(reader.GetOrdinal("Celular")) ? null : reader.GetString(reader.GetOrdinal("Celular")),
                         Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader.GetString(reader.GetOrdinal("Email")),
-                        Activo = reader.IsDBNull(reader.GetOrdinal("Activo")) ? null : (bool?)reader.GetBoolean(reader.GetOrdinal("Activo"))
+                        Activo = reader.IsDBNull(reader.GetOrdinal("Activo")) ? false : reader.GetBoolean(reader.GetOrdinal("Activo"))
                     });
                 }
             }
@@ -70,7 +70,7 @@ namespace instituto93.Data.Repositories
             return lista;
         }
 
-        public async Task<AlumnosModelo?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        public async Task<AlumnoModelo?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             const string sql = @"
                 SELECT
@@ -97,7 +97,7 @@ namespace instituto93.Data.Repositories
                 using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
                 if (await reader.ReadAsync(cancellationToken))
                 {
-                    AlumnosModelo Map() => new AlumnosModelo
+                    AlumnoModelo Map() => new AlumnoModelo
                     {
                         AlumnoId = reader.IsDBNull(reader.GetOrdinal("AlumnoId")) ? 0 : reader.GetInt32(reader.GetOrdinal("AlumnoId")),
                         Apellido = reader.IsDBNull(reader.GetOrdinal("Apellido")) ? null : reader.GetString(reader.GetOrdinal("Apellido")),
@@ -105,7 +105,7 @@ namespace instituto93.Data.Repositories
                         TipoDocumento = reader.IsDBNull(reader.GetOrdinal("TipoDocumento")) ? null : reader.GetString(reader.GetOrdinal("TipoDocumento")),
                         NumeroDocumento = reader.IsDBNull(reader.GetOrdinal("NumeroDocumento")) ? null : reader.GetString(reader.GetOrdinal("NumeroDocumento")),
                         EstadoCivil = reader.IsDBNull(reader.GetOrdinal("EstadoCivil")) ? null : reader.GetString(reader.GetOrdinal("EstadoCivil")),
-                        Sexo = reader.IsDBNull(reader.GetOrdinal("Sexo")) ? null : (char?)reader.GetString(reader.GetOrdinal("Sexo"))[0],
+                        Sexo = reader.IsDBNull(reader.GetOrdinal("Sexo")) ? null : reader.GetString(reader.GetOrdinal("Sexo")),
                         FechaNacimiento = reader.IsDBNull(reader.GetOrdinal("FechaNacimiento")) ? null : (DateTime?)reader.GetDateTime(reader.GetOrdinal("FechaNacimiento")),
                         LocalidadNacimiento = reader.IsDBNull(reader.GetOrdinal("LocalidadNacimiento")) ? null : reader.GetString(reader.GetOrdinal("LocalidadNacimiento")),
                         PaisNacimiento = reader.IsDBNull(reader.GetOrdinal("PaisNacimiento")) ? null : reader.GetString(reader.GetOrdinal("PaisNacimiento")),
@@ -120,48 +120,48 @@ namespace instituto93.Data.Repositories
                         Telefono = reader.IsDBNull(reader.GetOrdinal("Telefono")) ? null : reader.GetString(reader.GetOrdinal("Telefono")),
                         Celular = reader.IsDBNull(reader.GetOrdinal("Celular")) ? null : reader.GetString(reader.GetOrdinal("Celular")),
                         Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader.GetString(reader.GetOrdinal("Email")),
-                        TituloSecundario = reader.IsDBNull(reader.GetOrdinal("TituloSecundario")) ? null : (bool?)reader.GetBoolean(reader.GetOrdinal("TituloSecundario")),
-                        MateriasAdeuda = reader.IsDBNull(reader.GetOrdinal("MateriasAdeuda")) ? null : (int?)reader.GetInt32(reader.GetOrdinal("MateriasAdeuda")),
+                        TituloSecundario = reader.IsDBNull(reader.GetOrdinal("TituloSecundario")) ? false : reader.GetBoolean(reader.GetOrdinal("TituloSecundario")),
+                        MateriasAdeuda = reader.IsDBNull(reader.GetOrdinal("MateriasAdeuda")) ? 0 : reader.GetInt32(reader.GetOrdinal("MateriasAdeuda")),
                         DescripcionMaterias = reader.IsDBNull(reader.GetOrdinal("DescripcionMaterias")) ? null : reader.GetString(reader.GetOrdinal("DescripcionMaterias")),
                         Titulo = reader.IsDBNull(reader.GetOrdinal("Titulo")) ? null : reader.GetString(reader.GetOrdinal("Titulo")),
                         Orientacion = reader.IsDBNull(reader.GetOrdinal("Orientacion")) ? null : reader.GetString(reader.GetOrdinal("Orientacion")),
                         OtorgadoPor = reader.IsDBNull(reader.GetOrdinal("OtorgadoPor")) ? null : reader.GetString(reader.GetOrdinal("OtorgadoPor")),
-                        AnioEgreso = reader.IsDBNull(reader.GetOrdinal("AnioEgreso")) ? null : (int?)reader.GetInt32(reader.GetOrdinal("AnioEgreso")),
-                        Promedio = reader.IsDBNull(reader.GetOrdinal("Promedio")) ? null : (decimal?)reader.GetDecimal(reader.GetOrdinal("Promedio")),
-                        TituloTramite = reader.IsDBNull(reader.GetOrdinal("TituloTramite")) ? null : (bool?)reader.GetBoolean(reader.GetOrdinal("TituloTramite")),
+                        AnioEgreso = reader.IsDBNull(reader.GetOrdinal("AnioEgreso")) ? 0 : reader.GetInt32(reader.GetOrdinal("AnioEgreso")),
+                        Promedio = reader.IsDBNull(reader.GetOrdinal("Promedio")) ? 0m : reader.GetDecimal(reader.GetOrdinal("Promedio")),
+                        TituloTramite = reader.IsDBNull(reader.GetOrdinal("TituloTramite")) ? false : reader.GetBoolean(reader.GetOrdinal("TituloTramite")),
                         MayorTitulo = reader.IsDBNull(reader.GetOrdinal("MayorTitulo")) ? null : reader.GetString(reader.GetOrdinal("MayorTitulo")),
                         OtroTitulo = reader.IsDBNull(reader.GetOrdinal("OtroTitulo")) ? null : reader.GetString(reader.GetOrdinal("OtroTitulo")),
                         MayorOtorgadoPor = reader.IsDBNull(reader.GetOrdinal("MayorOtorgadoPor")) ? null : reader.GetString(reader.GetOrdinal("MayorOtorgadoPor")),
-                        MayorPromedio = reader.IsDBNull(reader.GetOrdinal("MayorPromedio")) ? null : (decimal?)reader.GetDecimal(reader.GetOrdinal("MayorPromedio")),
-                        FotocopiaTitulo = reader.IsDBNull(reader.GetOrdinal("FotocopiaTitulo")) ? null : (bool?)reader.GetBoolean(reader.GetOrdinal("FotocopiaTitulo")),
-                        ConstanciaTituloTramite = reader.IsDBNull(reader.GetOrdinal("ConstanciaTituloTramite")) ? null : (bool?)reader.GetBoolean(reader.GetOrdinal("ConstanciaTituloTramite")),
-                        ConstanciaAdeudaMaterias = reader.IsDBNull(reader.GetOrdinal("ConstanciaAdeudaMaterias")) ? null : (bool?)reader.GetBoolean(reader.GetOrdinal("ConstanciaAdeudaMaterias")),
-                        CantidadAdeudaMaterias = reader.IsDBNull(reader.GetOrdinal("CantidadAdeudaMaterias")) ? null : (int?)reader.GetInt32(reader.GetOrdinal("CantidadAdeudaMaterias")),
-                        CertificadoAptitud = reader.IsDBNull(reader.GetOrdinal("CertificadoAptitud")) ? null : (bool?)reader.GetBoolean(reader.GetOrdinal("CertificadoAptitud")),
-                        FotocopiaDocumento = reader.IsDBNull(reader.GetOrdinal("FotocopiaDocumento")) ? null : (bool?)reader.GetBoolean(reader.GetOrdinal("FotocopiaDocumento")),
-                        FotoCarnet = reader.IsDBNull(reader.GetOrdinal("FotoCarnet")) ? null : (bool?)reader.GetBoolean(reader.GetOrdinal("FotoCarnet")),
-                        FotocopiaPartidaNacimiento = reader.IsDBNull(reader.GetOrdinal("FotocopiaPartidaNacimiento")) ? null : (bool?)reader.GetBoolean(reader.GetOrdinal("FotocopiaPartidaNacimiento")),
-                        VacunaAntihepatitis = reader.IsDBNull(reader.GetOrdinal("VacunaAntihepatitis")) ? null : (bool?)reader.GetBoolean(reader.GetOrdinal("VacunaAntihepatitis")),
-                        VacunaAntitetanica = reader.IsDBNull(reader.GetOrdinal("VacunaAntitetanica")) ? null : (bool?)reader.GetBoolean(reader.GetOrdinal("VacunaAntitetanica")),
-                        Recibo = reader.IsDBNull(reader.GetOrdinal("Recibo")) ? null : (int?)reader.GetInt32(reader.GetOrdinal("Recibo")),
-                        Monto = reader.IsDBNull(reader.GetOrdinal("Monto")) ? null : (int?)reader.GetInt32(reader.GetOrdinal("Monto")),
-                        ObraSocialPrepaga = reader.IsDBNull(reader.GetOrdinal("ObraSocialPrepaga")) ? null : (bool?)reader.GetBoolean(reader.GetOrdinal("ObraSocialPrepaga")),
+                        MayorPromedio = reader.IsDBNull(reader.GetOrdinal("MayorPromedio")) ? 0m : reader.GetDecimal(reader.GetOrdinal("MayorPromedio")),
+                        FotocopiaTitulo = reader.IsDBNull(reader.GetOrdinal("FotocopiaTitulo")) ? false : reader.GetBoolean(reader.GetOrdinal("FotocopiaTitulo")),
+                        ConstanciaTituloTramite = reader.IsDBNull(reader.GetOrdinal("ConstanciaTituloTramite")) ? false : reader.GetBoolean(reader.GetOrdinal("ConstanciaTituloTramite")),
+                        ConstanciaAdeudaMaterias = reader.IsDBNull(reader.GetOrdinal("ConstanciaAdeudaMaterias")) ? false : reader.GetBoolean(reader.GetOrdinal("ConstanciaAdeudaMaterias")),
+                        CantidadAdeudaMaterias = reader.IsDBNull(reader.GetOrdinal("CantidadAdeudaMaterias")) ? 0 : reader.GetInt32(reader.GetOrdinal("CantidadAdeudaMaterias")),
+                        CertificadoAptitud = reader.IsDBNull(reader.GetOrdinal("CertificadoAptitud")) ? false : reader.GetBoolean(reader.GetOrdinal("CertificadoAptitud")),
+                        FotocopiaDocumento = reader.IsDBNull(reader.GetOrdinal("FotocopiaDocumento")) ? false : reader.GetBoolean(reader.GetOrdinal("FotocopiaDocumento")),
+                        FotoCarnet = reader.IsDBNull(reader.GetOrdinal("FotoCarnet")) ? false : reader.GetBoolean(reader.GetOrdinal("FotoCarnet")),
+                        FotocopiaPartidaNacimiento = reader.IsDBNull(reader.GetOrdinal("FotocopiaPartidaNacimiento")) ? false : reader.GetBoolean(reader.GetOrdinal("FotocopiaPartidaNacimiento")),
+                        VacunaAntihepatitis = reader.IsDBNull(reader.GetOrdinal("VacunaAntihepatitis")) ? false : reader.GetBoolean(reader.GetOrdinal("VacunaAntihepatitis")),
+                        VacunaAntitetanica = reader.IsDBNull(reader.GetOrdinal("VacunaAntitetanica")) ? false : reader.GetBoolean(reader.GetOrdinal("VacunaAntitetanica")),
+                        Recibo = reader.IsDBNull(reader.GetOrdinal("Recibo")) ? 0 : reader.GetInt32(reader.GetOrdinal("Recibo")),
+                        Monto = reader.IsDBNull(reader.GetOrdinal("Monto")) ? 0 : reader.GetInt32(reader.GetOrdinal("Monto")),
+                        ObraSocialPrepaga = reader.IsDBNull(reader.GetOrdinal("ObraSocialPrepaga")) ? false : reader.GetBoolean(reader.GetOrdinal("ObraSocialPrepaga")),
                         DescripcionObraSocial = reader.IsDBNull(reader.GetOrdinal("DescripcionObraSocial")) ? null : reader.GetString(reader.GetOrdinal("DescripcionObraSocial")),
-                        TratamientoMedico = reader.IsDBNull(reader.GetOrdinal("TratamientoMedico")) ? null : (bool?)reader.GetBoolean(reader.GetOrdinal("TratamientoMedico")),
+                        TratamientoMedico = reader.IsDBNull(reader.GetOrdinal("TratamientoMedico")) ? false : reader.GetBoolean(reader.GetOrdinal("TratamientoMedico")),
                         DescripcionTratamiento = reader.IsDBNull(reader.GetOrdinal("DescripcionTratamiento")) ? null : reader.GetString(reader.GetOrdinal("DescripcionTratamiento")),
-                        Medicacion = reader.IsDBNull(reader.GetOrdinal("Medicacion")) ? null : (bool?)reader.GetBoolean(reader.GetOrdinal("Medicacion")),
+                        Medicacion = reader.IsDBNull(reader.GetOrdinal("Medicacion")) ? false : reader.GetBoolean(reader.GetOrdinal("Medicacion")),
                         DescripcionMedicacion = reader.IsDBNull(reader.GetOrdinal("DescripcionMedicacion")) ? null : reader.GetString(reader.GetOrdinal("DescripcionMedicacion")),
-                        Discapacidad = reader.IsDBNull(reader.GetOrdinal("Discapacidad")) ? null : (bool?)reader.GetBoolean(reader.GetOrdinal("Discapacidad")),
+                        Discapacidad = reader.IsDBNull(reader.GetOrdinal("Discapacidad")) ? false : reader.GetBoolean(reader.GetOrdinal("Discapacidad")),
                         DescripcionDiscapacidad = reader.IsDBNull(reader.GetOrdinal("DescripcionDiscapacidad")) ? null : reader.GetString(reader.GetOrdinal("DescripcionDiscapacidad")),
                         EstadoDiscapacidad = reader.IsDBNull(reader.GetOrdinal("EstadoDiscapacidad")) ? null : reader.GetString(reader.GetOrdinal("EstadoDiscapacidad")),
-                        CertificadoDiscapacidad = reader.IsDBNull(reader.GetOrdinal("CertificadoDiscapacidad")) ? null : (bool?)reader.GetBoolean(reader.GetOrdinal("CertificadoDiscapacidad")),
+                        CertificadoDiscapacidad = reader.IsDBNull(reader.GetOrdinal("CertificadoDiscapacidad")) ? false : reader.GetBoolean(reader.GetOrdinal("CertificadoDiscapacidad")),
                         ContactoEmergencia = reader.IsDBNull(reader.GetOrdinal("ContactoEmergencia")) ? null : reader.GetString(reader.GetOrdinal("ContactoEmergencia")),
                         TelefonoContacto = reader.IsDBNull(reader.GetOrdinal("TelefonoContacto")) ? null : reader.GetString(reader.GetOrdinal("TelefonoContacto")),
-                        Activo = reader.IsDBNull(reader.GetOrdinal("Activo")) ? null : (bool?)reader.GetBoolean(reader.GetOrdinal("Activo")),
+                        Activo = reader.IsDBNull(reader.GetOrdinal("Activo")) ? false : reader.GetBoolean(reader.GetOrdinal("Activo")),
                         FotoUrl = reader.IsDBNull(reader.GetOrdinal("FotoUrl")) ? null : reader.GetString(reader.GetOrdinal("FotoUrl")),
                         Carrera = reader.IsDBNull(reader.GetOrdinal("Carrera")) ? null : reader.GetString(reader.GetOrdinal("Carrera"))
                     };
-
+                        
                     return Map();
                 }
                 return null;
@@ -172,7 +172,7 @@ namespace instituto93.Data.Repositories
             }
         }
 
-        public async Task<int> CreateAsync(AlumnosModelo alumnosModelo, CancellationToken cancellationToken = default)
+        public async Task<int> CreateAsync(AlumnoModelo alumnosModelo, CancellationToken cancellationToken = default)
         {
             if (alumnosModelo == null) throw new ArgumentNullException(nameof(alumnosModelo));
 
@@ -206,7 +206,7 @@ namespace instituto93.Data.Repositories
             }
         }
 
-        public async Task<bool> UpdateAsync(AlumnosModelo alumnosModelo, CancellationToken cancellationToken = default)
+        public async Task<bool> UpdateAsync(AlumnoModelo alumnosModelo, CancellationToken cancellationToken = default)
         {
             if (alumnosModelo == null) throw new ArgumentNullException(nameof(alumnosModelo));
 

@@ -5,14 +5,14 @@ using instituto93.Domain.Models;
 namespace instituto93.Application
 {
     //Looez Melany
-    public class AlumnosService : IAlumnosService
+    public class AlumnoService : IAlumnoService
     {
-        private readonly IAlumnosRepository _repo;
-        public AlumnosService(IAlumnosRepository repo)
+        private readonly IAlumnoRepository _repo;
+        public AlumnoService(IAlumnoRepository repo)
         {
             _repo = repo ?? throw new System.ArgumentNullException(nameof(repo));
         }
-        public async Task<List<AlumnosModelo>> GetAlumnosModelos(CancellationToken cancellationToken = default)
+        public async Task<List<AlumnoModelo>> GetAlumnosModelos(CancellationToken cancellationToken = default)
         {
             var alumnosModelos = await _repo.GetAllAsync(cancellationToken);
             return alumnosModelos.ToList();
