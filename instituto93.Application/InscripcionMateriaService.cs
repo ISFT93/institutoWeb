@@ -22,9 +22,9 @@ namespace instituto93.Application
         public Task<InscripcionMateria?> GetInscripcionMateriaByIdAsync(int id, CancellationToken cancellationToken = default)
             => _repo.GetByIdAsync(id, cancellationToken);
 
-        public Task<int> CreateInscripcionMateriaAsync(int cursadaAlumnoCarreraId, int alumnoCarreraId, int cursadaId, int anioCicloLectivo, string estado,
+        public Task<int> CreateInscripcionMateriaAsync(int alumnoCarreraId, int cursadaId, int anioCicloLectivo, string estado,
             int horasCursada, DateTime ultimoPresentismo, decimal porcentajeAsistencia, string cursada, bool activo, CancellationToken cancellationToken = default)
-            => _repo.CreateAsync(cursadaAlumnoCarreraId, alumnoCarreraId, cursadaId, anioCicloLectivo, estado,
+            => _repo.CreateAsync(alumnoCarreraId, cursadaId, anioCicloLectivo, estado,
             horasCursada, ultimoPresentismo, porcentajeAsistencia, cursada, activo, cancellationToken);
 
         public Task<bool> UpdateInscripcionMateriaAsync(InscripcionMateria inscripcionMateria, CancellationToken cancellationToken = default)

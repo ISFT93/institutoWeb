@@ -11,7 +11,7 @@ namespace instituto93.Application.Interfaces
     {
         Task<List<InscripcionMateria>> GetInscripcionMateriaAsync(CancellationToken cancellationToken = default);
         Task<InscripcionMateria?> GetInscripcionMateriaByIdAsync(int id, CancellationToken cancellationToken = default);        
-        Task<int> CreateInscripcionMateriaAsync(int cursadaAlumnoCarreraId, int alumnoCarreraId, int cursadaId, int anioCicloLectivo, string estado,
+        Task<int> CreateInscripcionMateriaAsync(int alumnoCarreraId, int cursadaId, int anioCicloLectivo, string estado,
             int horasCursada, DateTime ultimoPresentismo, decimal porcentajeAsistencia, string cursada, bool activo, CancellationToken cancellationToken = default);
         Task<bool> UpdateInscripcionMateriaAsync(InscripcionMateria inscripcionMateria, CancellationToken cancellationToken = default);
         Task<bool> DeleteInscripcionMateriaAsync(int id, CancellationToken cancellationToken = default);

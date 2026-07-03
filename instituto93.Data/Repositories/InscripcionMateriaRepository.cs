@@ -82,9 +82,9 @@ namespace instituto93.Data.Repositories
             }
         }
 
-        public async Task<int> CreateAsync(int cursadaAlumnoCarreraId,int alumnoCarreraId,int cursadaId,int anioCicloLectivo,string estado,int horasCursada,DateTime ultimoPresentismo, decimal porcentajeAsistencia,string cursada,bool activo, CancellationToken cancellationToken = default)
+        public async Task<int> CreateAsync(int alumnoCarreraId,int cursadaId,int anioCicloLectivo,string estado,int horasCursada,DateTime ultimoPresentismo, decimal porcentajeAsistencia,string cursada,bool activo, CancellationToken cancellationToken = default)
         {
-            const string sql = "INSERT INTO CursadaAlumnoCarreras VALUES(@CursadaAlumnoCarreraId,@AlumnoCarreraId," +
+            const string sql = "INSERT INTO CursadaAlumnoCarreras VALUES(@AlumnoCarreraId," +
                 "@CursadaId,@AnioCicloLectivo,@Estado,@HorasCursadas,@UltimoPresentimos,@PorcentajeAsistencia,@Cursada,@Activo)";
 
             try
@@ -92,7 +92,6 @@ namespace instituto93.Data.Repositories
                 await _conexion.OpenAsync(cancellationToken);
                 using var cmd = _conexion.Conector.CreateCommand();
                 cmd.CommandText = sql;
-                cmd.Parameters.AddWithValue("@CursadaAlumnoCarreraId",cursadaAlumnoCarreraId);
                 cmd.Parameters.AddWithValue("@AlumnoCarreraId",alumnoCarreraId);
                 cmd.Parameters.AddWithValue("@CursadaId",cursadaId);
                 cmd.Parameters.AddWithValue("@AnioCicloLectivo",anioCicloLectivo);
@@ -123,7 +122,7 @@ namespace instituto93.Data.Repositories
                 cmd.CommandText = sql;
                 cmd.Parameters.AddWithValue("@Estado", inscripcionMateria.estado);
                 cmd.Parameters.AddWithValue("@Cursada", inscripcionMateria.cursada);
-                cmd.Parameters.AddWithValue("@CursadaAlumnoId", inscripcionMateria.cursadaAlumnoId);
+                cmd.Parameters.AddWithValue("@CursadaAlumnoCarreraId", inscripcionMateria.cursadaAlumnoId);
                 var rows = await cmd.ExecuteNonQueryAsync(cancellationToken);
                 return rows > 0;
             }
@@ -135,7 +134,7 @@ namespace instituto93.Data.Repositories
 
         public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
         {
-            const string sql = "DELETE FROM CursadaAlumnoCarrera WHERE CursadaAlumnoCarreraId = @CursadaAlumnoCarreraId";
+            const string sql = "DELETE FROM CursadaAlumnoCarreras WHERE CursadaAlumnoCarreraId = @CursadaAlumnoCarreraId";
 
             try
             {
