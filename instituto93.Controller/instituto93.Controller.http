@@ -1,0 +1,15 @@
+﻿@instituto93.Controller_HostAddress = https://localhost:7275
+
+GET {{instituto93.Controller_HostAddress}}/cargos
+
+###
+
+GET {{instituto93.Controller_HostAddress}}/cargos
+
+###
+
+@id=10
+DELETE {{instituto93.Controller_HostAddress}}/cargos?id={{id}}
+Authorization: {{$apiKey}}
+
+###

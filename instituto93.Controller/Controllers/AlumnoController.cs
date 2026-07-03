@@ -4,27 +4,27 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using instituto93.Domain.Models;
-
+//Lopez Melany
 namespace instituto93.Controller.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class CargosController : ControllerBase
+    public class AlumnoController : ControllerBase
     {
-        private readonly ICargosService _service; // <- usar la interfaz
+        private readonly IAlumnoService _service; // <- usar la interfaz
 
-        public CargosController(ICargosService service)
+        public AlumnoController(IAlumnoService service)
         {
             _service = service;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<CargosModelo>>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<List<AlumnoModelo>>> Get(CancellationToken cancellationToken)
         {
             try
             {
-                var cargos = await _service.GetCargos(cancellationToken);
-                return Ok(cargos);
+                var alumnosModelos = await _service.GetAlumnosModelos(cancellationToken);
+                return Ok(alumnosModelos);
             }
             catch (System.Exception ex)
             {

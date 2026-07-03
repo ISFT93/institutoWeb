@@ -6,8 +6,8 @@ using instituto93.Domain.Models;
 namespace instituto93.Application
 {
     //Lopez Melany
-    public interface IAlumnosService
+    public interface IAlumnoService
     {
-        Task<List<AlumnosModelo>> GetAlumnosModelos(CancellationToken cancellationToken = default);
+        Task<List<AlumnoModelo>> GetAlumnosModelos(CancellationToken cancellationToken = default);
     }
 }

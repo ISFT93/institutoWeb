@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace instituto93.Domain.Interfaces
 {
     //Lopez Melany
-    public interface IAlumnos
+    public interface IAlumno
     {
         int AlumnoId { get; set; }
 
@@ -19,10 +19,9 @@ namespace instituto93.Domain.Interfaces
         string? EstadoCivil { get; set; }
         string Sexo { get; set; }
 
-        DateTime? FechaNacimiento { get; set; }
-        string? LocalidadNacimiento { get; set; }
-        string? PaisNacimiento { get; set; }
-
+        DateTime FechaNacimiento { get; set; }
+        string LocalidadNacimiento { get; set; }
+        string PaisNacimiento { get; set; }
         string Calle { get; set; }
         string? Numero { get; set; }
         string? Piso { get; set; }
@@ -64,13 +63,6 @@ namespace instituto93.Domain.Interfaces
         bool? FotoCarnet { get; set; }
         bool? FotocopiaPartidaNacimiento { get; set; }
 
-        bool? VacunaAntihepatitis { get; set; }
-        bool? VacunaAntitetanica { get; set; }
-
-        int? Recibo { get; set; }
-        int? Monto { get; set; }
-
-        bool? ObraSocialPrepaga { get; set; }
         string? DescripcionObraSocial { get; set; }
 
         bool? TratamientoMedico { get; set; }
