@@ -89,8 +89,8 @@ namespace instituto93.Data.Repositories
                 cmd.Parameters.AddWithValue("@NumeroDocumento", personal.NumeroDocumento ?? string.Empty);
                 cmd.Parameters.AddWithValue("@Nombre", personal.Nombre ?? string.Empty);
                 cmd.Parameters.AddWithValue("@Apellido", personal.Apellido ?? string.Empty);
-                cmd.Parameters.AddWithValue("@FechaNacimiento", personal.FechaNacimiento ?? DateTime.Now());
-                cmd.Parameters.AddWithValue("@Sexo", personal.Sexo ?? string.Empty);
+                cmd.Parameters.AddWithValue("@FechaNacimiento", personal.FechaNacimiento == default ? DateTime.Now : personal.FechaNacimiento);
+                cmd.Parameters.AddWithValue("@Sexo", personal.Sexo);
                 cmd.Parameters.AddWithValue("@Titulo", personal.Titulo ?? string.Empty);
                 cmd.Parameters.AddWithValue("@TramoPedagogico", personal.TramoPedagogico ?? string.Empty);
                 var result = await cmd.ExecuteScalarAsync(cancellationToken);
@@ -104,7 +104,7 @@ namespace instituto93.Data.Repositories
 
         public async Task<bool> UpdateAsync(Personal personal, CancellationToken cancellationToken = default)
         {
-            if (PersonalModelo == null) throw new ArgumentNullException(nameof(Personal));
+            if (personal == null) throw new ArgumentNullException(nameof(Personal));
             const string sql = "UPDATE Personal SET NumeroDocumento = @NumeroDocumento, Nombre = @Nombre, Apellido = @Apellido, FechaNacimiento = @FechaNacimiento, Sexo = @Sexo, Titulo = @Titulo, TramoPedagogico = @TramoPedagogico WHERE PersonalId = @id";
             try
             {
@@ -114,11 +114,11 @@ namespace instituto93.Data.Repositories
                 cmd.Parameters.AddWithValue("@NumeroDocumento", personal.NumeroDocumento ?? string.Empty);
                 cmd.Parameters.AddWithValue("@Nombre", personal.Nombre ?? string.Empty);
                 cmd.Parameters.AddWithValue("@Apellido", personal.Apellido ?? string.Empty);
-                cmd.Parameters.AddWithValue("@FechaNacimiento", personal.FechaNacimiento ?? DateTime.Now());
-                cmd.Parameters.AddWithValue("@Sexo", personal.Sexo ?? string.Empty);
+                cmd.Parameters.AddWithValue("@FechaNacimiento", personal.FechaNacimiento == default ? DateTime.Now : personal.FechaNacimiento);
+                cmd.Parameters.AddWithValue("@Sexo", personal.Sexo );
                 cmd.Parameters.AddWithValue("@Titulo", personal.Titulo ?? string.Empty);
                 cmd.Parameters.AddWithValue("@TramoPedagogico", personal.TramoPedagogico ?? string.Empty);
-                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@id", personal.PersonalId);
                 var rows = await cmd.ExecuteNonQueryAsync(cancellationToken);
                 return rows > 0;
             }
