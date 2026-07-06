@@ -22,6 +22,8 @@ builder.Services.AddScoped<instituto93.Data.Repositories.ICargosRepository, inst
 builder.Services.AddScoped<ICargosService, CargosService>();
 builder.Services.AddScoped<IPaisRepository, PaisRepository>();
 builder.Services.AddScoped<IPaisService, PaisService>();
+builder.Services.AddScoped<IInscripcionMateriaRepository, InscripcionMateriaRepository>();
+builder.Services.AddScoped<IInscripcionMateriaService, InscripcionMateriaService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
