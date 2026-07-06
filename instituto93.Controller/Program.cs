@@ -1,6 +1,8 @@
 using instituto93.Application;
+using instituto93.Application.Interfaces;
 using instituto93.Data;
 using instituto93.Data.Repositories;
+using instituto93.Data.Repositories.Interfaces;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
@@ -8,7 +10,7 @@ using WebApplication1.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuración simple: puedes mover esto a appsettings.json / User Secrets
+// Configuraciï¿½n simple: puedes mover esto a appsettings.json / User Secrets
 builder.Configuration["Jwt:Secret"] ??= "4d6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d";
 
 // Add services to the container.
@@ -18,6 +20,8 @@ builder.Services.AddScoped<instituto93.Data.Repositories.ILocalidadRepository, i
 builder.Services.AddScoped<ILocalidadService, LocalidadService>();
 builder.Services.AddScoped<instituto93.Data.Repositories.ICargosRepository, instituto93.Data.Repositories.CargosRepository>();
 builder.Services.AddScoped<ICargosService, CargosService>();
+builder.Services.AddScoped<IPaisRepository, PaisRepository>();
+builder.Services.AddScoped<IPaisService, PaisService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
