@@ -1,6 +1,6 @@
 ﻿using instituto93.Domain.Models;
 
-namespace instituto93.Data.Repositories
+namespace instituto93.Data.Repositories.Interfaces
 {
     public class PaisRepository : IPaisRepository
     {

@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using instituto93.Domain.Models;
+﻿using instituto93.Domain.Models;
 
-namespace instituto93.Data.Repositories
+namespace instituto93.Data.Repositories.Interfaces
 {
     public interface IPaisRepository
     {
