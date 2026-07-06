@@ -27,8 +27,8 @@ namespace instituto93.Application
             => _repo.CreateAsync(alumnoCarreraId, cursadaId, anioCicloLectivo, estado,
             horasCursada, ultimoPresentismo, porcentajeAsistencia, cursada, activo, cancellationToken);
 
-        public Task<bool> UpdateInscripcionMateriaAsync(InscripcionMateria inscripcionMateria, CancellationToken cancellationToken = default)
-            => _repo.UpdateAsync(inscripcionMateria, cancellationToken);
+        public Task<bool> UpdateInscripcionMateriaAsync(int id, InscripcionMateria inscripcionMateria, CancellationToken cancellationToken = default)
+            => _repo.UpdateAsync(id, inscripcionMateria, cancellationToken);
 
         public Task<bool> DeleteInscripcionMateriaAsync(int id, CancellationToken cancellationToken = default)
             => _repo.DeleteAsync(id, cancellationToken);

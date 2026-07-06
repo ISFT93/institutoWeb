@@ -13,7 +13,7 @@ namespace instituto93.Data.Repositories.Interfaces
         Task<InscripcionMateria?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
         Task<int> CreateAsync(int alumnoCarreraId, int cursadaId, int anioCicloLectivo, string estado,
             int horasCursada, DateTime ultimoPresentismo, decimal porcentajeAsistencia, string cursada, bool activo, CancellationToken cancellationToken = default);
-        Task<bool> UpdateAsync(InscripcionMateria inscripcionMateria, CancellationToken cancellationToken = default);
+        Task<bool> UpdateAsync(int id, InscripcionMateria inscripcionMateria, CancellationToken cancellationToken = default);
         Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default);
     }
 }

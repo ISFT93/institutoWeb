@@ -110,7 +110,7 @@ namespace instituto93.Data.Repositories
 
         }
 
-        public async Task<bool> UpdateAsync(InscripcionMateria inscripcionMateria, CancellationToken cancellationToken = default)
+        public async Task<bool> UpdateAsync(int id, InscripcionMateria inscripcionMateria, CancellationToken cancellationToken = default)
         {
             if (inscripcionMateria == null) throw new ArgumentNullException(nameof(inscripcionMateria));          
             string sql = "UPDATE CursadaAlumnoCarreras SET Estado =  @Estado, Cursada = @Cursada WHERE CursadaAlumnoCarreraId = @CursadaAlumnoCarreraId";
@@ -122,7 +122,7 @@ namespace instituto93.Data.Repositories
                 cmd.CommandText = sql;
                 cmd.Parameters.AddWithValue("@Estado", inscripcionMateria.estado);
                 cmd.Parameters.AddWithValue("@Cursada", inscripcionMateria.cursada);
-                cmd.Parameters.AddWithValue("@CursadaAlumnoCarreraId", inscripcionMateria.cursadaAlumnoId);
+                cmd.Parameters.AddWithValue("@CursadaAlumnoCarreraId", id);
                 var rows = await cmd.ExecuteNonQueryAsync(cancellationToken);
                 return rows > 0;
             }
