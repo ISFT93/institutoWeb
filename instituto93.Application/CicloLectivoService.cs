@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
- 
 using System.Threading;
 using System.Threading.Tasks;
 using instituto93.Data.Repositories;
 using instituto93.Data.Repositories.Interfaces;
 using instituto93.Domain.Models;
-
+using System.Linq;
 namespace instituto93.Application
 {
     public class CicloLectivoService : ICicloLectivoService
