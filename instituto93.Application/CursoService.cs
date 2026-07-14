@@ -11,8 +11,8 @@ namespace instituto93.Application.Interfaces
 {
     public class CursoService : ICursoService
     {
-         private readonly ICursoRepository _repo;
-         public CursoService(ICursoRepository repo)
+         private readonly icursoRepository _repo;
+         public CursoService(icursoRepository repo)
          {
              _repo = repo ?? throw new System.ArgumentNullException(nameof(repo));
          }

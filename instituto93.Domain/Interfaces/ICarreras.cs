@@ -9,23 +9,23 @@ namespace instituto93.Domain.Interfaces
 {
     public interface ICarreras
     {
-        public int CarreraId { get; set; }
-        public string Nombre { get; set; }
-        public string Titulo { get; set; }
-        public string DescripcionCorta { get; set; }
-        public string JefeCatedra { get; set; }
-        public int AnioInicio { get; set; }
-        public int AnioFin { get; set; }
-        public bool Activo { get; set; }
-        public string PlanEstudio { get; set; }
-        public string Resolucion { get; set; }
-        public string Correlatividades { get; set; }
-        public string ImagenDescriptiva { get; set; }
-        public string NumeroExpediente { get; set; }
-        public int CantidadHoras { get; set; }
-        public int Duracion { get; set; }
-        public int CarreraEstadoId { get; set; }
-        public string CarrerasCodigoBloque { get; set; }
-        public bool PoseeMaterias { get; set; }
+        int CarreraId { get; set; }
+        string Nombre { get; set; }
+        string Titulo { get; set; }
+        string DescripcionCorta { get; set; }
+        string JefeCatedra { get; set; }
+        int AnioInicio { get; set; }
+        int AnioFin { get; set; }
+        bool Activo { get; set; }
+        string PlanEstudio { get; set; }
+        string Resolucion { get; set; }
+        string Correlatividades { get; set; }
+        string ImagenDescriptiva { get; set; }
+        string NumeroExpediente { get; set; }
+        int CantidadHoras { get; set; }
+        int Duracion { get; set; }
+        int CarreraEstadoId { get; set; }
+        string CarrerasCodigoBloque { get; set; }
+        bool PoseeMaterias { get; set; }
     }
 }
