@@ -24,6 +24,10 @@ builder.Services.AddScoped<IPaisRepository, PaisRepository>();
 builder.Services.AddScoped<IPaisService, PaisService>();
 builder.Services.AddScoped<IInscripcionMateriaRepository, InscripcionMateriaRepository>();
 builder.Services.AddScoped<IInscripcionMateriaService, InscripcionMateriaService>();
+builder.Services.AddScoped<IPersonalRepository, PersonalRepository>();
+builder.Services.AddScoped<IPersonalService, PersonalService>();
+builder.Services.AddScoped<IParametroRepository, ParametroRepository>();
+builder.Services.AddScoped<IParametroService, ParametroService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
