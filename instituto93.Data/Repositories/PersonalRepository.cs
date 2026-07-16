@@ -20,7 +20,7 @@ namespace instituto93.Data.Repositories
         public async Task<IEnumerable<Personal>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var lista = new List<Personal>();
-            const string sql = "SELECT PersonalId, Nombre, Apellido, NumeroDocumento FROM PersonalModelo";
+            const string sql = "SELECT PersonalId, Nombre, Apellido, NumeroDocumento FROM Personal";
 
             try
             {
