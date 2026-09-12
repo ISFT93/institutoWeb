@@ -1,3 +1,44 @@
+:root {
+    --color-primary: #234162;
+    --color-primary-dark: #1c3552;
+    --color-primary-light: #5f758e;
+
+    --color-background: #f6f9fd;
+    --color-surface: #ffffff;
+
+    --color-text: #1c2636;
+    --color-text-secondary: #5f758e;
+    --color-text-on-primary: #ffffff;
+
+    --color-border: #d7dee7;
+
+    --color-error: #dc2626;
+    --color-success: #2e7d32;
+    --color-warning: #ed6c02;
+    --color-info: #0288d1;
+}
+
+/* Adapter MudBlazor */
+:root {
+    --mud-palette-primary: var(--color-primary) !important;
+    --mud-palette-primary-text: var(--color-text-on-primary) !important;
+    --mud-palette-primary-darken: var(--color-primary-dark) !important;
+    --mud-palette-primary-lighten: var(--color-primary-light) !important;
+
+    --mud-palette-background: var(--color-background) !important;
+    --mud-palette-surface: var(--color-surface) !important;
+
+    --mud-palette-text-primary: var(--color-text) !important;
+    --mud-palette-text-secondary: var(--color-text-secondary) !important;
+
+    --mud-palette-divider: var(--color-border) !important;
+
+    --mud-palette-error: var(--color-error) !important;
+    --mud-palette-success: var(--color-success) !important;
+    --mud-palette-warning: var(--color-warning) !important;
+    --mud-palette-info: var(--color-info) !important;
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }

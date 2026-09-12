@@ -11,11 +11,11 @@
     <link rel="stylesheet" href="@Assets["instituto93.Web.styles.css"]" />
     <ImportMap />
     <link rel="icon" type="image/png" href="images/favicon.png" />
-    <HeadOutlet />
+    <HeadOutlet @rendermode="InteractiveServer" />
 </head>
 
 <body>
-    <Routes />
+    <Routes @rendermode="InteractiveServer" />
     <ReconnectModal />
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
     <script src="@Assets["_framework/blazor.web.js"]"></script>
