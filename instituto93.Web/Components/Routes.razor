@@ -1,0 +1,8 @@
+﻿<Router AppAssembly="typeof(Program).Assembly" NotFoundPage="typeof(Pages.NotFound)">
+    <Found Context="routeData">
+        @* Si la página no especifica un layout, usar el layout por defecto *@
+        @* Por esto mismo no hace falta declarar el @layout en cada página, como en Index.Razor *@
+        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+        <FocusOnNavigate RouteData="routeData" Selector="h1" />
+    </Found>
+</Router>
