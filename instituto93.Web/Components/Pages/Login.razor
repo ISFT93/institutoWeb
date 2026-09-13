@@ -1,6 +1,6 @@
 @page "/login"
 
-@using instituto93.Web.Models;  
+@using instituto93.Web.Models;
 
 <PageTitle>Iniciar Sesión</PageTitle>
 
@@ -45,7 +45,7 @@
                     Usá tus credenciales institucionales para continuar.
                 </p>
             </header>
-
+            @* Es lo mismo que un <form>, pero con validación de datos y binding de modelos. *@
             <EditForm Model="_loginModel" OnValidSubmit="HandleLogin">
 
             <MudTextField
@@ -78,7 +78,7 @@
 </main>
 
 @code {
-    private LoginModel _loginModel = new();
+    private LoginModel _loginModel = new LoginModel();
     
     private async Task HandleLogin()
     {
