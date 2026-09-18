@@ -3,10 +3,14 @@ using instituto93.Application.Interfaces;
 using instituto93.Data;
 using instituto93.Data.Repositories;
 using instituto93.Data.Repositories.Interfaces;
+using instituto93.Controller.Seeds;
+using DotNetEnv;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
 using WebApplication1.Middleware;
+
+Env.NoClobber().TraversePath().Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +34,7 @@ builder.Services.AddScoped<IParametroRepository, ParametroRepository>();
 builder.Services.AddScoped<IParametroService, ParametroService>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<DevelopmentUserSeed>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -50,6 +55,12 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    await scope.ServiceProvider.GetRequiredService<DevelopmentUserSeed>().SeedAsync();
+}
 
 // Pipeline
 app.UseSwagger();

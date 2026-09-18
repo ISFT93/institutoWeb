@@ -1,6 +1,8 @@
 @page "/login"
-
+@inject NavigationManager Navigation
 @using instituto93.Web.Models;
+@using instituto93.Web.Services
+@inject AuthApiClient AuthApiClient
 
 <PageTitle>Iniciar Sesión</PageTitle>
 
@@ -47,6 +49,7 @@
             </header>
             @* Es lo mismo que un <form>, pero con validación de datos y binding de modelos. *@
             <EditForm Model="_loginModel" OnValidSubmit="HandleLogin">
+            <DataAnnotationsValidator />
 
             <MudTextField
                 Label="D.N.I o correo electrónico"
@@ -65,11 +68,22 @@
                 ButtonType="ButtonType.Submit"
                 Variant="Variant.Filled"
                 Color="Color.Primary"
+                Disabled="_isSubmitting"
                 FullWidth>
-                Ingresar
+                @(_isSubmitting ? "Ingresando..." : "Ingresar")
             </MudButton>
 
         </EditForm>
+
+        @if (!string.IsNullOrWhiteSpace(_errorMessage))
+        {
+            <MudAlert Severity="Severity.Error" Class="mt-4">@_errorMessage</MudAlert>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(_successMessage))
+        {
+            <MudAlert Severity="Severity.Success" Class="mt-4">@_successMessage</MudAlert>
+        }
 
         </article>
 
@@ -79,13 +93,42 @@
 
 @code {
     private LoginModel _loginModel = new LoginModel();
+    private bool _isSubmitting;
+    private string? _errorMessage;
+    private string? _successMessage;
     
     private async Task HandleLogin()
-    {
-        Console.WriteLine($"Email o DNI: {_loginModel.EmailOrDni}");
-        // Si llegaste acá, el formulario ya es válido.
-        await Task.CompletedTask;
+{
+    _isSubmitting = true;
+    _errorMessage = null;
+    _successMessage = null;
 
-        // TODO: Implementar autenticación
+    try
+    {
+        var result = await AuthApiClient.LoginAsync(_loginModel);
+
+        if (result is null)
+        {
+            _errorMessage = "La API devolvió una respuesta inválida.";
+            return;
+        }
+
+        if (result.IsSuccess)
+        {
+            Navigation.NavigateTo("/");
+        }
+        else
+        {
+            _errorMessage = result.Error;
+        }
     }
+    catch (HttpRequestException)
+    {
+        _errorMessage = "No fue posible conectar con la API.";
+    }
+    finally
+    {
+        _isSubmitting = false;
+    }
+}
 }

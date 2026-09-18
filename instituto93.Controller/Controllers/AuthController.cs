@@ -104,7 +104,7 @@ namespace WebApplication1.Controllers
 
             var usuario = await _usuarioService.AuthenticateAsync(model.EmailOrDni, model.Password, cancellationToken);
             if (usuario == null)
-                return Unauthorized(new { message = "Credenciales inv�lidas." });
+                return Unauthorized(new { message = "Credenciales inválidas." });
 
             var secret = _configuration["Jwt:Secret"] ?? "4d6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d";
             var key = Encoding.UTF8.GetBytes(secret);

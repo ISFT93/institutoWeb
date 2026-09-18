@@ -13,3 +13,4 @@ AGENTS.md
 .vs
 .vscode/*
 !.vscode/tasks.json
+.env
