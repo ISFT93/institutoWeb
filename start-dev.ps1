@@ -8,7 +8,7 @@ $apiProcess = Start-Process -FilePath "dotnet" -NoNewWindow -PassThru -ArgumentL
     "watch", "run", "--non-interactive",
     "--project", $apiProject,
     "--no-launch-profile",
-    "--urls", "http://0.0.0.0:8001"
+    "--urls", "http://0.0.0.0:8000"
 )
 
 try {

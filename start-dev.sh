@@ -6,7 +6,7 @@ root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ASPNETCORE_ENVIRONMENT=Development dotnet watch run --non-interactive \
   --project "$root_dir/instituto93.Controller/instituto93.Controller.csproj" \
   --no-launch-profile \
-  --urls "http://0.0.0.0:8001" &
+  --urls "http://0.0.0.0:8000" &
 api_pid=$!
 
 cleanup() {
