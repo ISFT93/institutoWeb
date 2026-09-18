@@ -1,0 +1,112 @@
+.login-page {
+    min-height: 100vh;
+
+    display: grid;
+    grid-template-columns: 42% 58%;
+
+    background: var(--color-background);
+}
+
+.login-hero {
+    background: var(--color-primary);
+    color: var(--color-text-on-primary);
+
+    padding: 4rem;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.institution {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.institution img {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+}
+
+.institution div {
+    display: flex;
+    flex-direction: column;
+}
+
+.institution span {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.login-hero-content {
+    margin-block: auto;
+    max-width: 430px;
+}
+
+.login-hero-content h1 {
+    margin: 0 0 1.5rem;
+
+    font-size: 2.5rem;
+    line-height: 1.2;
+}
+
+.login-hero-content p {
+    margin: 0;
+
+    font-size: 1.1rem;
+    line-height: 1.6;
+
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.login-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 2rem;
+}
+
+.login-card {
+    width: min(420px, 100%);
+
+    padding: 2.5rem;
+
+    background: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-radius: 1.25rem;
+}
+
+.login-card h2 {
+    margin: 0 0 0.5rem;
+
+    color: var(--color-text);
+    font-size: 1.8rem;
+}
+
+.login-card header p {
+    margin: 0;
+
+    color: var(--color-text-secondary);
+}
+
+@media (max-width: 768px) {
+    .login-page {
+        grid-template-columns: 1fr;
+    }
+
+    .login-hero {
+        min-height: auto;
+        padding: 2rem;
+    }
+
+    .login-hero-content {
+        margin-top: 4rem;
+        margin-bottom: 2rem;
+    }
+
+    .login-content {
+        padding: 2rem 1rem;
+    }
+}

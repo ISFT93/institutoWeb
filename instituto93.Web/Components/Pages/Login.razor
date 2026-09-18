@@ -1,0 +1,91 @@
+@page "/login"
+
+@using instituto93.Web.Models;
+
+<PageTitle>Iniciar Sesión</PageTitle>
+
+<main class="login-page">
+
+    <section class="login-hero">
+        <header class="institution">
+            <img
+                src="/images/logo.png"
+                alt="Logo del Instituto Superior de Formación Técnica N° 93" />
+
+            <div>
+                <strong>
+                    Instituto Superior de Formación Técnica N° 93
+                </strong>
+
+                <span>Portal académico</span>
+            </div>
+        </header>
+
+        <div class="login-hero-content">
+            <h1>
+                Bienvenido/a al portal<br />
+                web del instituto
+            </h1>
+
+            <p>
+                Accedé a información, trámites y herramientas
+                para acompañar tu experiencia institucional.
+            </p>
+        </div>
+    </section>
+
+    <section class="login-content">
+
+        <article class="login-card">
+
+            <header>
+                <h2>Ingresá al portal</h2>
+
+                <p>
+                    Usá tus credenciales institucionales para continuar.
+                </p>
+            </header>
+            @* Es lo mismo que un <form>, pero con validación de datos y binding de modelos. *@
+            <EditForm Model="_loginModel" OnValidSubmit="HandleLogin">
+
+            <MudTextField
+                Label="D.N.I o correo electrónico"
+                @bind-Value="_loginModel.Username"
+                Variant="Variant.Outlined"
+                FullWidth />
+
+            <MudTextField
+                Label="Contraseña"
+                @bind-Value="_loginModel.Password"
+                InputType="InputType.Password"
+                Variant="Variant.Outlined"
+                FullWidth />
+
+            <MudButton
+                ButtonType="ButtonType.Submit"
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                FullWidth>
+                Ingresar
+            </MudButton>
+
+        </EditForm>
+
+        </article>
+
+    </section>
+
+</main>
+
+@code {
+    private LoginModel _loginModel = new LoginModel();
+    
+    private async Task HandleLogin()
+    {
+        Console.WriteLine($"Usuario: {_loginModel.Username}, Contraseña: {_loginModel.Password}");
+        // Si llegaste acá, el formulario ya es válido.
+        await Task.CompletedTask;
+
+        // TODO: Implementar autenticación
+    }
+}
