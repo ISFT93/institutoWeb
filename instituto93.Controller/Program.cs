@@ -28,6 +28,8 @@ builder.Services.AddScoped<IPersonalRepository, PersonalRepository>();
 builder.Services.AddScoped<IPersonalService, PersonalService>();
 builder.Services.AddScoped<IParametroRepository, ParametroRepository>();
 builder.Services.AddScoped<IParametroService, ParametroService>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -63,4 +65,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-

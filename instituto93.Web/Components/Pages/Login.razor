@@ -50,7 +50,7 @@
 
             <MudTextField
                 Label="D.N.I o correo electrónico"
-                @bind-Value="_loginModel.Username"
+                @bind-Value="_loginModel.EmailOrDni"
                 Variant="Variant.Outlined"
                 FullWidth />
 
@@ -82,7 +82,7 @@
     
     private async Task HandleLogin()
     {
-        Console.WriteLine($"Usuario: {_loginModel.Username}, Contraseña: {_loginModel.Password}");
+        Console.WriteLine($"Email o DNI: {_loginModel.EmailOrDni}");
         // Si llegaste acá, el formulario ya es válido.
         await Task.CompletedTask;
 
