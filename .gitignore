@@ -11,4 +11,6 @@ obj
 /.gitignore
 AGENTS.md
 .vs
-.vscode
+.vscode/*
+!.vscode/tasks.json
+.env
