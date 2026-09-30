@@ -5,8 +5,6 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
-using instituto93.Domain.Models;
-using instituto93.Domain.DTOs;
 using Microsoft.Extensions.Configuration;
 using instituto93.Application.Interfaces;
 
@@ -17,94 +15,87 @@ namespace WebApplication1.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IUsuarioService _usuarioService;
+        private readonly IAlumnoAccesoService _alumnoAccesoService;
         private readonly IConfiguration _configuration;
 
-        public AuthController(IUsuarioService usuarioService, IConfiguration configuration)
+        public AuthController(
+            IUsuarioService usuarioService,
+            IAlumnoAccesoService alumnoAccesoService,
+            IConfiguration configuration)
         {
             _usuarioService = usuarioService;
+            _alumnoAccesoService = alumnoAccesoService;
             _configuration = configuration;
         }
 
         public class LoginRequest
         {
-            public string EmailOrDni { get; set; } = string.Empty;
-            public string Password { get; set; } = string.Empty;
-        }
-
-        // El registro se hace desde el lado de administración. Ahora dejamos el endpoint para pruebas, pero en producción se puede eliminar o proteger con autorización.
-        public class RegisterRequest
-        {
-            public string Nombre { get; set; } = string.Empty;
-            public string Apellido { get; set; } = string.Empty;
-            public DateTime FechaNacimiento { get; set; }
-            public string Email { get; set; } = string.Empty;
-            public string Password { get; set; } = string.Empty;
             public string Dni { get; set; } = string.Empty;
-            public string Telefono { get; set; } = string.Empty;
-            public string Direccion { get; set; } = string.Empty;
-            public int LocalidadId { get; set; }
+            public string Password { get; set; } = string.Empty;
         }
 
-        [HttpPost("register")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest model, CancellationToken cancellationToken)
+        public class DniStatusRequest
         {
-            if (model == null
-                || string.IsNullOrWhiteSpace(model.Email)
-                || string.IsNullOrWhiteSpace(model.Password)
-                || string.IsNullOrWhiteSpace(model.Nombre)
-                || string.IsNullOrWhiteSpace(model.Apellido))
-            {
-                return BadRequest(new { message = "Datos de registro incompletos." });
-            }
+            public string Dni { get; set; } = string.Empty;
+        }
 
-            // Verificar email �nico
-            var exists = await _usuarioService.GetByEmailAsync(model.Email, cancellationToken);
-            if (exists != null)
-                return Conflict(new { message = "Email ya en uso." });
+        public class CreatePasswordRequest
+        {
+            public string Dni { get; set; } = string.Empty;
+            public string Password { get; set; } = string.Empty;
+            public string ConfirmPassword { get; set; } = string.Empty;
+        }
 
-            // Mapear a entidad Usuario. Dejar password en claro: AddUsuario la hashea.
-            var usuario = new Usuario
+        [HttpPost("dni-status")]
+        [AllowAnonymous]
+        public async Task<IActionResult> DniStatus([FromBody] DniStatusRequest model, CancellationToken cancellationToken)
+        {
+            if (model == null || string.IsNullOrWhiteSpace(model.Dni))
+                return BadRequest(new { message = "Ingresá tu DNI." });
+
+            var estado = await _alumnoAccesoService.ConsultarDniAsync(model.Dni, cancellationToken);
+            return estado switch
             {
-                Nombre = model.Nombre,
-                Apellido = model.Apellido,
-                FechaNacimiento = model.FechaNacimiento,
-                Email = model.Email,
-                Password = model.Password, // en claro: el repositorio lo transformar�
-                Dni = model.Dni,
-                Telefono = model.Telefono,
-                Direccion = model.Direccion,
-                LocalidadId = model.LocalidadId,
-                activo = true
+                EstadoAccesoDni.NoEncontrado => NotFound(new { message = "No encontramos un alumno con ese DNI. Revisá el número ingresado o comunicate con el instituto." }),
+                EstadoAccesoDni.ConContrasena => Ok(new { estado = nameof(EstadoAccesoDni.ConContrasena) }),
+                _ => Ok(new { estado = nameof(EstadoAccesoDni.SinContrasena) })
             };
+        }
 
-            // Persistir (repositorio aplicar� hashing)
-            await _usuarioService.AddAsync(usuario, cancellationToken);
+        [HttpPost("create-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreatePassword([FromBody] CreatePasswordRequest model, CancellationToken cancellationToken)
+        {
+            if (model == null || string.IsNullOrWhiteSpace(model.Dni))
+                return BadRequest(new { message = "Ingresá tu DNI." });
 
-            // Construir DTO de respuesta sin contrase�a
-            var dto = new UsuarioDto
+            var resultado = await _alumnoAccesoService.CrearContrasenaAsync(
+                model.Dni,
+                model.Password,
+                model.ConfirmPassword,
+                cancellationToken);
+
+            return resultado.Estado switch
             {
-                Id = usuario.Id,
-                Nombre = usuario.Nombre,
-                Apellido = usuario.Apellido,
-                FechaNacimiento = usuario.FechaNacimiento,
-                Email = usuario.Email
+                CrearContrasenaEstado.Creada => Ok(new { message = "Contraseña creada correctamente." }),
+                CrearContrasenaEstado.ContrasenaInvalida => BadRequest(new { message = resultado.Mensaje }),
+                CrearContrasenaEstado.DniNoEncontrado => NotFound(new { message = "No encontramos un alumno con ese DNI." }),
+                _ => Conflict(new { message = "Este DNI ya tiene una contraseña. Volvé al inicio para iniciar sesión." })
             };
-
-            // Devolver 201 con el recurso creado (location opcional)
-            return CreatedAtAction(nameof(Register), new { id = dto.Id }, dto);
         }
 
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequest model, CancellationToken cancellationToken)
         {
-            if (model == null || string.IsNullOrWhiteSpace(model.EmailOrDni) || string.IsNullOrWhiteSpace(model.Password))
-                return BadRequest(new { message = "Email o DNI y contraseña requeridos." });
+            if (model == null || string.IsNullOrWhiteSpace(model.Dni) || string.IsNullOrWhiteSpace(model.Password))
+                return BadRequest(new { message = "DNI y contraseña requeridos." });
 
-            var usuario = await _usuarioService.AuthenticateAsync(model.EmailOrDni, model.Password, cancellationToken);
+            var usuario = await _usuarioService.AuthenticateAsync(model.Dni, model.Password, cancellationToken);
             if (usuario == null)
-                return Unauthorized(new { message = "Credenciales inválidas." });
+                return Unauthorized(new { message = "DNI o contraseña incorrectos." });
+
+            var alumno = usuario.Alumno!;
 
             var secret = _configuration["Jwt:Secret"] ?? "4d6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d";
             var key = Encoding.UTF8.GetBytes(secret);
@@ -112,8 +103,9 @@ namespace WebApplication1.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-                new Claim(ClaimTypes.Name, $"{usuario.Nombre} {usuario.Apellido}"),
-                new Claim(ClaimTypes.Email, usuario.Email ?? string.Empty)
+                new Claim("alumnoId", usuario.AlumnoId.ToString()),
+                new Claim(ClaimTypes.Name, $"{alumno.Nombre} {alumno.Apellido}"),
+                new Claim(ClaimTypes.Email, alumno.Email ?? string.Empty)
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();

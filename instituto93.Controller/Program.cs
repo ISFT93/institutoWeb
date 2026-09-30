@@ -14,7 +14,7 @@ Env.NoClobber().TraversePath().Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuraci�n simple: puedes mover esto a appsettings.json / User Secrets
+// Configuración simple: puedes mover esto a appsettings.json / User Secrets
 builder.Configuration["Jwt:Secret"] ??= "4d6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d";
 
 // Add services to the container.
@@ -34,6 +34,8 @@ builder.Services.AddScoped<IParametroRepository, ParametroRepository>();
 builder.Services.AddScoped<IParametroService, ParametroService>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IAlumnoRepository, AlumnoRepository>();
+builder.Services.AddScoped<IAlumnoAccesoService, AlumnoAccesoService>();
 builder.Services.AddScoped<DevelopmentUserSeed>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

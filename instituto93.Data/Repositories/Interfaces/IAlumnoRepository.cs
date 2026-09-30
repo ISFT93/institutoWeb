@@ -9,6 +9,7 @@ namespace instituto93.Data.Repositories
     public interface IAlumnoRepository
     {
         Task<IEnumerable<AlumnoModelo>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<AlumnoModelo?> GetByDocumentoAsync(string numeroDocumento, CancellationToken cancellationToken = default);
         Task<AlumnoModelo?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
         Task<int> CreateAsync(AlumnoModelo alumno, CancellationToken cancellationToken = default);
         Task<bool> UpdateAsync(AlumnoModelo alumno, CancellationToken cancellationToken = default);

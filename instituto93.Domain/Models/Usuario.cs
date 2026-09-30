@@ -1,16 +1,14 @@
 ﻿using instituto93.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace instituto93.Domain.Models
 {
-    public class Usuario:Persona,IUsuario
+    // Solo credenciales de acceso. Los datos personales se obtienen de Alumno.
+    public class Usuario : IUsuario
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public bool activo { get; set; }
+        public int Id { get; set; }
+        public int AlumnoId { get; set; }
+        public string Password { get; set; } = string.Empty;
+        public bool Activo { get; set; }
+        public AlumnoModelo? Alumno { get; set; }
     }
 }

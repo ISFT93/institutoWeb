@@ -9,6 +9,13 @@ public sealed class UsuarioRepository : IUsuarioRepository
 {
     private const int PasswordWorkFactor = 12;
 
+    private const string SelectUsuarioConAlumno = """
+        SELECT u.Id, u.AlumnoId, u.Password, u.Activo,
+               a.Nombre, a.Apellido, a.NumeroDocumento, a.Email, a.Activo
+        FROM Usuarios u
+        JOIN Alumnos a ON a.AlumnoId = u.AlumnoId
+        """;
+
     private readonly Conexion _conexion;
 
     public UsuarioRepository(Conexion conexion)
@@ -16,26 +23,20 @@ public sealed class UsuarioRepository : IUsuarioRepository
         _conexion = conexion ?? throw new ArgumentNullException(nameof(conexion));
     }
 
-    public Task<Usuario?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
+    public Task<Usuario?> GetByAlumnoIdAsync(int alumnoId, CancellationToken cancellationToken = default)
     {
-        const string sql = """
-            SELECT Id, Nombre, Apellido, FechaNacimiento, Email, Password, Dni, Telefono, Direccion, LocalidadId, Activo
-            FROM Usuarios
-            WHERE Email = @email;
-            """;
-
-        return GetByIdentifierAsync(sql, "@email", email, cancellationToken);
+        return GetSingleAsync(
+            $"{SelectUsuarioConAlumno} WHERE u.AlumnoId = @alumnoId;",
+            command => command.Parameters.Add("@alumnoId", SqlDbType.Int).Value = alumnoId,
+            cancellationToken);
     }
 
-    public Task<Usuario?> GetByEmailOrDniAsync(string emailOrDni, CancellationToken cancellationToken = default)
+    public Task<Usuario?> GetByDniAsync(string dni, CancellationToken cancellationToken = default)
     {
-        const string sql = """
-            SELECT Id, Nombre, Apellido, FechaNacimiento, Email, Password, Dni, Telefono, Direccion, LocalidadId, Activo
-            FROM Usuarios
-            WHERE Email = @identifier OR Dni = @identifier;
-            """;
-
-        return GetByIdentifierAsync(sql, "@identifier", emailOrDni, cancellationToken);
+        return GetSingleAsync(
+            $"{SelectUsuarioConAlumno} WHERE {AlumnoRepository.NumeroDocumentoNormalizadoSql("a")} = @dni;",
+            command => command.Parameters.Add("@dni", SqlDbType.VarChar, 30).Value = dni,
+            cancellationToken);
     }
 
     public async Task AddAsync(Usuario usuario, CancellationToken cancellationToken = default)
@@ -45,8 +46,8 @@ public sealed class UsuarioRepository : IUsuarioRepository
             throw new ArgumentException("La contraseña es obligatoria.", nameof(usuario));
 
         const string sql = """
-            INSERT INTO Usuarios (Nombre, Apellido, FechaNacimiento, Email, Password, Dni, Telefono, Direccion, LocalidadId, Activo)
-            VALUES (@nombre, @apellido, @fechaNacimiento, @email, @password, @dni, @telefono, @direccion, @localidadId, @activo);
+            INSERT INTO Usuarios (AlumnoId, Password, Activo)
+            VALUES (@alumnoId, @password, @activo);
             SELECT CAST(SCOPE_IDENTITY() AS int);
             """;
 
@@ -55,16 +56,9 @@ public sealed class UsuarioRepository : IUsuarioRepository
         {
             using var command = _conexion.Conector.CreateCommand();
             command.CommandText = sql;
-            command.Parameters.Add("@nombre", SqlDbType.NVarChar, 100).Value = usuario.Nombre;
-            command.Parameters.Add("@apellido", SqlDbType.NVarChar, 100).Value = usuario.Apellido;
-            command.Parameters.Add("@fechaNacimiento", SqlDbType.DateTime2).Value = usuario.FechaNacimiento;
-            command.Parameters.Add("@email", SqlDbType.NVarChar, 256).Value = usuario.Email;
+            command.Parameters.Add("@alumnoId", SqlDbType.Int).Value = usuario.AlumnoId;
             command.Parameters.Add("@password", SqlDbType.NVarChar, 512).Value = HashPassword(usuario.Password);
-            command.Parameters.Add("@dni", SqlDbType.NVarChar, 30).Value = usuario.Dni;
-            command.Parameters.Add("@telefono", SqlDbType.NVarChar, 50).Value = usuario.Telefono;
-            command.Parameters.Add("@direccion", SqlDbType.NVarChar, 256).Value = usuario.Direccion;
-            command.Parameters.Add("@localidadId", SqlDbType.Int).Value = usuario.LocalidadId;
-            command.Parameters.Add("@activo", SqlDbType.Bit).Value = usuario.activo;
+            command.Parameters.Add("@activo", SqlDbType.Bit).Value = usuario.Activo;
 
             usuario.Id = Convert.ToInt32(await command.ExecuteScalarAsync(cancellationToken));
         }
@@ -89,10 +83,9 @@ public sealed class UsuarioRepository : IUsuarioRepository
         }
     }
 
-    private async Task<Usuario?> GetByIdentifierAsync(
+    private async Task<Usuario?> GetSingleAsync(
         string sql,
-        string parameterName,
-        string value,
+        Action<SqlCommand> addParameters,
         CancellationToken cancellationToken)
     {
         await _conexion.OpenAsync(cancellationToken);
@@ -100,7 +93,7 @@ public sealed class UsuarioRepository : IUsuarioRepository
         {
             using var command = _conexion.Conector.CreateCommand();
             command.CommandText = sql;
-            command.Parameters.Add(parameterName, SqlDbType.NVarChar, 256).Value = value;
+            addParameters(command);
             using var reader = await command.ExecuteReaderAsync(cancellationToken);
 
             if (!await reader.ReadAsync(cancellationToken))
@@ -109,16 +102,18 @@ public sealed class UsuarioRepository : IUsuarioRepository
             return new Usuario
             {
                 Id = reader.GetInt32(0),
-                Nombre = reader.GetString(1),
-                Apellido = reader.GetString(2),
-                FechaNacimiento = reader.GetDateTime(3),
-                Email = reader.GetString(4),
-                Password = reader.GetString(5),
-                Dni = reader.GetString(6),
-                Telefono = reader.GetString(7),
-                Direccion = reader.GetString(8),
-                LocalidadId = reader.GetInt32(9),
-                activo = reader.GetBoolean(10)
+                AlumnoId = reader.GetInt32(1),
+                Password = reader.GetString(2),
+                Activo = reader.GetBoolean(3),
+                Alumno = new AlumnoModelo
+                {
+                    AlumnoId = reader.GetInt32(1),
+                    Nombre = reader.GetString(4),
+                    Apellido = reader.GetString(5),
+                    NumeroDocumento = reader.GetString(6),
+                    Email = reader.IsDBNull(7) ? string.Empty : reader.GetString(7),
+                    Activo = reader.IsDBNull(8) ? null : reader.GetBoolean(8)
+                }
             };
         }
         finally

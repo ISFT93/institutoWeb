@@ -14,23 +14,17 @@ public sealed class UsuarioService : IUsuarioService
     }
 
     public async Task<Usuario?> AuthenticateAsync(
-        string emailOrDni,
+        string dni,
         string password,
         CancellationToken cancellationToken = default)
     {
-        var usuario = await _repository.GetByEmailOrDniAsync(emailOrDni, cancellationToken);
-        return usuario is not null && usuario.activo && _repository.VerifyPassword(usuario.Password, password)
+        dni = AlumnoAccesoService.NormalizarDni(dni);
+        if (dni.Length == 0)
+            return null;
+
+        var usuario = await _repository.GetByDniAsync(dni, cancellationToken);
+        return usuario is not null && usuario.Activo && _repository.VerifyPassword(usuario.Password, password)
             ? usuario
             : null;
-    }
-
-    public Task<Usuario?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
-    {
-        return _repository.GetByEmailAsync(email, cancellationToken);
-    }
-
-    public Task AddAsync(Usuario usuario, CancellationToken cancellationToken = default)
-    {
-        return _repository.AddAsync(usuario, cancellationToken);
     }
 }

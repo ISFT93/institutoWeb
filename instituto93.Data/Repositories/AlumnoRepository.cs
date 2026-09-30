@@ -18,6 +18,10 @@ namespace instituto93.Data.Repositories
             _conexion = conexion ?? throw new ArgumentNullException(nameof(conexion));
         }
 
+        // Quita espacios, puntos y guiones de NumeroDocumento, igual que la normalización del DNI ingresado.
+        public static string NumeroDocumentoNormalizadoSql(string alias) =>
+            $"REPLACE(REPLACE(REPLACE(LTRIM(RTRIM({alias}.NumeroDocumento)), '.', ''), ' ', ''), '-', '')";
+
         public async Task<IEnumerable<AlumnoModelo>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var lista = new List<AlumnoModelo>();
@@ -69,6 +73,50 @@ namespace instituto93.Data.Repositories
             }
 
             return lista;
+        }
+
+        public async Task<AlumnoModelo?> GetByDocumentoAsync(string numeroDocumento, CancellationToken cancellationToken = default)
+        {
+            var sql = $@"
+                    SELECT TOP 1
+                        AlumnoId, Apellido, Nombre, NumeroDocumento, FechaNacimiento,
+                        Email, Telefono, Celular, Calle, Numero, Localidad, Activo
+                    FROM Alumnos a
+                    WHERE {NumeroDocumentoNormalizadoSql("a")} = @numeroDocumento
+                    ORDER BY AlumnoId";
+
+            try
+            {
+                await _conexion.OpenAsync(cancellationToken);
+                using var cmd = _conexion.Conector.CreateCommand();
+                cmd.CommandText = sql;
+                cmd.Parameters.Add("@numeroDocumento", System.Data.SqlDbType.VarChar, 30).Value = numeroDocumento;
+                using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+                if (!await reader.ReadAsync(cancellationToken))
+                    return null;
+
+                string Text(int ordinal) => reader.IsDBNull(ordinal) ? string.Empty : reader.GetString(ordinal);
+
+                return new AlumnoModelo
+                {
+                    AlumnoId = reader.GetInt32(0),
+                    Apellido = Text(1),
+                    Nombre = Text(2),
+                    NumeroDocumento = Text(3),
+                    FechaNacimiento = reader.IsDBNull(4) ? default : reader.GetDateTime(4),
+                    Email = Text(5),
+                    Telefono = Text(6),
+                    Celular = Text(7),
+                    Calle = Text(8),
+                    Numero = Text(9),
+                    Localidad = Text(10),
+                    Activo = reader.IsDBNull(11) ? null : reader.GetBoolean(11)
+                };
+            }
+            finally
+            {
+                _conexion.Close();
+            }
         }
 
         public async Task<AlumnoModelo?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
@@ -176,9 +224,11 @@ namespace instituto93.Data.Repositories
             if (alumno == null) throw new ArgumentNullException(nameof(alumno));
             const string sql = @"
                     INSERT INTO Alumnos (
-                        Apellido, Nombre, TipoDocumento, NumeroDocumento, FechaNacimiento, Activo, Carrera
+                        Apellido, Nombre, TipoDocumento, NumeroDocumento, Sexo, FechaNacimiento,
+                        Calle, Localidad, Email, Activo
                     ) VALUES (
-                        @Apellido, @Nombre, @TipoDocumento, @NumeroDocumento, @FechaNacimiento, @Activo, @Carrera
+                        @Apellido, @Nombre, @TipoDocumento, @NumeroDocumento, @Sexo, @FechaNacimiento,
+                        @Calle, @Localidad, @Email, @Activo
                     );
                     SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
@@ -191,9 +241,12 @@ namespace instituto93.Data.Repositories
                 cmd.Parameters.AddWithValue("@Nombre", (object?)alumno.Nombre ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@TipoDocumento", (object?)alumno.TipoDocumento ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@NumeroDocumento", (object?)alumno.NumeroDocumento ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@FechaNacimiento", (object?)alumno.FechaNacimiento ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Sexo", (object?)alumno.Sexo ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@FechaNacimiento", alumno.FechaNacimiento == default ? DBNull.Value : alumno.FechaNacimiento);
+                cmd.Parameters.AddWithValue("@Calle", (object?)alumno.Calle ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Localidad", (object?)alumno.Localidad ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Email", (object?)alumno.Email ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Activo", (object?)alumno.Activo ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@Carrera", (object?)alumno.Carrera ?? DBNull.Value);
 
                 var result = await cmd.ExecuteScalarAsync(cancellationToken);
                 return Convert.ToInt32(result);

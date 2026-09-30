@@ -4,7 +4,5 @@ namespace instituto93.Application.Interfaces;
 
 public interface IUsuarioService
 {
-    Task<Usuario?> AuthenticateAsync(string emailOrDni, string password, CancellationToken cancellationToken = default);
-    Task<Usuario?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
-    Task AddAsync(Usuario usuario, CancellationToken cancellationToken = default);
+    Task<Usuario?> AuthenticateAsync(string dni, string password, CancellationToken cancellationToken = default);
 }

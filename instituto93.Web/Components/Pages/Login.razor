@@ -41,49 +41,152 @@
         <article class="login-card">
 
             <header>
-                <h2>Ingresá al portal</h2>
+                <h2>@HeaderTitle</h2>
 
-                <p>
-                    Usá tus credenciales institucionales para continuar.
-                </p>
+                <p>@HeaderText</p>
             </header>
-            @* Es lo mismo que un <form>, pero con validación de datos y binding de modelos. *@
-            <EditForm Model="_loginModel" OnValidSubmit="HandleLogin">
-            <DataAnnotationsValidator />
 
-            <MudTextField
-                Label="D.N.I o correo electrónico"
-                @bind-Value="_loginModel.EmailOrDni"
-                Variant="Variant.Outlined"
-                FullWidth />
+            @if (_step == LoginStep.Dni)
+            {
+                @* Es lo mismo que un <form>, pero con validación de datos y binding de modelos. *@
+                <EditForm Model="_dniModel" OnValidSubmit="HandleDni">
+                    <DataAnnotationsValidator />
 
-            <MudTextField
-                Label="Contraseña"
-                @bind-Value="_loginModel.Password"
-                InputType="InputType.Password"
-                Variant="Variant.Outlined"
-                FullWidth />
+                    <MudTextField
+                        Label="D.N.I"
+                        @bind-Value="_dniModel.Dni"
+                        For="@(() => _dniModel.Dni)"
+                        Placeholder="12.345.678"
+                        InputMode="InputMode.numeric"
+                        Variant="Variant.Outlined"
+                        Class="mt-4 dni-input"
+                        FullWidth />
 
-            <MudButton
-                ButtonType="ButtonType.Submit"
-                Variant="Variant.Filled"
-                Color="Color.Primary"
-                Disabled="_isSubmitting"
-                FullWidth>
-                @(_isSubmitting ? "Ingresando..." : "Ingresar")
-            </MudButton>
+                    <MudButton
+                        ButtonType="ButtonType.Submit"
+                        Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        Disabled="_isSubmitting"
+                        Class="mt-4"
+                        FullWidth>
+                        @(_isSubmitting ? "Verificando..." : "Continuar")
+                    </MudButton>
+                </EditForm>
+            }
+            else if (_step == LoginStep.Login)
+            {
+                <MudTextField
+                    Label="D.N.I"
+                    Value="_dniModel.Dni"
+                    ReadOnly
+                    Variant="Variant.Outlined"
+                    Class="mt-4"
+                    FullWidth />
 
-        </EditForm>
+                <EditForm Model="_loginModel" OnValidSubmit="HandleLogin">
+                    <DataAnnotationsValidator />
 
-        @if (!string.IsNullOrWhiteSpace(_errorMessage))
-        {
-            <MudAlert Severity="Severity.Error" Class="mt-4">@_errorMessage</MudAlert>
-        }
+                    <MudTextField
+                        Label="Contraseña"
+                        @bind-Value="_loginModel.Password"
+                        For="@(() => _loginModel.Password)"
+                        InputType="InputType.Password"
+                        Variant="Variant.Outlined"
+                        Class="mt-4"
+                        FullWidth />
 
-        @if (!string.IsNullOrWhiteSpace(_successMessage))
-        {
-            <MudAlert Severity="Severity.Success" Class="mt-4">@_successMessage</MudAlert>
-        }
+                    <MudButton
+                        ButtonType="ButtonType.Submit"
+                        Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        Disabled="_isSubmitting"
+                        Class="mt-4"
+                        FullWidth>
+                        @(_isSubmitting ? "Ingresando..." : "Ingresar")
+                    </MudButton>
+                </EditForm>
+
+                <MudButton
+                    Variant="Variant.Text"
+                    OnClick="BackToDni"
+                    Disabled="_isSubmitting"
+                    Class="mt-2"
+                    FullWidth>
+                    Cambiar D.N.I
+                </MudButton>
+            }
+            else if (_step == LoginStep.CreatePassword)
+            {
+                <MudTextField
+                    Label="D.N.I"
+                    Value="_dniModel.Dni"
+                    ReadOnly
+                    Variant="Variant.Outlined"
+                    Class="mt-4"
+                    FullWidth />
+
+                <EditForm Model="_createPasswordModel" OnValidSubmit="HandleCreatePassword">
+                    <DataAnnotationsValidator />
+
+                    <MudTextField
+                        Label="Nueva contraseña"
+                        @bind-Value="_createPasswordModel.Password"
+                        For="@(() => _createPasswordModel.Password)"
+                        InputType="InputType.Password"
+                        HelperText="Mínimo 8 caracteres."
+                        Variant="Variant.Outlined"
+                        Class="mt-4"
+                        FullWidth />
+
+                    <MudTextField
+                        Label="Confirmar contraseña"
+                        @bind-Value="_createPasswordModel.ConfirmPassword"
+                        For="@(() => _createPasswordModel.ConfirmPassword)"
+                        InputType="InputType.Password"
+                        Variant="Variant.Outlined"
+                        Class="mt-4"
+                        FullWidth />
+
+                    <MudButton
+                        ButtonType="ButtonType.Submit"
+                        Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        Disabled="_isSubmitting"
+                        Class="mt-4"
+                        FullWidth>
+                        @(_isSubmitting ? "Creando contraseña..." : "Crear contraseña")
+                    </MudButton>
+                </EditForm>
+
+                <MudButton
+                    Variant="Variant.Text"
+                    OnClick="BackToDni"
+                    Disabled="_isSubmitting"
+                    Class="mt-2"
+                    FullWidth>
+                    Cambiar D.N.I
+                </MudButton>
+            }
+            else
+            {
+                <MudAlert Severity="Severity.Success" Class="mt-4">
+                    Tu contraseña se creó con éxito. Ya podés iniciar sesión.
+                </MudAlert>
+
+                <MudButton
+                    Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    OnClick="GoToInitialView"
+                    Class="mt-4"
+                    FullWidth>
+                    Ir a iniciar sesión
+                </MudButton>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(_errorMessage))
+            {
+                <MudAlert Severity="Severity.Error" Class="mt-4">@_errorMessage</MudAlert>
+            }
 
         </article>
 
@@ -92,43 +195,148 @@
 </main>
 
 @code {
-    private LoginModel _loginModel = new LoginModel();
+    private enum LoginStep
+    {
+        Dni,
+        Login,
+        CreatePassword,
+        Success
+    }
+
+    private LoginStep _step = LoginStep.Dni;
+    private DniModel _dniModel = new();
+    private string _dni = string.Empty;
+    private LoginModel _loginModel = new();
+    private CreatePasswordModel _createPasswordModel = new();
     private bool _isSubmitting;
     private string? _errorMessage;
-    private string? _successMessage;
-    
+
+    private string HeaderTitle => _step switch
+    {
+        LoginStep.CreatePassword => "Creá tu contraseña",
+        LoginStep.Success => "¡Listo!",
+        _ => "Ingresá al portal"
+    };
+
+    private string HeaderText => _step switch
+    {
+        LoginStep.Dni => "Ingresá tu D.N.I para continuar.",
+        LoginStep.Login => "Ingresá tu contraseña para acceder.",
+        LoginStep.CreatePassword => "Es tu primer ingreso. Elegí una contraseña para tu cuenta.",
+        _ => "Tu cuenta quedó configurada."
+    };
+
+    private static string NormalizeDni(string dni) =>
+        string.Concat(dni.Where(c => !char.IsWhiteSpace(c) && c != '.' && c != '-'));
+
+    private async Task HandleDni()
+    {
+        _isSubmitting = true;
+        _errorMessage = null;
+
+        try
+        {
+            var dni = NormalizeDni(_dniModel.Dni);
+            var result = await AuthApiClient.CheckDniAsync(dni);
+
+            if (!result.IsSuccess)
+            {
+                _errorMessage = result.Error;
+                return;
+            }
+
+            _dni = dni;
+            _loginModel = new LoginModel { Dni = dni };
+            _createPasswordModel = new CreatePasswordModel();
+            _step = result.Access == DniAccess.HasPassword ? LoginStep.Login : LoginStep.CreatePassword;
+        }
+        catch (HttpRequestException)
+        {
+            _errorMessage = "No fue posible conectar con la API.";
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+
     private async Task HandleLogin()
-{
-    _isSubmitting = true;
-    _errorMessage = null;
-    _successMessage = null;
-
-    try
     {
-        var result = await AuthApiClient.LoginAsync(_loginModel);
+        _isSubmitting = true;
+        _errorMessage = null;
 
-        if (result is null)
+        try
         {
-            _errorMessage = "La API devolvió una respuesta inválida.";
-            return;
-        }
+            var result = await AuthApiClient.LoginAsync(_loginModel);
 
-        if (result.IsSuccess)
-        {
-            Navigation.NavigateTo("/");
+            if (result is null)
+            {
+                _errorMessage = "La API devolvió una respuesta inválida.";
+                return;
+            }
+
+            if (result.IsSuccess)
+            {
+                Navigation.NavigateTo("/");
+            }
+            else
+            {
+                _errorMessage = result.Error;
+            }
         }
-        else
+        catch (HttpRequestException)
         {
-            _errorMessage = result.Error;
+            _errorMessage = "No fue posible conectar con la API.";
+        }
+        finally
+        {
+            _isSubmitting = false;
         }
     }
-    catch (HttpRequestException)
+
+    private async Task HandleCreatePassword()
     {
-        _errorMessage = "No fue posible conectar con la API.";
+        _isSubmitting = true;
+        _errorMessage = null;
+
+        try
+        {
+            var result = await AuthApiClient.CreatePasswordAsync(_dni, _createPasswordModel);
+
+            if (result.IsSuccess)
+            {
+                _step = LoginStep.Success;
+            }
+            else
+            {
+                _errorMessage = result.Error;
+            }
+        }
+        catch (HttpRequestException)
+        {
+            _errorMessage = "No fue posible conectar con la API.";
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
     }
-    finally
+
+    private void BackToDni()
     {
-        _isSubmitting = false;
+        _errorMessage = null;
+        _loginModel = new LoginModel();
+        _createPasswordModel = new CreatePasswordModel();
+        _step = LoginStep.Dni;
     }
-}
+
+    private void GoToInitialView()
+    {
+        _errorMessage = null;
+        _dniModel = new DniModel();
+        _dni = string.Empty;
+        _loginModel = new LoginModel();
+        _createPasswordModel = new CreatePasswordModel();
+        _step = LoginStep.Dni;
+    }
 }
