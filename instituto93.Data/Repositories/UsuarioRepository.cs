@@ -23,6 +23,14 @@ public sealed class UsuarioRepository : IUsuarioRepository
         _conexion = conexion ?? throw new ArgumentNullException(nameof(conexion));
     }
 
+    public Task<Usuario?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    {
+        return GetSingleAsync(
+            $"{SelectUsuarioConAlumno} WHERE u.Id = @id;",
+            command => command.Parameters.Add("@id", SqlDbType.Int).Value = id,
+            cancellationToken);
+    }
+
     public Task<Usuario?> GetByAlumnoIdAsync(int alumnoId, CancellationToken cancellationToken = default)
     {
         return GetSingleAsync(

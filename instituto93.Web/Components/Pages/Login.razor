@@ -1,8 +1,12 @@
 @page "/login"
+@attribute [AllowAnonymous]
 @inject NavigationManager Navigation
+@using instituto93.Web.Auth
 @using instituto93.Web.Models;
 @using instituto93.Web.Services
 @inject AuthApiClient AuthApiClient
+@inject LoginTicketStore LoginTickets
+@inject IJSRuntime JS
 
 <PageTitle>Iniciar Sesión</PageTitle>
 
@@ -112,7 +116,7 @@
                     Disabled="_isSubmitting"
                     Class="mt-2"
                     FullWidth>
-                    Cambiar D.N.I
+                    Volver
                 </MudButton>
             }
             else if (_step == LoginStep.CreatePassword)
@@ -164,7 +168,7 @@
                     Disabled="_isSubmitting"
                     Class="mt-2"
                     FullWidth>
-                    Cambiar D.N.I
+                    Volver
                 </MudButton>
             }
             else
@@ -188,6 +192,13 @@
                 <MudAlert Severity="Severity.Error" Class="mt-4">@_errorMessage</MudAlert>
             }
 
+            @* El login se completa con un POST HTTP real para poder emitir la cookie (ver AccountEndpoints). *@
+            <form id="@CompleteLoginFormId" method="post" action="account/complete-login" hidden>
+                <AntiforgeryToken />
+                <input type="hidden" name="ticket" />
+                <input type="hidden" name="returnUrl" value="@ReturnUrl" />
+            </form>
+
         </article>
 
     </section>
@@ -202,6 +213,14 @@
         CreatePassword,
         Success
     }
+
+    private const string CompleteLoginFormId = "complete-login-form";
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
 
     private LoginStep _step = LoginStep.Dni;
     private DniModel _dniModel = new();
@@ -225,6 +244,14 @@
         LoginStep.CreatePassword => "Es tu primer ingreso. Elegí una contraseña para tu cuenta.",
         _ => "Tu cuenta quedó configurada."
     };
+
+    protected override async Task OnInitializedAsync()
+    {
+        // La cookie ya se validó (y los tokens se renovaron si hacía falta) en esta misma request.
+        var state = await AuthenticationState;
+        if (state.User.Identity?.IsAuthenticated == true)
+            Navigation.NavigateTo(LoginRedirect.SanitizeReturnUrl(ReturnUrl));
+    }
 
     private static string NormalizeDni(string dni) =>
         string.Concat(dni.Where(c => !char.IsWhiteSpace(c) && c != '.' && c != '-'));
@@ -269,27 +296,20 @@
         {
             var result = await AuthApiClient.LoginAsync(_loginModel);
 
-            if (result is null)
+            if (!result.IsSuccess)
             {
-                _errorMessage = "La API devolvió una respuesta inválida.";
+                _errorMessage = result.Error;
+                _isSubmitting = false;
                 return;
             }
 
-            if (result.IsSuccess)
-            {
-                Navigation.NavigateTo("/");
-            }
-            else
-            {
-                _errorMessage = result.Error;
-            }
+            // Se mantiene _isSubmitting en true: la página se reemplaza al completar el POST.
+            var ticket = await LoginTickets.CreateAsync(result.Ticket!);
+            await JS.InvokeVoidAsync("instituto93Auth.completeLogin", CompleteLoginFormId, ticket);
         }
         catch (HttpRequestException)
         {
             _errorMessage = "No fue posible conectar con la API.";
-        }
-        finally
-        {
             _isSubmitting = false;
         }
     }

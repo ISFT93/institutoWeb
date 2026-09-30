@@ -1,0 +1,7 @@
+@* POST HTML clásico: la cookie solo se puede borrar desde una request HTTP, no desde el circuito. *@
+<form method="post" action="account/logout">
+    <AntiforgeryToken />
+    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Outlined" Color="Color.Primary">
+        Cerrar sesión
+    </MudButton>
+</form>
