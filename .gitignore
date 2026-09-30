@@ -14,3 +14,6 @@ AGENTS.md
 .vscode/*
 !.vscode/tasks.json
 .env
+skills-lock.json
+LICENSE.txt
+SKILL.md
