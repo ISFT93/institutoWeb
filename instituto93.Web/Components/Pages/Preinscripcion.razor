@@ -1,8 +1,9 @@
 @page "/preinscripcion"
 
-@inject IHttpClientFactory HttpClientFactory
+@inject PreinscripcionApiClient PreinscripcionApi
 @using instituto93.Web.Models;
 @using instituto93.Web.Components.Shared
+@using instituto93.Web.Services
 
 <PageTitle>Preinscripción</PageTitle>
 
@@ -873,13 +874,6 @@
         }
     }
 
-    private sealed class PreinscripcionResponse
-    {
-        public int AlumnoId { get; set; }
-
-        public string? Message { get; set; }
-    }
-
     private void HandleInvalidSubmit(EditContext editContext)
     {
         _submitSuccess = null;
@@ -890,199 +884,52 @@
 
     private async Task HandleSubmit()
     {
-    if (_sending)
-        return;
+        if (_sending)
+            return;
 
-    _sending = true;
+        _sending = true;
 
-    _submitSuccess = null;
-    _submitError = null;
+        _submitSuccess = null;
+        _submitError = null;
 
-    try
-    {
-        PreinscripcionModel? request = new PreinscripcionModel
-        {
-            Carrera = _model.Carrera,
-
-            Apellido = _model.Apellido,
-            Nombre = _model.Nombre,
-
-            TipoDocumento = _model.TipoDocumento,
-            NumeroDocumento = _model.NumeroDocumento,
-
-            EstadoCivil = _model.EstadoCivil,
-            Sexo = _model.Sexo,
-
-            FechaNacimiento = _model.FechaNacimiento,
-
-            LocalidadNacimiento = _model.LocalidadNacimiento,
-            PaisNacimiento = _model.PaisNacimiento,
-
-            Calle = _model.Calle,
-            Numero = _model.Numero,
-            Piso = _model.Piso,
-            Departamento = _model.Departamento,
-
-            Provincia = _model.Provincia,
-            Distrito = _model.Distrito,
-            Localidad = _model.Localidad,
-            CodigoPostal = _model.CodigoPostal,
-
-            Telefono = _model.Telefono,
-            Celular = _model.Celular,
-            Email = _model.Email,
-
-            TituloSecundario = _model.TituloSecundario,
-
-            MateriasAdeuda = _model.MateriasAdeuda,
-
-            DescripcionMaterias = _model.DescripcionMaterias,
-
-            Titulo = _model.Titulo,
-            Orientacion = _model.Orientacion,
-            OtorgadoPor = _model.OtorgadoPor,
-
-            AnioEgreso = _model.AnioEgreso,
-            Promedio = _model.Promedio,
-
-            TituloTramite = _model.TituloTramite,
-
-            MayorTitulo = _model.MayorTitulo,
-            OtroTitulo = _model.OtroTitulo,
-
-            MayorOtorgadoPor = _model.MayorOtorgadoPor,
-
-            MayorPromedio = _model.MayorPromedio,
-
-            FotocopiaTitulo =
-                _model.FotocopiaTitulo,
-
-            ConstanciaTituloTramite =
-                _model.ConstanciaTituloTramite,
-
-            ConstanciaAdeudaMaterias =
-                _model.ConstanciaAdeudaMaterias,
-
-            CantidadAdeudaMaterias =
-                _model.CantidadAdeudaMaterias,
-
-            CertificadoAptitud =
-                _model.CertificadoAptitud,
-
-            FotocopiaDocumento =
-                _model.FotocopiaDocumento,
-
-            FotoCarnet =
-                _model.FotoCarnet,
-
-            FotocopiaPartidaNacimiento =
-                _model.FotocopiaPartidaNacimiento,
-
-            VacunaAntihepatitis =
-                _model.VacunaAntihepatitis,
-
-            VacunaAntitetanica =
-                _model.VacunaAntitetanica,
-
-            Recibo = _model.Recibo,
-
-            Monto = _model.Monto,
-
-            ObraSocialPrepaga =
-                _model.ObraSocialPrepaga,
-
-            DescripcionObraSocial =
-                _model.DescripcionObraSocial,
-
-            TratamientoMedico =
-                _model.TratamientoMedico,
-
-            DescripcionTratamiento =
-                _model.DescripcionTratamiento,
-
-            Medicacion =
-                _model.Medicacion,
-
-            DescripcionMedicacion =
-                _model.DescripcionMedicacion,
-
-            Discapacidad =
-                _model.Discapacidad,
-
-            DescripcionDiscapacidad =
-                _model.DescripcionDiscapacidad,
-
-            EstadoDiscapacidad =
-                _model.EstadoDiscapacidad,
-
-            CertificadoDiscapacidad =
-                _model.CertificadoDiscapacidad,
-
-            ContactoEmergencia =
-                _model.ContactoEmergencia,
-
-            TelefonoContacto =
-                _model.TelefonoContacto
-        };
-
-        var http =
-            HttpClientFactory.CreateClient(
-                "InstitutoApi");
-
-        var response =
-            await http.PostAsJsonAsync(
-                "Alumno/preinscripcion",
-                request);
-
-        if (response.IsSuccessStatusCode)
+        try
         {
             var result =
-                await response.Content
-                    .ReadFromJsonAsync<PreinscripcionResponse>();
+                await PreinscripcionApi.CreateAsync(
+                    _model);
 
-            if (result != null)
+            if (!result.IsSuccess)
             {
-                _submitSuccess =
-                    $"Preinscripción guardada correctamente. AlumnoId: {result.AlumnoId}";
+                _submitError = result.Error;
+
+                return;
             }
-            else
-            {
-                _submitSuccess =
-                    "Preinscripción guardada correctamente.";
-            }
+
+            _submitSuccess =
+                result.AlumnoId is { } alumnoId
+                    ? $"Preinscripción guardada correctamente. AlumnoId: {alumnoId}"
+                    : "Preinscripción guardada correctamente.";
 
             _model =
                 new PreinscripcionModel();
         }
-        else
+        catch (HttpRequestException ex)
         {
-            var respuestaServidor =
-                await response.Content
-                    .ReadAsStringAsync();
-
             _submitError =
-                $"El servidor devolvió el error {(int)response.StatusCode}: {respuestaServidor}";
+                "No se pudo conectar con instituto93.Controller. " +
+                "Verificá que la API esté iniciada. " +
+                ex.Message;
+        }
+        catch (Exception ex)
+        {
+            _submitError =
+                "Se produjo un error al guardar la preinscripción: " +
+                ex.Message;
+        }
+        finally
+        {
+            _sending = false;
         }
     }
-    catch (HttpRequestException ex)
-    {
-        _submitError =
-            "No se pudo conectar con instituto93.Controller. " +
-            "Verificá que la API esté iniciada. " +
-            ex.Message;
-    }
-    catch (Exception ex)
-    {
-        _submitError =
-            "Se produjo un error al guardar la preinscripción: " +
-            ex.Message;
-    }
-    finally
-    {
-        _sending = false;
-    }
-
-
- }
 
 }
