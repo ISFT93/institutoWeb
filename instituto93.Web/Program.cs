@@ -15,9 +15,16 @@ var apiBaseUrl = builder.Configuration["Api:BaseUrl"] ?? "http://localhost:8000"
 if (!Uri.TryCreate(apiBaseUrl, UriKind.Absolute, out var apiUri))
     throw new InvalidOperationException("La variable de entorno Api__BaseUrl debe contener una URL absoluta.");
 
+var apiBaseUri = new Uri($"{apiUri.AbsoluteUri.TrimEnd('/')}/");
+
 builder.Services.AddHttpClient<AuthApiClient>(client =>
 {
-    client.BaseAddress = new Uri($"{apiUri.AbsoluteUri.TrimEnd('/')}/");
+    client.BaseAddress = apiBaseUri;
+});
+
+builder.Services.AddHttpClient<PreinscripcionApiClient>(client =>
+{
+    client.BaseAddress = apiBaseUri;
 });
 
 var app = builder.Build();
