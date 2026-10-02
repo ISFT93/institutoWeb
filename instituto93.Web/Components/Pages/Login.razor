@@ -79,6 +79,7 @@
                     <DataAnnotationsValidator />
 
                     <InputText type="hidden" @bind-Value="LoginInput.Dni" />
+                    <InputText type="hidden" @bind-Value="LoginInput.Nombre" />
 
                     <div class="field">
                         <div class="field-control">
@@ -106,6 +107,7 @@
                     <DataAnnotationsValidator />
 
                     <InputText type="hidden" @bind-Value="CreatePasswordInput.Dni" />
+                    <InputText type="hidden" @bind-Value="CreatePasswordInput.Nombre" />
 
                     <div class="field">
                         <div class="field-control">
@@ -189,6 +191,7 @@
     {
         LoginStep.CreatePassword => "Creá tu contraseña",
         LoginStep.Success => "¡Listo!",
+        LoginStep.Login when !string.IsNullOrWhiteSpace(LoginInput.Nombre) => $"Bienvenido/a {LoginInput.Nombre}",
         _ => "Ingresá al portal"
     };
 
@@ -250,12 +253,12 @@
 
             if (result.Access == DniAccess.HasPassword)
             {
-                LoginInput = new LoginModel { Dni = dni };
+                LoginInput = new LoginModel { Dni = dni, Nombre = result.Nombre ?? string.Empty };
                 _step = LoginStep.Login;
             }
             else
             {
-                CreatePasswordInput = new CreatePasswordModel { Dni = dni };
+                CreatePasswordInput = new CreatePasswordModel { Dni = dni, Nombre = result.Nombre ?? string.Empty };
                 _step = LoginStep.CreatePassword;
             }
         }

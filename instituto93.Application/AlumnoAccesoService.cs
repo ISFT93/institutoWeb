@@ -29,13 +29,20 @@ public sealed class AlumnoAccesoService : IAlumnoAccesoService
 
     public async Task<EstadoAccesoDni> ConsultarDniAsync(string dni, CancellationToken cancellationToken = default)
     {
+        return (await ConsultarAccesoAsync(dni, cancellationToken)).Estado;
+    }
+
+    public async Task<(EstadoAccesoDni Estado, string? Nombre)> ConsultarAccesoAsync(string dni, CancellationToken cancellationToken = default)
+    {
         var alumno = await BuscarAlumnoAsync(dni, cancellationToken);
         if (alumno is null)
-            return EstadoAccesoDni.NoEncontrado;
+            return (EstadoAccesoDni.NoEncontrado, null);
 
-        return await _usuarios.GetByAlumnoIdAsync(alumno.AlumnoId, cancellationToken) is null
+        var estado = await _usuarios.GetByAlumnoIdAsync(alumno.AlumnoId, cancellationToken) is null
             ? EstadoAccesoDni.SinContrasena
             : EstadoAccesoDni.ConContrasena;
+
+        return (estado, alumno.Nombre?.Trim());
     }
 
     public async Task<CrearContrasenaResultado> CrearContrasenaAsync(

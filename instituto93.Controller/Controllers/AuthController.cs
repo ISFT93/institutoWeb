@@ -55,12 +55,12 @@ namespace WebApplication1.Controllers
             if (model == null || string.IsNullOrWhiteSpace(model.Dni))
                 return BadRequest(new { message = "Ingresá tu DNI." });
 
-            var estado = await _alumnoAccesoService.ConsultarDniAsync(model.Dni, cancellationToken);
+            var (estado, nombre) = await _alumnoAccesoService.ConsultarAccesoAsync(model.Dni, cancellationToken);
             return estado switch
             {
                 EstadoAccesoDni.NoEncontrado => NotFound(new { message = "No encontramos un alumno con ese DNI. Revisá el número ingresado o comunicate con el instituto." }),
-                EstadoAccesoDni.ConContrasena => Ok(new { estado = nameof(EstadoAccesoDni.ConContrasena) }),
-                _ => Ok(new { estado = nameof(EstadoAccesoDni.SinContrasena) })
+                EstadoAccesoDni.ConContrasena => Ok(new { estado = nameof(EstadoAccesoDni.ConContrasena), nombre }),
+                _ => Ok(new { estado = nameof(EstadoAccesoDni.SinContrasena), nombre })
             };
         }
 

@@ -8,6 +8,8 @@ public class CreatePasswordModel
 
     public string Dni { get; set; } = string.Empty;
 
+    public string Nombre { get; set; } = string.Empty;
+
     [Required(ErrorMessage = "Ingresá una contraseña.")]
     [MinLength(MinPasswordLength, ErrorMessage = "La contraseña debe tener al menos 8 caracteres.")]
     public string Password { get; set; } = string.Empty;

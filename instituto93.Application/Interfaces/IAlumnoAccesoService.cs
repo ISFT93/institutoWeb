@@ -20,6 +20,7 @@ public sealed record CrearContrasenaResultado(CrearContrasenaEstado Estado, stri
 public interface IAlumnoAccesoService
 {
     Task<EstadoAccesoDni> ConsultarDniAsync(string dni, CancellationToken cancellationToken = default);
+    Task<(EstadoAccesoDni Estado, string? Nombre)> ConsultarAccesoAsync(string dni, CancellationToken cancellationToken = default);
     Task<CrearContrasenaResultado> CrearContrasenaAsync(
         string dni,
         string password,

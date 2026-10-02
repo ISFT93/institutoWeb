@@ -80,8 +80,8 @@ public sealed class AuthApiClient(HttpClient httpClient)
         var payload = await response.Content.ReadFromJsonAsync<DniStatusResponse>(cancellationToken);
         return payload?.Estado switch
         {
-            "ConContrasena" => DniCheckResult.Ok(DniAccess.HasPassword),
-            "SinContrasena" => DniCheckResult.Ok(DniAccess.NeedsPassword),
+            "ConContrasena" => DniCheckResult.Ok(DniAccess.HasPassword, payload.Nombre),
+            "SinContrasena" => DniCheckResult.Ok(DniAccess.NeedsPassword, payload.Nombre),
             _ => DniCheckResult.Failure("La API devolvió una respuesta inválida.")
         };
     }
@@ -126,7 +126,7 @@ public sealed class AuthApiClient(HttpClient httpClient)
         string? RefreshToken,
         DateTimeOffset RefreshTokenExpiresAt);
     private sealed record DniStatusRequest(string Dni);
-    private sealed record DniStatusResponse(string Estado);
+    private sealed record DniStatusResponse(string Estado, string? Nombre);
     private sealed record CreatePasswordRequest(string Dni, string Password, string ConfirmPassword);
     private sealed record ApiError(string? Message);
 }
@@ -144,10 +144,10 @@ public enum DniAccess
     NeedsPassword
 }
 
-public sealed record DniCheckResult(DniAccess? Access, string? Error)
+public sealed record DniCheckResult(DniAccess? Access, string? Error, string? Nombre = null)
 {
     public bool IsSuccess => Access is not null;
-    public static DniCheckResult Ok(DniAccess access) => new(access, null);
+    public static DniCheckResult Ok(DniAccess access, string? nombre = null) => new(access, null, nombre);
     public static DniCheckResult Failure(string error) => new(null, error);
 }
 
