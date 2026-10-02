@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using instituto93.Web.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 

@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text.Json;
+using instituto93.Web.Models;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Caching.Distributed;
@@ -65,8 +66,6 @@ public sealed class TokenSessionStore(IDistributedCache cache, IDataProtectionPr
     public Task RemoveAsync(string sessionId, CancellationToken cancellationToken = default) =>
         DeleteAsync(sessionId, cancellationToken);
 }
-
-public sealed record LoginTicket(TokenSet Tokens, CurrentUser User);
 
 // Traslada el resultado del login desde el circuito interactivo (sin HttpContext)
 // a una request HTTP que pueda emitir la cookie. Es de un solo uso y dura un minuto.

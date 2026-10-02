@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using instituto93.Web.Models;
 using instituto93.Web.Services;
 
 namespace instituto93.Web.Auth;

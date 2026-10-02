@@ -1,7 +1,8 @@
 using System.Net;
 using System.Net.Http.Headers;
+using instituto93.Web.Auth;
 
-namespace instituto93.Web.Auth;
+namespace instituto93.Web.Services;
 
 // Base para los clientes de endpoints protegidos de la API. Agrega el Bearer token y,
 // si la API responde 401, fuerza una renovación y reintenta una vez.

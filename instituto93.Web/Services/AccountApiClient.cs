@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using instituto93.Web.Auth;
+using instituto93.Web.Models;
 
 namespace instituto93.Web.Services;
 
