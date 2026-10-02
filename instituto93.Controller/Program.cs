@@ -35,6 +35,7 @@ builder.Services.AddScoped<IParametroService, ParametroService>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IAlumnoRepository, AlumnoRepository>();
+builder.Services.AddScoped<IAlumnoService, AlumnoService>();
 builder.Services.AddScoped<IAlumnoAccesoService, AlumnoAccesoService>();
 builder.Services.AddScoped<DevelopmentUserSeed>();
 builder.Services.AddEndpointsApiExplorer();
