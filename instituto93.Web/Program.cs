@@ -2,7 +2,7 @@ using instituto93.Web.Auth;
 using instituto93.Web.Components;
 using instituto93.Web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +13,12 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddMudServices();
 
+// Las cookies de autenticación (que contienen los tokens) se cifran con Data Protection.
+// Las claves tienen que sobrevivir a los reinicios: en contenedores, apuntar KeysPath a un volumen.
+var dataProtection = builder.Services.AddDataProtection().SetApplicationName("instituto93.Web");
+if (builder.Configuration["DataProtection:KeysPath"] is { Length: > 0 } keysPath)
+    dataProtection.PersistKeysToFileSystem(new DirectoryInfo(keysPath));
+
 var apiBaseUrl = builder.Configuration["Api:BaseUrl"] ?? "http://localhost:8000";
 
 if (!Uri.TryCreate(apiBaseUrl, UriKind.Absolute, out var apiUri))
@@ -20,19 +26,15 @@ if (!Uri.TryCreate(apiBaseUrl, UriKind.Absolute, out var apiUri))
 
 void ConfigureApiClient(HttpClient client) => client.BaseAddress = new Uri($"{apiUri.AbsoluteUri.TrimEnd('/')}/");
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<TokenHandler>();
+
 builder.Services.AddHttpClient<AuthApiClient>(ConfigureApiClient);
-builder.Services.AddHttpClient<AccountApiClient>(ConfigureApiClient);
+builder.Services.AddHttpClient<AccountApiClient>(ConfigureApiClient)
+    .AddHttpMessageHandler<TokenHandler>();
 
-// BFF: el navegador solo recibe una cookie HttpOnly con el id de sesión; el access token y el
-// refresh token quedan del lado del servidor. En memoria se pierden al reiniciar; para varias
-// instancias o para que sobrevivan reinicios, reemplazar por AddStackExchangeRedisCache/AddDistributedSqlServerCache.
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSingleton<TokenSessionStore>();
-builder.Services.AddSingleton<LoginTicketStore>();
-builder.Services.AddSingleton<SessionRefreshLocks>();
-builder.Services.AddScoped<TokenSessionManager>();
-builder.Services.AddScoped<AccessTokenProvider>();
-
+// BFF: el navegador solo recibe una cookie HttpOnly y cifrada; el access token y el refresh token
+// viajan dentro de ella y nunca llegan al JavaScript. CookieTokenRefresher los renueva.
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -47,11 +49,10 @@ builder.Services
         options.LoginPath = LoginRedirect.LoginPath;
         options.AccessDeniedPath = LoginRedirect.LoginPath;
         options.SlidingExpiration = false;
-        options.Events.OnValidatePrincipal = CookieSessionValidator.ValidateAsync;
+        options.Events.OnValidatePrincipal = CookieTokenRefresher.ValidateOrRefreshAsync;
     });
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddScoped<AuthenticationStateProvider, TokenRevalidatingAuthenticationStateProvider>();
 
 var app = builder.Build();
 

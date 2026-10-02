@@ -23,7 +23,7 @@ public sealed class AuthApiClient(HttpClient httpClient)
         var user = await GetCurrentUserAsync(tokens.AccessToken, cancellationToken);
         return user is null
             ? LoginResult.Failure("La API no devolvió los datos del usuario.")
-            : LoginResult.Success(new LoginTicket(tokens, user));
+            : LoginResult.Success(tokens, user);
     }
 
     // Devuelve null si la API rechazó el refresh token (401/400). Lanza HttpRequestException
@@ -131,11 +131,11 @@ public sealed class AuthApiClient(HttpClient httpClient)
     private sealed record ApiError(string? Message);
 }
 
-public sealed record LoginResult(LoginTicket? Ticket, string? Error)
+public sealed record LoginResult(TokenSet? Tokens, CurrentUser? User, string? Error)
 {
-    public bool IsSuccess => Ticket is not null;
-    public static LoginResult Success(LoginTicket ticket) => new(ticket, null);
-    public static LoginResult Failure(string error) => new(null, error);
+    public bool IsSuccess => Tokens is not null && User is not null;
+    public static LoginResult Success(TokenSet tokens, CurrentUser user) => new(tokens, user, null);
+    public static LoginResult Failure(string error) => new(null, null, error);
 }
 
 public enum DniAccess
