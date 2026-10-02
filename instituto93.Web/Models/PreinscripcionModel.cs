@@ -99,8 +99,6 @@ public class PreinscripcionModel
     [Range(0, 10, ErrorMessage = "El promedio debe estar entre 0 y 10.")]
     public decimal? Promedio { get; set; }
 
-    public int MateriasAdeuda { get; set; }
-
     [Range(0, 20, ErrorMessage = "La cantidad de materias adeudadas debe estar entre 0 y 20.")]
     public int? CantidadAdeudaMaterias { get; set; }
 

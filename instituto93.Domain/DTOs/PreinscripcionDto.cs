@@ -66,8 +66,6 @@ namespace instituto93.Domain.DTOs
 
         public bool TituloSecundario { get; set; }
 
-        public bool MateriasAdeuda { get; set; }
-
         public string? DescripcionMaterias { get; set; }
 
         public string? Titulo { get; set; }

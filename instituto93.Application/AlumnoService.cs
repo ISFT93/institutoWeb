@@ -74,7 +74,7 @@ namespace instituto93.Application
                 TituloSecundario = p.TituloSecundario,
 
                 MateriasAdeuda =
-                    p.MateriasAdeuda ? 1 : 0,
+                    p.CantidadAdeudaMaterias > 0 ? 1 : 0,
 
                 DescripcionMaterias =
                     p.DescripcionMaterias,
