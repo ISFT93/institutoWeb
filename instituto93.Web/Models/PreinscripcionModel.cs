@@ -99,7 +99,7 @@ public class PreinscripcionModel
     [Range(0, 10, ErrorMessage = "El promedio debe estar entre 0 y 10.")]
     public decimal? Promedio { get; set; }
 
-    public bool MateriasAdeuda { get; set; }
+    public int MateriasAdeuda { get; set; }
 
     [Range(0, 20, ErrorMessage = "La cantidad de materias adeudadas debe estar entre 0 y 20.")]
     public int? CantidadAdeudaMaterias { get; set; }
@@ -110,7 +110,7 @@ public class PreinscripcionModel
     public bool TituloTramite { get; set; }
 
     [MaxLength(50, ErrorMessage = "El mayor título no puede superar los 50 caracteres.")]
-    public string? MayorTitulo { get; set; }
+    public string? MayorTitulo { get; set; } = "Ninguno";
 
     [MaxLength(50, ErrorMessage = "El otro título no puede superar los 50 caracteres.")]
     public string? OtroTitulo { get; set; }
@@ -135,7 +135,10 @@ public class PreinscripcionModel
     // Arancel
     [Range(1, int.MaxValue, ErrorMessage = "Ingresá un número de recibo válido.")]
     public int? Recibo { get; set; }
-    
+
+    [Range(0, 99999999, ErrorMessage = "Ingresá un monto válido.")]
+    public int? Monto { get; set; }
+
     // Salud
     public bool ObraSocialPrepaga { get; set; }
 
