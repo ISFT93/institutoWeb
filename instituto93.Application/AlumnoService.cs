@@ -1,4 +1,5 @@
 ﻿using instituto93.Data.Repositories;
+using instituto93.Data.Repositories.Interfaces;
 using instituto93.Domain.Interfaces;
 using instituto93.Domain.Models;
 using instituto93.Domain.DTOs;
@@ -10,10 +11,12 @@ namespace instituto93.Application
     public class AlumnoService : IAlumnoService
     {
         private readonly IAlumnoRepository _repo;
+        private readonly IAlumnosCarrerasRepository _alumnosCarreras;
 
-        public AlumnoService(IAlumnoRepository repo)
+        public AlumnoService(IAlumnoRepository repo, IAlumnosCarrerasRepository alumnosCarreras)
         {
-            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+            _repo = repo ?? throw new System.ArgumentNullException(nameof(repo));
+            _alumnosCarreras = alumnosCarreras ?? throw new System.ArgumentNullException(nameof(alumnosCarreras));
         }
 
         public async Task<List<AlumnoModelo>> GetAlumnosModelos(
@@ -31,7 +34,7 @@ namespace instituto93.Application
             return _repo.GetByIdAsync(id, cancellationToken);
         }
 
-        public Task<int> CreatePreinscripcionAsync(
+        public async Task<int> CreatePreinscripcionAsync(
             PreinscripcionDto p,
             CancellationToken cancellationToken = default)
         {
@@ -169,14 +172,33 @@ namespace instituto93.Application
 
                 Activo = true,
 
-                FotoUrl = null,
-
-                Carrera = p.Carrera
+                FotoUrl = null
             };
 
-            return _repo.CreateAsync(
-                alumno,
-                cancellationToken);
+            var alumnoId = await _repo.CreateAsync(alumno, cancellationToken);
+
+            // Insercion en AlumnoCarreras para vincular el alumno con la carrera
+            try
+            {
+                await _alumnosCarreras.CreateAsync(
+                    new AlumnosCarreras
+                    {
+                        AlumnoId = alumnoId,
+                        CarreraId = p.CarreraId!.Value,
+                        FechaAlta = DateTime.Today,
+                        Activo = true
+                    },
+                    cancellationToken);
+            }
+            catch
+            {
+                //Borra registro en caso de fallar, para no dejar registros huerfanos
+                //simulando un transaccion
+                await _repo.DeleteAsync(alumnoId, cancellationToken);
+                throw;
+            }
+
+            return alumnoId;
         }
     }
 
