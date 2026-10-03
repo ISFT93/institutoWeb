@@ -10,7 +10,8 @@ namespace instituto93.Domain.DTOs
     public class PreinscripcionDto
     {
         [Required]
-        public string Carrera { get; set; } = string.Empty;
+        [Range(1, int.MaxValue, ErrorMessage = "Debés seleccionar una carrera.")]
+        public int? CarreraId { get; set; }
 
         [Required]
         public string Apellido { get; set; } = string.Empty;
