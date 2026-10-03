@@ -1,6 +1,7 @@
 @page "/preinscripcion"
 
 @inject PreinscripcionApiClient PreinscripcionApi
+@inject CarrerasApiClient CarrerasApi
 @using instituto93.Web.Models;
 @using instituto93.Web.Components.Shared
 @using instituto93.Web.Services
@@ -32,15 +33,41 @@
                 <h2>Carrera de interés</h2>
                 <div class="form-grid">
                     <MudSelect
+                        T="int?"
                         Label="Carrera *"
-                        @bind-Value="_model.Carrera"
+                        @bind-Value="_model.CarreraId"
                         Variant="Variant.Outlined"
+                        Disabled="@(_carrerasLoading || _carrerasError is not null)"
+                        Error="_carrerasError is not null"
+                        ErrorText="@_carrerasError"
                         FullWidth>
                         @foreach (var carrera in _carreras)
                         {
-                            <MudSelectItem Value="@carrera">@carrera</MudSelectItem>
+                            <MudSelectItem T="int?" Value="@carrera.CarreraId">@carrera.Nombre</MudSelectItem>
                         }
                     </MudSelect>
+
+                    @if (_carrerasLoading)
+                    {
+                        <div class="carreras-estado">
+                            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Small" />
+                            <span>Cargando carreras...</span>
+                        </div>
+                    }
+
+                    @if (_carrerasError is not null)
+                    {
+                        <div class="carreras-estado">
+                            <MudIcon Icon="@Icons.Material.Filled.WarningAmber" Color="Color.Warning" />
+                            <span>No se pudieron cargar las carreras desde la base de datos.</span>
+                            <MudButton Variant="Variant.Outlined"
+                                       Color="Color.Primary"
+                                       Size="Size.Small"
+                                       OnClick="CargarCarrerasAsync">
+                                Reintentar
+                            </MudButton>
+                        </div>
+                    }
                 </div>
             </article>
 
@@ -583,15 +610,44 @@
 
     private PreinscripcionModel _model = new PreinscripcionModel();
 
-    // Editar según las opciones del instituto.
-    private readonly string[] _carreras = new[]
+    private List<CarrerasLookupModel> _carreras = new();
+
+    private bool _carrerasLoading = true;
+
+    private string? _carrerasError;
+
+    protected override async Task OnInitializedAsync()
     {
-        "Analista Superior en Sistemas",
-        "Tecnicatura Superior en Desarrollo de Software",
-        "Tecnicatura Superior en Redes y Telecomunicaciones",
-        "Tecnicatura Superior en Marketing",
-        "Tecnicatura Superior en Gestión de Recursos Humanos"
-    };
+        await CargarCarrerasAsync();
+    }
+
+    private async Task CargarCarrerasAsync()
+    {
+        _carrerasLoading = true;
+        _carrerasError = null;
+
+        try
+        {
+            var result = await CarrerasApi.GetAsync();
+
+            if (result.IsSuccess)
+            {
+                _carreras = result.Carreras;
+
+                if (_carreras.Count == 0)
+                    _carrerasError = "No hay carreras cargadas en la base de datos.";
+            }
+            else
+            {
+                _carreras = new();
+                _carrerasError = result.Error;
+            }
+        }
+        finally
+        {
+            _carrerasLoading = false;
+        }
+    }
 
     private readonly string[] _tiposDocumento = { "DNI", "LE", "LC" };
 
