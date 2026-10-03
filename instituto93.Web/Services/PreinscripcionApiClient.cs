@@ -32,7 +32,7 @@ public sealed class PreinscripcionApiClient(HttpClient httpClient)
     private static PreinscripcionRequest ToRequest(PreinscripcionModel model) =>
         new()
         {
-            Carrera = model.Carrera,
+            CarreraId = model.CarreraId,
             Apellido = model.Apellido,
             Nombre = model.Nombre,
             TipoDocumento = model.TipoDocumento,
@@ -168,7 +168,7 @@ public sealed class PreinscripcionApiClient(HttpClient httpClient)
 
     private sealed class PreinscripcionRequest
     {
-        public string Carrera { get; set; } = string.Empty;
+        public int? CarreraId { get; set; }
 
         public string Apellido { get; set; } = string.Empty;
 
