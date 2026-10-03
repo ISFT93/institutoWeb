@@ -37,6 +37,10 @@ builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IAlumnoRepository, AlumnoRepository>();
 builder.Services.AddScoped<IAlumnoService, AlumnoService>();
 builder.Services.AddScoped<IAlumnoAccesoService, AlumnoAccesoService>();
+builder.Services.AddScoped<ICarrerasRepository, CarrerasRepository>();
+builder.Services.AddScoped<ICarrerasService, CarrerasService>();
+builder.Services.AddScoped<IAlumnosCarrerasRepository, AlumnosCarrerasRepository>();
+builder.Services.AddScoped<IAlumnosCarrerasService, AlumnosCarrerasService>();
 builder.Services.AddScoped<DevelopmentUserSeed>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
