@@ -27,6 +27,11 @@ builder.Services.AddHttpClient<PreinscripcionApiClient>(client =>
     client.BaseAddress = apiBaseUri;
 });
 
+builder.Services.AddHttpClient<CarrerasApiClient>(client =>
+{
+    client.BaseAddress = apiBaseUri;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
