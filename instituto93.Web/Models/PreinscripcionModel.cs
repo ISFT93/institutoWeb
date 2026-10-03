@@ -7,7 +7,8 @@ public class PreinscripcionModel
 {
     // Carrera de interés
     [Required(ErrorMessage = "Debés seleccionar una carrera.")]
-    public string Carrera { get; set; } = string.Empty;
+    [Range(1, int.MaxValue, ErrorMessage = "Debés seleccionar una carrera.")]
+    public int? CarreraId { get; set; }
 
     // Datos personales
     [Required(ErrorMessage = "El apellido es obligatorio.")]
