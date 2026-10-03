@@ -31,5 +31,25 @@ namespace instituto93.Controller.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpGet("lookup")]
+        public async Task<ActionResult<List<CarrerasLookup>>> GetLookup(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var carreras = await _service.GetLookupAsync(cancellationToken);
+                return Ok(carreras);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(
+                    500,
+                    new
+                    {
+                        message = "No se pudieron obtener las carreras.",
+                        detail = ex.Message
+                    });
+            }
+        }
     }
 }
