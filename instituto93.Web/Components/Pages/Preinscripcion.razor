@@ -27,7 +27,7 @@
                   OnValidSubmit="HandleSubmit"
                   OnInvalidSubmit="HandleInvalidSubmit">
             <DataAnnotationsValidator />
-            <ValidationSummary />
+            @* <ValidationSummary /> *@
 
             <article class="form-section">
                 <h2>Carrera de interés</h2>
@@ -36,6 +36,7 @@
                         T="int?"
                         Label="Carrera *"
                         @bind-Value="_model.CarreraId"
+                        For="@(() => _model.CarreraId)"
                         Variant="Variant.Outlined"
                         Disabled="@(_carrerasLoading || _carrerasError is not null)"
                         Error="_carrerasError is not null"
@@ -78,20 +79,23 @@
                     <MudTextField
                         Label="Nombre *"
                         @bind-Value="_model.Nombre"
+                        For="@(() => _model.Nombre)"
                         Variant="Variant.Outlined"
                         MaxLength="50"
-                        FullWidth />
+                        FullWidth/>
 
-                    <MudTextField
+                    <MudTextField 
                         Label="Apellido *"
                         @bind-Value="_model.Apellido"
+                        For="@(() => _model.Apellido)"
                         Variant="Variant.Outlined"
                         MaxLength="50"
-                        FullWidth />                    
+                        FullWidth/>
 
                     <MudSelect
                         Label="Tipo de documento *"
                         @bind-Value="_model.TipoDocumento"
+                        For="@(() => _model.TipoDocumento)"
                         Variant="Variant.Outlined"
                         MaxLength="10"
                         FullWidth>
@@ -104,6 +108,7 @@
                     <MudTextField
                         Label="Número de documento *"
                         @bind-Value="_model.NumeroDocumento"
+                        For="@(() => _model.NumeroDocumento)"
                         Variant="Variant.Outlined"
                         MaxLength="8"
                         FullWidth />
@@ -111,6 +116,7 @@
                     <MudSelect
                         Label="Pais de nacimiento *"
                         @bind-Value="_model.PaisNacimiento"
+                        For="@(() => _model.PaisNacimiento)"
                         MaxLength="50"
                         Variant="Variant.Outlined"
                         FullWidth>
@@ -123,6 +129,7 @@
                      <MudTextField
                         Label="Localidad de nacimiento *"
                         @bind-Value="_model.LocalidadNacimiento"
+                        For="@(() => _model.LocalidadNacimiento)"
                         Variant="Variant.Outlined"
                         MaxLength="15"
                         FullWidth />
@@ -130,12 +137,14 @@
                     <MudDatePicker
                         Label="Fecha de nacimiento *"
                         @bind-Date="_model.FechaNacimiento"
+                        For="@(() => _model.FechaNacimiento)"
                         Variant="Variant.Outlined"
                         DateFormat="dd/MM/yyyy" />                    
 
                     <MudSelect
                         Label="Sexo *"
                         @bind-Value="_model.Sexo"
+                        For="@(() => _model.Sexo)"
                         Variant="Variant.Outlined"
                         FullWidth>
 
@@ -150,6 +159,7 @@
                     <MudSelect
                         Label="Estado civil *"
                         @bind-Value="_model.EstadoCivil"
+                        For="@(() => _model.EstadoCivil)"
                         Variant="Variant.Outlined"
                         MaxLength="15"
                         FullWidth>
@@ -167,6 +177,7 @@
                     <MudTextField
                         Label="Calle *"
                         @bind-Value="_model.Calle"
+                        For="@(() => _model.Calle)"
                         Variant="Variant.Outlined"
                         MaxLength="255"
                         FullWidth />
@@ -174,6 +185,7 @@
                     <MudTextField 
                         Label="Número *"
                         @bind-Value="_model.Numero"
+                        For="@(() => _model.Numero)"
                         Variant="Variant.Outlined"
                         MaxLength="10"
                         FullWidth />
@@ -195,6 +207,7 @@
                     <MudTextField 
                         Label="Distrito *"
                         @bind-Value="_model.Distrito"
+                        For="@(() => _model.Distrito)"
                         Variant="Variant.Outlined"
                         MaxLength="50"
                         FullWidth/>
@@ -202,6 +215,7 @@
                     <MudSelect
                         Label="Provincia *"
                         @bind-Value="_model.Provincia"
+                        For="@(() => _model.Provincia)"
                         Variant="Variant.Outlined"
                         MaxLength="50"
                         FullWidth>
@@ -217,6 +231,7 @@
                     <MudTextField 
                         Label="Localidad *"
                         @bind-Value="_model.Localidad"
+                        For="@(() => _model.Localidad)"
                         Variant="Variant.Outlined"
                         MaxLength="50"
                         FullWidth />
@@ -224,6 +239,7 @@
                     <MudTextField 
                         Label="Código postal *"
                         @bind-Value="_model.CodigoPostal"
+                        For="@(() => _model.CodigoPostal)"
                         Variant="Variant.Outlined"
                         MaxLength="10"
                         FullWidth />
@@ -236,6 +252,7 @@
                     <MudTextField
                         Label="Correo electrónico *"
                         @bind-Value="_model.Email"
+                        For="@(() => _model.Email)"
                         Variant="Variant.Outlined"
                         MaxLength="255"
                         FullWidth />
@@ -243,6 +260,7 @@
                     <MudTextField 
                         Label="Celular *"
                         @bind-Value="_model.Celular"
+                        For="@(() => _model.Celular)"
                         Variant="Variant.Outlined"
                         MaxLength="30"
                         FullWidth />
@@ -250,6 +268,7 @@
                     <MudTextField
                         Label="Teléfono fijo *"
                         @bind-Value="_model.Telefono"
+                        For="@(() => _model.Telefono)"
                         Variant="Variant.Outlined"
                         MaxLength="30"
                         FullWidth />
@@ -341,7 +360,7 @@
                             </MudRadioGroup>
                         </div>
 
-                        <MudSelect Label="Mayor título *"
+                        <MudSelect Label="Mayor título"
                                    @bind-Value="_model.MayorTitulo"
                                    Variant="Variant.Outlined"
                                    MaxLength="50"
@@ -588,6 +607,7 @@
                     <MudTextField 
                         Label="Nombre del contacto de emergencia *"
                         @bind-Value="_model.ContactoEmergencia"
+                        For="@(() => _model.ContactoEmergencia)"
                         Variant="Variant.Outlined"
                         MaxLength="100"
                         FullWidth />
@@ -595,6 +615,7 @@
                     <MudTextField 
                         Label="Teléfono del contacto de emergencia *"
                         @bind-Value="_model.TelefonoContacto"
+                        For="@(() => _model.TelefonoContacto)"
                         Variant="Variant.Outlined"
                         MaxLength="20"
                         FullWidth />
