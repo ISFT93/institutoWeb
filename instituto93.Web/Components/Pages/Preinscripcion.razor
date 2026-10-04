@@ -74,17 +74,18 @@
             <article class="form-section">
                 <h2>Datos personales</h2>
                 <div class="form-grid">
-                    <MudTextField
-                        Label="Apellido *"
-                        @bind-Value="_model.Apellido"
-                        Variant="Variant.Outlined"
-                        FullWidth />
 
                     <MudTextField
                         Label="Nombre *"
                         @bind-Value="_model.Nombre"
                         Variant="Variant.Outlined"
                         FullWidth />
+
+                    <MudTextField
+                        Label="Apellido *"
+                        @bind-Value="_model.Apellido"
+                        Variant="Variant.Outlined"
+                        FullWidth />                    
 
                     <MudSelect
                         Label="Tipo de documento *"
@@ -242,118 +243,119 @@
             <article class="form-section">
                 <h2>Formación</h2>
 
-                <div class="form-checks">
+                <div class="form-radios">
                     <h3>Título Secundario</h3>
                     <MudRadioGroup T="bool" @bind-Value="_model.TituloSecundario" @bind-Value:after="TituloChanged">
                         <MudRadio T="bool" Value="@true">Si</MudRadio>
                         <MudRadio T="bool" Value="@false">No</MudRadio>
                     </MudRadioGroup>
-                </div>
-
-                <div class="form-checks">
-                    <h3>Título en Trámite</h3>
-                    <MudRadioGroup T="bool" @bind-Value="_model.TituloTramite" Disabled = "!_model.TituloSecundario">
-                        <MudRadio T="bool" Value="@true">Si</MudRadio>
-                        <MudRadio T="bool" Value="@false">No</MudRadio>
-                    </MudRadioGroup>
-                </div>               
+                </div>                 
 
                 <div class="form-grid">
-                    <MudTextField
-                        Label="Título"
-                        @bind-Value="_model.Titulo"
-                        Variant="Variant.Outlined"
-                        Disabled = "!_model.TituloSecundario"
-                        FullWidth />
 
-                    <MudTextField
-                        Label="Orientación"
-                        @bind-Value="_model.Orientacion"
-                        Variant="Variant.Outlined"
-                        Disabled = "!_model.TituloSecundario"
-                        FullWidth />
+                    @if (!_model.TituloSecundario)
+                    {
+                        <MudNumericField Label="Cantidad de materias adeudadas"
+                                         T="int?"
+                                         @bind-Value="_model.CantidadAdeudaMaterias"
+                                         Variant="Variant.Outlined"
+                                         Min="0"
+                                         Max="20"
+                                         Disabled="_model.TituloSecundario"
+                                         FullWidth />
 
-                    <MudTextField
-                        Label="Institución que lo otorgó"
-                        @bind-Value="_model.OtorgadoPor"
-                        Variant="Variant.Outlined"
-                        Disabled = "!_model.TituloSecundario"
-                        FullWidth />
+                        <MudTextField Label="Descripción de materias adeudadas"
+                                      @bind-Value="_model.DescripcionMaterias"
+                                      Variant="Variant.Outlined"
+                                      Disabled="_model.TituloSecundario"
+                                      Lines="3"
+                                      FullWidth />
+                    }
 
-                    <MudNumericField
-                        Label="Año de egreso"
-                        T="int?"
-                        @bind-Value="_model.AnioEgreso"
-                        Variant="Variant.Outlined"
-                        Disabled = "!_model.TituloSecundario"
-                        Min="1900"
-                        Max="@DateTime.Now.Year"
-                        FullWidth />
+                    @if(_model.TituloSecundario)
+                    {
+                       
+                        <MudTextField Label="Título"
+                                      @bind-Value="_model.Titulo"
+                                      Variant="Variant.Outlined"
+                                      Disabled="!_model.TituloSecundario"
+                                      FullWidth />
 
-                    <MudNumericField
-                        Label="Promedio"
-                        T="decimal?"
-                        @bind-Value="_model.Promedio"
-                        Variant="Variant.Outlined"
-                        Min="1"
-                        Max="10"
-                        Disabled = "!_model.TituloSecundario"
-                        FullWidth />
+                        <MudTextField Label="Orientación"
+                                      @bind-Value="_model.Orientacion"
+                                      Variant="Variant.Outlined"
+                                      Disabled="!_model.TituloSecundario"
+                                      FullWidth />
 
-                    <MudNumericField
-                        Label="Cantidad de materias adeudadas"
-                        T="int?"
-                        @bind-Value="_model.CantidadAdeudaMaterias"
-                        Variant="Variant.Outlined"
-                        Min="0"
-                        Max="20"
-                        Disabled = "!_model.TituloSecundario"
-                        FullWidth />
+                        <MudTextField Label="Institución que lo otorgó"
+                                      @bind-Value="_model.OtorgadoPor"
+                                      Variant="Variant.Outlined"
+                                      Disabled="!_model.TituloSecundario"
+                                      FullWidth />
 
-                    <MudTextField
-                        Label="Descripción de materias adeudadas"
-                        @bind-Value="_model.DescripcionMaterias"
-                        Variant="Variant.Outlined"
-                        Disabled = "!_model.TituloSecundario"
-                        Lines="3"
-                        FullWidth />
+                        <MudNumericField Label="Año de egreso"
+                                         T="int?"
+                                         @bind-Value="_model.AnioEgreso"
+                                         Variant="Variant.Outlined"
+                                         Disabled="!_model.TituloSecundario"
+                                         Min="1900"
+                                         Max="@DateTime.Now.Year"
+                                         FullWidth />
 
-                    <MudSelect
-                        Label="Mayor título *"
-                        @bind-Value="_model.MayorTitulo"
-                        Variant="Variant.Outlined"
-                        @bind-Value:after="OnMayorTituloChanged"
-                        Disabled = "!_model.TituloSecundario"
-                        FullWidth>
-                        @foreach (var mayorTitulo in _mayorTitulo)
-                        {
-                            <MudSelectItem Value="@mayorTitulo">@mayorTitulo</MudSelectItem>
-                        }
-                    </MudSelect>
+                        <MudNumericField Label="Promedio"
+                                         T="decimal?"
+                                         @bind-Value="_model.Promedio"
+                                         Variant="Variant.Outlined"
+                                         Min="1"
+                                         Max="10"
+                                         Disabled="!_model.TituloSecundario"
+                                         FullWidth />
 
-                    <MudTextField
-                        Label="Otro título"
-                        @bind-Value="_model.OtroTitulo"
-                        Disabled="@(_model.MayorTitulo == "Ninguno")"
-                        Variant="Variant.Outlined"
-                        FullWidth />
+                        <div class="form-radios">
+                            <h3>Título en Trámite</h3>
+                            <MudRadioGroup T="bool" @bind-Value="_model.TituloTramite" Disabled="!_model.TituloSecundario">
+                                <MudRadio T="bool" Value="@true">Si</MudRadio>
+                                <MudRadio T="bool" Value="@false">No</MudRadio>
+                            </MudRadioGroup>
+                        </div>
 
-                    <MudTextField
-                        Label="Institución que otorgó el mayor título"
-                        @bind-Value="_model.MayorOtorgadoPor"                        
-                        Disabled="@(_model.MayorTitulo == "Ninguno")"
-                        Variant="Variant.Outlined"
-                        FullWidth />
+                        <MudSelect Label="Mayor título *"
+                                   @bind-Value="_model.MayorTitulo"
+                                   Variant="Variant.Outlined"
+                                   @bind-Value:after="OnMayorTituloChanged"
+                                   Disabled="!_model.TituloSecundario"
+                                   FullWidth>
+                            @foreach (var mayorTitulo in _mayorTitulo)
+                            {
+                                <MudSelectItem Value="@mayorTitulo">@mayorTitulo</MudSelectItem>
+                            }
+                        </MudSelect>
 
-                    <MudNumericField
-                        Label="Mayor promedio"
-                        T="decimal?"
-                        @bind-Value="_model.MayorPromedio"
-                        Min="1"
-                        Max="10"
-                        Disabled="@(_model.MayorTitulo == "Ninguno")"
-                        Variant="Variant.Outlined"
-                        FullWidth />
+                        <MudTextField Label="Otro título"
+                                      @bind-Value="_model.OtroTitulo"
+                                      Disabled="@(_model.MayorTitulo == "Ninguno")"
+                                      Variant="Variant.Outlined"
+                                      FullWidth />
+
+                        <MudTextField Label="Institución que otorgó el mayor título"
+                                      @bind-Value="_model.MayorOtorgadoPor"
+                                      Disabled="@(_model.MayorTitulo == "Ninguno")"
+                                      Variant="Variant.Outlined"
+                                      FullWidth />
+
+                        <MudNumericField Label="Mayor promedio"
+                                         T="decimal?"
+                                         @bind-Value="_model.MayorPromedio"
+                                         Min="1"
+                                         Max="10"
+                                         Disabled="@(_model.MayorTitulo == "Ninguno")"
+                                         Variant="Variant.Outlined"
+                                         FullWidth />
+                    }
+                    
+                    
+
+                    
                 </div>
             </article>
 
@@ -539,9 +541,11 @@
                     </div>
                 </div>
 
+                <h3>En caso de emergencia:</h3>
                 <div class="form-grid">
+                    
                     <MudTextField
-                        Label="Contacto de emergencia"
+                        Label="Nombre del contacto de emergencia"
                         @bind-Value="_model.ContactoEmergencia"
                         Variant="Variant.Outlined"
                         FullWidth />
