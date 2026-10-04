@@ -79,18 +79,21 @@
                         Label="Nombre *"
                         @bind-Value="_model.Nombre"
                         Variant="Variant.Outlined"
+                        MaxLength="50"
                         FullWidth />
 
                     <MudTextField
                         Label="Apellido *"
                         @bind-Value="_model.Apellido"
                         Variant="Variant.Outlined"
+                        MaxLength="50"
                         FullWidth />                    
 
                     <MudSelect
                         Label="Tipo de documento *"
                         @bind-Value="_model.TipoDocumento"
                         Variant="Variant.Outlined"
+                        MaxLength="10"
                         FullWidth>
                         @foreach (var tipo in _tiposDocumento)
                         {
@@ -102,11 +105,13 @@
                         Label="Número de documento *"
                         @bind-Value="_model.NumeroDocumento"
                         Variant="Variant.Outlined"
+                        MaxLength="8"
                         FullWidth />
 
                     <MudSelect
                         Label="Pais de nacimiento *"
                         @bind-Value="_model.PaisNacimiento"
+                        MaxLength="50"
                         Variant="Variant.Outlined"
                         FullWidth>
                         @foreach (var paises in _paises)
@@ -119,6 +124,7 @@
                         Label="Localidad de nacimiento *"
                         @bind-Value="_model.LocalidadNacimiento"
                         Variant="Variant.Outlined"
+                        MaxLength="15"
                         FullWidth />
 
                     <MudDatePicker
@@ -142,9 +148,10 @@
                     </MudSelect>
 
                     <MudSelect
-                        Label="Estado civil"
+                        Label="Estado civil *"
                         @bind-Value="_model.EstadoCivil"
                         Variant="Variant.Outlined"
+                        MaxLength="15"
                         FullWidth>
                         @foreach (var estado in _estadosCiviles)
                         {
@@ -161,36 +168,42 @@
                         Label="Calle *"
                         @bind-Value="_model.Calle"
                         Variant="Variant.Outlined"
+                        MaxLength="255"
                         FullWidth />
 
-                    <MudTextField
-                        Label="Número"
+                    <MudTextField 
+                        Label="Número *"
                         @bind-Value="_model.Numero"
                         Variant="Variant.Outlined"
+                        MaxLength="10"
                         FullWidth />
 
                     <MudTextField
                         Label="Piso"
                         @bind-Value="_model.Piso"
                         Variant="Variant.Outlined"
+                        MaxLength="10"
                         FullWidth />
 
                     <MudTextField
                         Label="Departamento"
                         @bind-Value="_model.Departamento"
                         Variant="Variant.Outlined"
+                        MaxLength="10"
                         FullWidth />
 
                     <MudTextField 
                         Label="Distrito *"
                         @bind-Value="_model.Distrito"
                         Variant="Variant.Outlined"
+                        MaxLength="50"
                         FullWidth/>
 
                     <MudSelect
                         Label="Provincia *"
                         @bind-Value="_model.Provincia"
                         Variant="Variant.Outlined"
+                        MaxLength="50"
                         FullWidth>
 
                         @foreach (var provincia in _provincias)
@@ -201,16 +214,18 @@
                        }
                     </MudSelect>
                                      
-                    <MudTextField
-                        Label="Localidad"
+                    <MudTextField 
+                        Label="Localidad *"
                         @bind-Value="_model.Localidad"
                         Variant="Variant.Outlined"
+                        MaxLength="50"
                         FullWidth />
 
-                    <MudTextField
-                        Label="Código postal"
+                    <MudTextField 
+                        Label="Código postal *"
                         @bind-Value="_model.CodigoPostal"
                         Variant="Variant.Outlined"
+                        MaxLength="10"
                         FullWidth />
                 </div>
             </article>
@@ -222,18 +237,21 @@
                         Label="Correo electrónico *"
                         @bind-Value="_model.Email"
                         Variant="Variant.Outlined"
+                        MaxLength="255"
                         FullWidth />
 
-                    <MudTextField
-                        Label="Celular"
+                    <MudTextField 
+                        Label="Celular *"
                         @bind-Value="_model.Celular"
                         Variant="Variant.Outlined"
+                        MaxLength="30"
                         FullWidth />
 
                     <MudTextField
-                        Label="Teléfono fijo"
+                        Label="Teléfono fijo *"
                         @bind-Value="_model.Telefono"
                         Variant="Variant.Outlined"
+                        MaxLength="30"
                         FullWidth />
 
                     
@@ -267,6 +285,7 @@
                         <MudTextField Label="Descripción de materias adeudadas"
                                       @bind-Value="_model.DescripcionMaterias"
                                       Variant="Variant.Outlined"
+                                      MaxLength="150"
                                       Disabled="_model.TituloSecundario"
                                       Lines="3"
                                       FullWidth />
@@ -278,18 +297,21 @@
                         <MudTextField Label="Título"
                                       @bind-Value="_model.Titulo"
                                       Variant="Variant.Outlined"
+                                      MaxLength="50"
                                       Disabled="!_model.TituloSecundario"
                                       FullWidth />
 
                         <MudTextField Label="Orientación"
                                       @bind-Value="_model.Orientacion"
                                       Variant="Variant.Outlined"
+                                      MaxLength="50"
                                       Disabled="!_model.TituloSecundario"
                                       FullWidth />
 
                         <MudTextField Label="Institución que lo otorgó"
                                       @bind-Value="_model.OtorgadoPor"
                                       Variant="Variant.Outlined"
+                                      MaxLength="50"
                                       Disabled="!_model.TituloSecundario"
                                       FullWidth />
 
@@ -322,6 +344,7 @@
                         <MudSelect Label="Mayor título *"
                                    @bind-Value="_model.MayorTitulo"
                                    Variant="Variant.Outlined"
+                                   MaxLength="50"
                                    @bind-Value:after="OnMayorTituloChanged"
                                    Disabled="!_model.TituloSecundario"
                                    FullWidth>
@@ -335,12 +358,14 @@
                                       @bind-Value="_model.OtroTitulo"
                                       Disabled="@(_model.MayorTitulo == "Ninguno")"
                                       Variant="Variant.Outlined"
+                                      MaxLength="50"
                                       FullWidth />
 
                         <MudTextField Label="Institución que otorgó el mayor título"
                                       @bind-Value="_model.MayorOtorgadoPor"
                                       Disabled="@(_model.MayorTitulo == "Ninguno")"
                                       Variant="Variant.Outlined"
+                                      MaxLength="50"
                                       FullWidth />
 
                         <MudNumericField Label="Mayor promedio"
@@ -472,11 +497,13 @@
                     <MudCheckBox
                         T="bool"
                         @bind-Value="_model.ObraSocialPrepaga"
+                        @bind-Value:after="OnObraSocialChanged"
                         Label="Poseo obra social / prepaga" />
                     <MudTextField
                         Label="Obra social / prepaga"
                         @bind-Value="_model.DescripcionObraSocial"
                         Variant="Variant.Outlined"
+                        MaxLength="50"
                         FullWidth
                         Disabled="!_model.ObraSocialPrepaga" />
                 </div>
@@ -485,11 +512,13 @@
                     <MudCheckBox
                         T="bool"
                         @bind-Value="_model.TratamientoMedico"
+                        @bind-Value:after="OnTratamientoMedicoChanged"
                         Label="Me encuentro en tratamiento médico" />
                     <MudTextField
                         Label="Descripción del tratamiento"
-                        @bind-Value="_model.DescripcionTratamiento"
+                        @bind-Value="_model.DescripcionTratamiento"                        
                         Variant="Variant.Outlined"
+                        MaxLength="150"
                         FullWidth
                         Disabled="!_model.TratamientoMedico" />
                 </div>
@@ -498,11 +527,13 @@
                     <MudCheckBox
                         T="bool"
                         @bind-Value="_model.Medicacion"
+                        @bind-Value:after="OnMedicacionChanged"
                         Label="Consumo medicación" />
                     <MudTextField
                         Label="Descripción de la medicación"
-                        @bind-Value="_model.DescripcionMedicacion"
+                        @bind-Value="_model.DescripcionMedicacion"                        
                         Variant="Variant.Outlined"
+                        MaxLength="150"
                         FullWidth
                         Disabled="!_model.Medicacion" />
                 </div>
@@ -511,25 +542,35 @@
                     <MudCheckBox
                         T="bool"
                         @bind-Value="_model.Discapacidad"
+                        @bind-Value:after="OnDiscapacidadChanged"
                         Label="Presento discapacidad" />
+
                     <div class="salud-discapacidad">
-                        <MudTextField
-                            Label="Estado de discapacidad"
-                            @bind-Value="_model.EstadoDiscapacidad"
-                            Variant="Variant.Outlined"
-                            FullWidth
-                            Disabled="!_model.Discapacidad" />
+
+                        <MudSelect Label="Estado de discapacidad"
+                                   @bind-Value="_model.EstadoDiscapacidad"                                   
+                                   Variant="Variant.Outlined"
+                                   MaxLength="15"
+                                   Disabled="!_model.Discapacidad"
+                                   FullWidth>
+                            @foreach (var estado in _estadoDiscapacidad)
+                            {
+                                <MudSelectItem Value="@estado">@estado</MudSelectItem>
+                            }
+                        </MudSelect> 
 
                         <MudTextField
                             Label="Descripción de discapacidad"
                             @bind-Value="_model.DescripcionDiscapacidad"
                             Variant="Variant.Outlined"
+                            MaxLength="150"
                             FullWidth
                             Disabled="!_model.Discapacidad" />
 
                         <div class="documento-upload">
                             <span class="documento-upload-label">Certificado de discapacidad</span>
                             <MudFileUpload
+                                @key="_fileUploadKeyDiscapacidad"
                                 T="IBrowserFile"
                                 @bind-Files="_model.CertificadoDiscapacidad"
                                 MaxFileSize="@_maxFileSizeBytes"
@@ -544,16 +585,18 @@
                 <h3>En caso de emergencia:</h3>
                 <div class="form-grid">
                     
-                    <MudTextField
-                        Label="Nombre del contacto de emergencia"
+                    <MudTextField 
+                        Label="Nombre del contacto de emergencia *"
                         @bind-Value="_model.ContactoEmergencia"
                         Variant="Variant.Outlined"
+                        MaxLength="100"
                         FullWidth />
 
-                    <MudTextField
-                        Label="Teléfono del contacto de emergencia"
+                    <MudTextField 
+                        Label="Teléfono del contacto de emergencia *"
                         @bind-Value="_model.TelefonoContacto"
                         Variant="Variant.Outlined"
+                        MaxLength="20"
                         FullWidth />
                 </div>
             </article>
@@ -605,7 +648,7 @@
 </main>
 
 @code {
-      
+
     private bool _sending = false;
 
     private string? _submitSuccess;
@@ -895,6 +938,8 @@
 
     private readonly string[] _mayorTitulo = { "Ninguno", "Terciario", "Universitario", "Postgrado" };
 
+    private readonly string[] _estadoDiscapacidad = { "Temporal", "Permanente"};
+
     private const long _maxFileSizeBytes = 5 * 1024 * 1024;
 
     private const string _formatsDocumento = ".pdf,.jpg,.jpeg,.png";
@@ -931,6 +976,42 @@
             _model.OtroTitulo = string.Empty;
             _model.MayorOtorgadoPor = string.Empty;
             _model.MayorPromedio = null;
+        }
+    }
+
+    private void OnObraSocialChanged()
+    {
+        if (_model.ObraSocialPrepaga == false)
+        {
+            _model.DescripcionObraSocial = string.Empty;
+        }
+    }
+
+    private void OnTratamientoMedicoChanged()
+    {
+        if (_model.TratamientoMedico == false)
+        {
+            _model.DescripcionTratamiento = string.Empty;
+        }
+    }
+
+    private void OnMedicacionChanged()
+    {
+        if (_model.Medicacion == false)
+        {
+            _model.DescripcionMedicacion = string.Empty;
+        }
+    }
+
+    private Guid _fileUploadKeyDiscapacidad = Guid.NewGuid();
+    private void OnDiscapacidadChanged()
+    {
+        if (_model.Discapacidad == false)
+        {
+            _model.EstadoDiscapacidad = string.Empty;
+            _model.DescripcionDiscapacidad = string.Empty;        
+            _model.CertificadoDiscapacidad = null;
+            _fileUploadKeyDiscapacidad = Guid.NewGuid();
         }
     }
 
@@ -991,5 +1072,7 @@
             _sending = false;
         }
     }
+
+
 
 }
