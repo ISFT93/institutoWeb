@@ -1,6 +1,9 @@
 @page "/login"
+@layout LoginLayout
+@attribute [AllowAnonymous]
 @inject NavigationManager Navigation
-@using instituto93.Web.Models;
+@using instituto93.Web.Auth
+@using instituto93.Web.Models
 @using instituto93.Web.Services
 @inject AuthApiClient AuthApiClient
 
@@ -46,146 +49,100 @@
                 <p>@HeaderText</p>
             </header>
 
+            @* SSR estático: cada paso es un formulario HTML que se envía al servidor (POST) y vuelve a renderizar la página. *@
             @if (_step == LoginStep.Dni)
             {
-                @* Es lo mismo que un <form>, pero con validación de datos y binding de modelos. *@
-                <EditForm Model="_dniModel" OnValidSubmit="HandleDni">
+                <EditForm Model="DniInput" FormName="dni" OnValidSubmit="HandleDni" method="post">
                     <DataAnnotationsValidator />
 
-                    <MudTextField
-                        Label="D.N.I"
-                        @bind-Value="_dniModel.Dni"
-                        For="@(() => _dniModel.Dni)"
-                        Placeholder="12.345.678"
-                        InputMode="InputMode.numeric"
-                        Variant="Variant.Outlined"
-                        Class="mt-4 dni-input"
-                        FullWidth />
+                    <div class="field dni-input">
+                        <div class="field-control">
+                            <InputText id="dni" @bind-Value="DniInput.Dni" placeholder="12.345.678" inputmode="numeric" autocomplete="off" />
+                            <label for="dni">D.N.I</label>
+                        </div>
+                        <ValidationMessage For="() => DniInput.Dni" />
+                    </div>
 
-                    <MudButton
-                        ButtonType="ButtonType.Submit"
-                        Variant="Variant.Filled"
-                        Color="Color.Primary"
-                        Disabled="_isSubmitting"
-                        Class="mt-4"
-                        FullWidth>
-                        @(_isSubmitting ? "Verificando..." : "Continuar")
-                    </MudButton>
+                    <button type="submit" class="btn btn-primary">Continuar</button>
                 </EditForm>
             }
             else if (_step == LoginStep.Login)
             {
-                <MudTextField
-                    Label="D.N.I"
-                    Value="_dniModel.Dni"
-                    ReadOnly
-                    Variant="Variant.Outlined"
-                    Class="mt-4"
-                    FullWidth />
+                <div class="field">
+                    <div class="field-control">
+                        <input id="dni-readonly" value="@FormatDni(LoginInput.Dni)" placeholder=" " readonly />
+                        <label for="dni-readonly">D.N.I</label>
+                    </div>
+                </div>
 
-                <EditForm Model="_loginModel" OnValidSubmit="HandleLogin">
+                <EditForm Model="LoginInput" FormName="login" OnValidSubmit="HandleLogin" method="post">
                     <DataAnnotationsValidator />
 
-                    <MudTextField
-                        Label="Contraseña"
-                        @bind-Value="_loginModel.Password"
-                        For="@(() => _loginModel.Password)"
-                        InputType="InputType.Password"
-                        Variant="Variant.Outlined"
-                        Class="mt-4"
-                        FullWidth />
+                    <InputText type="hidden" @bind-Value="LoginInput.Dni" />
+                    <InputText type="hidden" @bind-Value="LoginInput.Nombre" />
 
-                    <MudButton
-                        ButtonType="ButtonType.Submit"
-                        Variant="Variant.Filled"
-                        Color="Color.Primary"
-                        Disabled="_isSubmitting"
-                        Class="mt-4"
-                        FullWidth>
-                        @(_isSubmitting ? "Ingresando..." : "Ingresar")
-                    </MudButton>
+                    <div class="field">
+                        <div class="field-control">
+                            <InputText id="password" type="password" @bind-Value="LoginInput.Password" placeholder=" " autocomplete="current-password" />
+                            <label for="password">Contraseña</label>
+                        </div>
+                        <ValidationMessage For="() => LoginInput.Password" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Ingresar</button>
                 </EditForm>
 
-                <MudButton
-                    Variant="Variant.Text"
-                    OnClick="BackToDni"
-                    Disabled="_isSubmitting"
-                    Class="mt-2"
-                    FullWidth>
-                    Cambiar D.N.I
-                </MudButton>
+                <a class="btn btn-text" href="@LoginHref">Volver</a>
             }
             else if (_step == LoginStep.CreatePassword)
             {
-                <MudTextField
-                    Label="D.N.I"
-                    Value="_dniModel.Dni"
-                    ReadOnly
-                    Variant="Variant.Outlined"
-                    Class="mt-4"
-                    FullWidth />
+                <div class="field">
+                    <div class="field-control">
+                        <input id="dni-readonly" value="@FormatDni(CreatePasswordInput.Dni)" placeholder=" " readonly />
+                        <label for="dni-readonly">D.N.I</label>
+                    </div>
+                </div>
 
-                <EditForm Model="_createPasswordModel" OnValidSubmit="HandleCreatePassword">
+                <EditForm Model="CreatePasswordInput" FormName="create-password" OnValidSubmit="HandleCreatePassword" method="post">
                     <DataAnnotationsValidator />
 
-                    <MudTextField
-                        Label="Nueva contraseña"
-                        @bind-Value="_createPasswordModel.Password"
-                        For="@(() => _createPasswordModel.Password)"
-                        InputType="InputType.Password"
-                        HelperText="Mínimo 8 caracteres."
-                        Variant="Variant.Outlined"
-                        Class="mt-4"
-                        FullWidth />
+                    <InputText type="hidden" @bind-Value="CreatePasswordInput.Dni" />
+                    <InputText type="hidden" @bind-Value="CreatePasswordInput.Nombre" />
 
-                    <MudTextField
-                        Label="Confirmar contraseña"
-                        @bind-Value="_createPasswordModel.ConfirmPassword"
-                        For="@(() => _createPasswordModel.ConfirmPassword)"
-                        InputType="InputType.Password"
-                        Variant="Variant.Outlined"
-                        Class="mt-4"
-                        FullWidth />
+                    <div class="field">
+                        <div class="field-control">
+                            <InputText id="new-password" type="password" @bind-Value="CreatePasswordInput.Password" placeholder=" " autocomplete="new-password" />
+                            <label for="new-password">Nueva contraseña</label>
+                        </div>
+                        <small>Mínimo 8 caracteres.</small>
+                        <ValidationMessage For="() => CreatePasswordInput.Password" />
+                    </div>
 
-                    <MudButton
-                        ButtonType="ButtonType.Submit"
-                        Variant="Variant.Filled"
-                        Color="Color.Primary"
-                        Disabled="_isSubmitting"
-                        Class="mt-4"
-                        FullWidth>
-                        @(_isSubmitting ? "Creando contraseña..." : "Crear contraseña")
-                    </MudButton>
+                    <div class="field">
+                        <div class="field-control">
+                            <InputText id="confirm-password" type="password" @bind-Value="CreatePasswordInput.ConfirmPassword" placeholder=" " autocomplete="new-password" />
+                            <label for="confirm-password">Confirmar contraseña</label>
+                        </div>
+                        <ValidationMessage For="() => CreatePasswordInput.ConfirmPassword" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Crear contraseña</button>
                 </EditForm>
 
-                <MudButton
-                    Variant="Variant.Text"
-                    OnClick="BackToDni"
-                    Disabled="_isSubmitting"
-                    Class="mt-2"
-                    FullWidth>
-                    Cambiar D.N.I
-                </MudButton>
+                <a class="btn btn-text" href="@LoginHref">Volver</a>
             }
             else
             {
-                <MudAlert Severity="Severity.Success" Class="mt-4">
+                <div class="alert alert-success" role="status">
                     Tu contraseña se creó con éxito. Ya podés iniciar sesión.
-                </MudAlert>
+                </div>
 
-                <MudButton
-                    Variant="Variant.Filled"
-                    Color="Color.Primary"
-                    OnClick="GoToInitialView"
-                    Class="mt-4"
-                    FullWidth>
-                    Ir a iniciar sesión
-                </MudButton>
+                <a class="btn btn-primary" href="@LoginHref">Ir a iniciar sesión</a>
             }
 
             @if (!string.IsNullOrWhiteSpace(_errorMessage))
             {
-                <MudAlert Severity="Severity.Error" Class="mt-4">@_errorMessage</MudAlert>
+                <div class="alert alert-error" role="alert">@_errorMessage</div>
             }
 
         </article>
@@ -203,18 +160,38 @@
         Success
     }
 
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    // Un formulario por paso. La propiedad se completa solo si se envió ese formulario; el
+    // nombre ("Name") tiene que coincidir con el prefijo de los campos (DniInput.Dni, etc.).
+    [SupplyParameterFromForm(Name = nameof(DniInput), FormName = "dni")]
+    private DniModel? PostedDni { get; set; }
+
+    [SupplyParameterFromForm(Name = nameof(LoginInput), FormName = "login")]
+    private LoginModel? PostedLogin { get; set; }
+
+    [SupplyParameterFromForm(Name = nameof(CreatePasswordInput), FormName = "create-password")]
+    private CreatePasswordModel? PostedCreatePassword { get; set; }
+
     private LoginStep _step = LoginStep.Dni;
-    private DniModel _dniModel = new();
-    private string _dni = string.Empty;
-    private LoginModel _loginModel = new();
-    private CreatePasswordModel _createPasswordModel = new();
-    private bool _isSubmitting;
+    private DniModel DniInput = new();
+    private LoginModel LoginInput = new();
+    private CreatePasswordModel CreatePasswordInput = new();
     private string? _errorMessage;
+
+    private string LoginHref => Navigation.GetUriWithQueryParameters(
+        "login",
+        new Dictionary<string, object?> { ["returnUrl"] = ReturnUrl });
 
     private string HeaderTitle => _step switch
     {
         LoginStep.CreatePassword => "Creá tu contraseña",
         LoginStep.Success => "¡Listo!",
+        LoginStep.Login when !string.IsNullOrWhiteSpace(LoginInput.Nombre) => $"Bienvenido/a {LoginInput.Nombre}",
         _ => "Ingresá al portal"
     };
 
@@ -226,17 +203,46 @@
         _ => "Tu cuenta quedó configurada."
     };
 
+    protected override void OnInitialized()
+    {
+        if (HttpContext.User.Identity?.IsAuthenticated == true)
+        {
+            Navigation.NavigateTo(LoginRedirect.SanitizeReturnUrl(ReturnUrl));
+            return;
+        }
+
+        if (PostedDni is not null)
+        {
+            DniInput = PostedDni;
+        }
+        else if (PostedLogin is not null)
+        {
+            LoginInput = PostedLogin;
+            _step = LoginStep.Login;
+        }
+        else if (PostedCreatePassword is not null)
+        {
+            CreatePasswordInput = PostedCreatePassword;
+            _step = LoginStep.CreatePassword;
+        }
+    }
+
     private static string NormalizeDni(string dni) =>
         string.Concat(dni.Where(c => !char.IsWhiteSpace(c) && c != '.' && c != '-'));
 
+    private static string FormatDni(string dni) =>
+        string.Join('.', new[] { Slice(dni, 0, 2), Slice(dni, 2, 3), Slice(dni, 5, 3) }.Where(part => part.Length > 0));
+
+    private static string Slice(string value, int start, int length) =>
+        start >= value.Length ? string.Empty : value.Substring(start, Math.Min(length, value.Length - start));
+
     private async Task HandleDni()
     {
-        _isSubmitting = true;
         _errorMessage = null;
 
         try
         {
-            var dni = NormalizeDni(_dniModel.Dni);
+            var dni = NormalizeDni(DniInput.Dni);
             var result = await AuthApiClient.CheckDniAsync(dni);
 
             if (!result.IsSuccess)
@@ -245,63 +251,55 @@
                 return;
             }
 
-            _dni = dni;
-            _loginModel = new LoginModel { Dni = dni };
-            _createPasswordModel = new CreatePasswordModel();
-            _step = result.Access == DniAccess.HasPassword ? LoginStep.Login : LoginStep.CreatePassword;
+            if (result.Access == DniAccess.HasPassword)
+            {
+                LoginInput = new LoginModel { Dni = dni, Nombre = result.Nombre ?? string.Empty };
+                _step = LoginStep.Login;
+            }
+            else
+            {
+                CreatePasswordInput = new CreatePasswordModel { Dni = dni, Nombre = result.Nombre ?? string.Empty };
+                _step = LoginStep.CreatePassword;
+            }
         }
         catch (HttpRequestException)
         {
             _errorMessage = "No fue posible conectar con la API.";
-        }
-        finally
-        {
-            _isSubmitting = false;
         }
     }
 
     private async Task HandleLogin()
     {
-        _isSubmitting = true;
         _errorMessage = null;
 
         try
         {
-            var result = await AuthApiClient.LoginAsync(_loginModel);
+            var result = await AuthApiClient.LoginAsync(LoginInput);
 
-            if (result is null)
+            if (!result.IsSuccess)
             {
-                _errorMessage = "La API devolvió una respuesta inválida.";
+                _errorMessage = result.Error;
+                LoginInput.Password = string.Empty;
                 return;
             }
 
-            if (result.IsSuccess)
-            {
-                Navigation.NavigateTo("/");
-            }
-            else
-            {
-                _errorMessage = result.Error;
-            }
+            await AuthCookie.SignInAsync(HttpContext, result.Tokens!, result.User!);
+            Navigation.NavigateTo(LoginRedirect.SanitizeReturnUrl(ReturnUrl));
         }
         catch (HttpRequestException)
         {
             _errorMessage = "No fue posible conectar con la API.";
-        }
-        finally
-        {
-            _isSubmitting = false;
+            LoginInput.Password = string.Empty;
         }
     }
 
     private async Task HandleCreatePassword()
     {
-        _isSubmitting = true;
         _errorMessage = null;
 
         try
         {
-            var result = await AuthApiClient.CreatePasswordAsync(_dni, _createPasswordModel);
+            var result = await AuthApiClient.CreatePasswordAsync(CreatePasswordInput.Dni, CreatePasswordInput);
 
             if (result.IsSuccess)
             {
@@ -310,33 +308,15 @@
             else
             {
                 _errorMessage = result.Error;
+                CreatePasswordInput.Password = string.Empty;
+                CreatePasswordInput.ConfirmPassword = string.Empty;
             }
         }
         catch (HttpRequestException)
         {
             _errorMessage = "No fue posible conectar con la API.";
+            CreatePasswordInput.Password = string.Empty;
+            CreatePasswordInput.ConfirmPassword = string.Empty;
         }
-        finally
-        {
-            _isSubmitting = false;
-        }
-    }
-
-    private void BackToDni()
-    {
-        _errorMessage = null;
-        _loginModel = new LoginModel();
-        _createPasswordModel = new CreatePasswordModel();
-        _step = LoginStep.Dni;
-    }
-
-    private void GoToInitialView()
-    {
-        _errorMessage = null;
-        _dniModel = new DniModel();
-        _dni = string.Empty;
-        _loginModel = new LoginModel();
-        _createPasswordModel = new CreatePasswordModel();
-        _step = LoginStep.Dni;
     }
 }

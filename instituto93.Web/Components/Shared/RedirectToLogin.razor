@@ -1,0 +1,6 @@
+@using instituto93.Web.Auth
+@inject NavigationManager Navigation
+
+@code {
+    protected override void OnInitialized() => LoginRedirect.Navigate(Navigation);
+}

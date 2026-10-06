@@ -1,11 +1,8 @@
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.JsonWebTokens;
+using instituto93.Application;
 using instituto93.Application.Interfaces;
 
 namespace WebApplication1.Controllers
@@ -16,22 +13,27 @@ namespace WebApplication1.Controllers
     {
         private readonly IUsuarioService _usuarioService;
         private readonly IAlumnoAccesoService _alumnoAccesoService;
-        private readonly IConfiguration _configuration;
+        private readonly IAuthTokenService _authTokenService;
 
         public AuthController(
             IUsuarioService usuarioService,
             IAlumnoAccesoService alumnoAccesoService,
-            IConfiguration configuration)
+            IAuthTokenService authTokenService)
         {
             _usuarioService = usuarioService;
             _alumnoAccesoService = alumnoAccesoService;
-            _configuration = configuration;
+            _authTokenService = authTokenService;
         }
 
         public class LoginRequest
         {
             public string Dni { get; set; } = string.Empty;
             public string Password { get; set; } = string.Empty;
+        }
+
+        public class RefreshTokenRequest
+        {
+            public string RefreshToken { get; set; } = string.Empty;
         }
 
         public class DniStatusRequest
@@ -53,12 +55,12 @@ namespace WebApplication1.Controllers
             if (model == null || string.IsNullOrWhiteSpace(model.Dni))
                 return BadRequest(new { message = "Ingresá tu DNI." });
 
-            var estado = await _alumnoAccesoService.ConsultarDniAsync(model.Dni, cancellationToken);
+            var (estado, nombre) = await _alumnoAccesoService.ConsultarAccesoAsync(model.Dni, cancellationToken);
             return estado switch
             {
                 EstadoAccesoDni.NoEncontrado => NotFound(new { message = "No encontramos un alumno con ese DNI. Revisá el número ingresado o comunicate con el instituto." }),
-                EstadoAccesoDni.ConContrasena => Ok(new { estado = nameof(EstadoAccesoDni.ConContrasena) }),
-                _ => Ok(new { estado = nameof(EstadoAccesoDni.SinContrasena) })
+                EstadoAccesoDni.ConContrasena => Ok(new { estado = nameof(EstadoAccesoDni.ConContrasena), nombre }),
+                _ => Ok(new { estado = nameof(EstadoAccesoDni.SinContrasena), nombre })
             };
         }
 
@@ -86,6 +88,7 @@ namespace WebApplication1.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<IActionResult> Login([FromBody] LoginRequest model, CancellationToken cancellationToken)
         {
             if (model == null || string.IsNullOrWhiteSpace(model.Dni) || string.IsNullOrWhiteSpace(model.Password))
@@ -95,35 +98,62 @@ namespace WebApplication1.Controllers
             if (usuario == null)
                 return Unauthorized(new { message = "DNI o contraseña incorrectos." });
 
-            var alumno = usuario.Alumno!;
+            var tokens = await _authTokenService.IssueAsync(usuario, cancellationToken);
+            return Ok(TokenResponse.From(tokens));
+        }
 
-            var secret = _configuration["Jwt:Secret"] ?? "4d6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d6a6d";
-            var key = Encoding.UTF8.GetBytes(secret);
+        [HttpPost("refresh")]
+        [AllowAnonymous]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest model, CancellationToken cancellationToken)
+        {
+            if (model == null || string.IsNullOrWhiteSpace(model.RefreshToken))
+                return BadRequest(new { message = "Refresh token requerido." });
 
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-                new Claim("alumnoId", usuario.AlumnoId.ToString()),
-                new Claim(ClaimTypes.Name, $"{alumno.Nombre} {alumno.Apellido}"),
-                new Claim(ClaimTypes.Email, alumno.Email ?? string.Empty)
-            };
+            var tokens = await _authTokenService.RefreshAsync(model.RefreshToken, cancellationToken);
+            return tokens is null
+                ? Unauthorized(new { message = "La sesión expiró. Iniciá sesión nuevamente." })
+                : Ok(TokenResponse.From(tokens));
+        }
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddHours(8),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
-            };
+        [HttpPost("logout")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Logout([FromBody] RefreshTokenRequest model, CancellationToken cancellationToken)
+        {
+            if (model != null && !string.IsNullOrWhiteSpace(model.RefreshToken))
+                await _authTokenService.RevokeAsync(model.RefreshToken, cancellationToken);
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var jwt = tokenHandler.WriteToken(token);
+            return NoContent();
+        }
 
+        [HttpGet("me")]
+        [Authorize]
+        public IActionResult Me()
+        {
             return Ok(new
             {
-                token = jwt,
-                expires = token.ValidTo
+                usuarioId = int.Parse(User.FindFirstValue(JwtRegisteredClaimNames.Sub)!),
+                alumnoId = int.Parse(User.FindFirstValue(AuthTokenService.AlumnoIdClaim)!),
+                nombre = User.FindFirstValue(JwtRegisteredClaimNames.Name) ?? string.Empty,
+                email = User.FindFirstValue(JwtRegisteredClaimNames.Email)
             });
+        }
+
+        private sealed record TokenResponse(
+            string AccessToken,
+            string TokenType,
+            int ExpiresIn,
+            DateTime AccessTokenExpiresAt,
+            string RefreshToken,
+            DateTime RefreshTokenExpiresAt)
+        {
+            public static TokenResponse From(TokenPair tokens) => new(
+                tokens.AccessToken,
+                "Bearer",
+                (int)Math.Max(0, (tokens.AccessTokenExpiresAt - DateTime.UtcNow).TotalSeconds),
+                tokens.AccessTokenExpiresAt,
+                tokens.RefreshToken,
+                tokens.RefreshTokenExpiresAt);
         }
     }
 }

@@ -2,7 +2,12 @@
     <Found Context="routeData">
         @* Si la página no especifica un layout, usar el layout por defecto *@
         @* Por esto mismo no hace falta declarar el @layout en cada página, como en Index.Razor *@
-        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+        @* Las páginas requieren sesión por defecto (Pages/_Imports.razor); las públicas usan [AllowAnonymous]. *@
+        <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
+            <NotAuthorized>
+                <RedirectToLogin />
+            </NotAuthorized>
+        </AuthorizeRouteView>
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
     <NotFound>

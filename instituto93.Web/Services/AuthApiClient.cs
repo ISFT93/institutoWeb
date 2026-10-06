@@ -1,3 +1,5 @@
+using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using instituto93.Web.Models;
@@ -11,15 +13,61 @@ public sealed class AuthApiClient(HttpClient httpClient)
         var request = new LoginRequest(model.Dni, model.Password);
         using var response = await httpClient.PostAsJsonAsync("api/Auth/login", request, cancellationToken);
 
-        if (response.IsSuccessStatusCode)
-        {
-            var payload = await response.Content.ReadFromJsonAsync<LoginResponse>(cancellationToken);
-            return payload?.Token is not null
-                ? LoginResult.Success(payload.Token)
-                : LoginResult.Failure("La API no devolvió un token de acceso.");
-        }
+        if (!response.IsSuccessStatusCode)
+            return LoginResult.Failure(await ReadErrorAsync(response, "No fue posible iniciar sesión.", cancellationToken));
 
-        return LoginResult.Failure(await ReadErrorAsync(response, "No fue posible iniciar sesión.", cancellationToken));
+        var tokens = ToTokenSet(await response.Content.ReadFromJsonAsync<TokenResponse>(cancellationToken));
+        if (tokens is null)
+            return LoginResult.Failure("La API no devolvió un token de acceso.");
+
+        var user = await GetCurrentUserAsync(tokens.AccessToken, cancellationToken);
+        return user is null
+            ? LoginResult.Failure("La API no devolvió los datos del usuario.")
+            : LoginResult.Success(tokens, user);
+    }
+
+    // Devuelve null si la API rechazó el refresh token (401/400). Lanza HttpRequestException
+    // ante errores de red o del servidor, que no deben cerrar la sesión.
+    public async Task<TokenSet?> RefreshAsync(string refreshToken, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            using var response = await httpClient.PostAsJsonAsync(
+                "api/Auth/refresh",
+                new RefreshTokenRequest(refreshToken),
+                cancellationToken);
+
+            if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.BadRequest)
+                return null;
+
+            response.EnsureSuccessStatusCode();
+            return ToTokenSet(await response.Content.ReadFromJsonAsync<TokenResponse>(cancellationToken))
+                ?? throw new HttpRequestException("La API devolvió una respuesta de refresh inválida.");
+        }
+        catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
+        {
+            throw new HttpRequestException("La API no respondió a tiempo.", ex);
+        }
+    }
+
+    public async Task LogoutAsync(string refreshToken, CancellationToken cancellationToken = default)
+    {
+        using var response = await httpClient.PostAsJsonAsync(
+            "api/Auth/logout",
+            new RefreshTokenRequest(refreshToken),
+            cancellationToken);
+        response.EnsureSuccessStatusCode();
+    }
+
+    private async Task<CurrentUser?> GetCurrentUserAsync(string accessToken, CancellationToken cancellationToken)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Get, "api/Auth/me");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        using var response = await httpClient.SendAsync(request, cancellationToken);
+
+        return response.IsSuccessStatusCode
+            ? await response.Content.ReadFromJsonAsync<CurrentUser>(cancellationToken)
+            : null;
     }
 
     public async Task<DniCheckResult> CheckDniAsync(string dni, CancellationToken cancellationToken = default)
@@ -32,8 +80,8 @@ public sealed class AuthApiClient(HttpClient httpClient)
         var payload = await response.Content.ReadFromJsonAsync<DniStatusResponse>(cancellationToken);
         return payload?.Estado switch
         {
-            "ConContrasena" => DniCheckResult.Ok(DniAccess.HasPassword),
-            "SinContrasena" => DniCheckResult.Ok(DniAccess.NeedsPassword),
+            "ConContrasena" => DniCheckResult.Ok(DniAccess.HasPassword, payload.Nombre),
+            "SinContrasena" => DniCheckResult.Ok(DniAccess.NeedsPassword, payload.Nombre),
             _ => DniCheckResult.Failure("La API devolvió una respuesta inválida.")
         };
     }
@@ -61,18 +109,33 @@ public sealed class AuthApiClient(HttpClient httpClient)
         }
     }
 
+    private static TokenSet? ToTokenSet(TokenResponse? response) =>
+        string.IsNullOrWhiteSpace(response?.AccessToken) || string.IsNullOrWhiteSpace(response.RefreshToken)
+            ? null
+            : new TokenSet(
+                response.AccessToken,
+                response.AccessTokenExpiresAt,
+                response.RefreshToken,
+                response.RefreshTokenExpiresAt);
+
     private sealed record LoginRequest(string Dni, string Password);
-    private sealed record LoginResponse(string Token);
+    private sealed record RefreshTokenRequest(string RefreshToken);
+    private sealed record TokenResponse(
+        string? AccessToken,
+        DateTimeOffset AccessTokenExpiresAt,
+        string? RefreshToken,
+        DateTimeOffset RefreshTokenExpiresAt);
     private sealed record DniStatusRequest(string Dni);
-    private sealed record DniStatusResponse(string Estado);
+    private sealed record DniStatusResponse(string Estado, string? Nombre);
     private sealed record CreatePasswordRequest(string Dni, string Password, string ConfirmPassword);
     private sealed record ApiError(string? Message);
 }
 
-public sealed record LoginResult(bool IsSuccess, string? Token, string? Error)
+public sealed record LoginResult(TokenSet? Tokens, CurrentUser? User, string? Error)
 {
-    public static LoginResult Success(string token) => new(true, token, null);
-    public static LoginResult Failure(string error) => new(false, null, error);
+    public bool IsSuccess => Tokens is not null && User is not null;
+    public static LoginResult Success(TokenSet tokens, CurrentUser user) => new(tokens, user, null);
+    public static LoginResult Failure(string error) => new(null, null, error);
 }
 
 public enum DniAccess
@@ -81,10 +144,10 @@ public enum DniAccess
     NeedsPassword
 }
 
-public sealed record DniCheckResult(DniAccess? Access, string? Error)
+public sealed record DniCheckResult(DniAccess? Access, string? Error, string? Nombre = null)
 {
     public bool IsSuccess => Access is not null;
-    public static DniCheckResult Ok(DniAccess access) => new(access, null);
+    public static DniCheckResult Ok(DniAccess access, string? nombre = null) => new(access, null, nombre);
     public static DniCheckResult Failure(string error) => new(null, error);
 }
 

@@ -1,6 +1,41 @@
 @page "/"
+@using System.Net
+@using instituto93.Web.Models
+@using instituto93.Web.Services
+@inject AccountApiClient AccountApiClient
 
 <PageTitle>Instituto 93</PageTitle>
 
 <h1 class="mud-typography mud-typography-h5 mud-primary-text">Instituto 93 — Web</h1>
-<p class="mud-typography mud-typography-body1">El proyecto web está funcionando.</p>
+
+@if (_user is not null)
+{
+    <p class="mud-typography mud-typography-body1">Hola, @_user.Nombre.</p>
+}
+else if (_error is not null)
+{
+    <MudAlert Severity="Severity.Error" Class="mt-4">@_error</MudAlert>
+}
+
+<LogoutForm />
+
+@code {
+    private CurrentUser? _user;
+    private string? _error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _user = await AccountApiClient.GetCurrentUserAsync();
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            _error = "Tu sesión venció. Recargá la página para continuar.";
+        }
+        catch (HttpRequestException)
+        {
+            _error = "No fue posible conectar con la API.";
+        }
+    }
+}

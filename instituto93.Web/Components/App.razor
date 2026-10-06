@@ -9,14 +9,24 @@
     <link rel="stylesheet" href="css/app.css" />
     <link rel="stylesheet" href="instituto93.Web.styles.css" />
     <link rel="icon" type="image/png" href="images/favicon.png" />
-    <HeadOutlet @rendermode="InteractiveServer" />
+    <HeadOutlet @rendermode="PageRenderMode" />
 </head>
 
 <body>
-    <Routes @rendermode="InteractiveServer" />
+    <Routes @rendermode="PageRenderMode" />
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
     <script src="js/dni-input.js"></script>
     <script src="_framework/blazor.web.js"></script>
 </body>
 
 </html>
+
+@code {
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    // El login escribe la cookie de autenticación, y eso solo se puede hacer en una request HTTP:
+    // se renderiza con SSR estático (sin render mode). El resto de la app es Interactive Server.
+    private IComponentRenderMode? PageRenderMode =>
+        HttpContext.Request.Path.StartsWithSegments("/login") ? null : InteractiveServer;
+}
