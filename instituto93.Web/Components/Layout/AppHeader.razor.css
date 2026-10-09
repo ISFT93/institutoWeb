@@ -1,0 +1,61 @@
+.app-header-wrapper ::deep .app-header {
+    background-color: #22426A;
+}
+
+.app-header-wrapper ::deep .app-header .mud-toolbar {
+    gap: 0.75rem;
+
+    height: 74px;
+    padding-right: 2%;
+}
+
+.app-header-wrapper ::deep .app-header-logo {
+    width: 62px;
+    height: 62px;
+
+    box-sizing: border-box;
+    background-color: #ffffff;
+    border: 2px solid #ffffff;
+}
+
+.app-header-wrapper ::deep .app-header-logo .mud-image {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.app-header-title {
+    color: #ffffff;
+
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.app-header-user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    margin-left: auto;
+}
+
+.app-header-user-name {
+    color: #ffffff;
+
+    font-size: 0.875rem;
+    font-weight: 400;
+}
+
+.app-header-wrapper ::deep .app-header-user-avatar {
+    width: 48px;
+    height: 48px;
+
+    box-sizing: border-box;
+    background-color: #ffffff;
+}
+
+.app-header-wrapper ::deep .app-header-user-avatar .mud-icon-root {
+    font-size: 1.8rem;
+}

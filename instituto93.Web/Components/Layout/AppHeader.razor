@@ -1,0 +1,60 @@
+@using instituto93.Web.Services
+@inject AccountApiClient AccountApiClient
+
+<div class="app-header-wrapper">
+    <MudAppBar Class="app-header"
+               Fixed="false"
+               Color="Color.Primary"
+               Elevation="0">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                       Color="Color.Inherit"
+                       Edge="Edge.Start"
+                       Size="Size.Small"
+                       aria-label="Abrir menú" />
+
+        <MudAvatar Class="app-header-logo" Size="Size.Medium" Color="Color.Surface">
+            <MudImage Src="/images/logo.png"
+                      Alt="Logo del Instituto Superior de Formación Docente y Técnica N°93" />
+        </MudAvatar>
+
+        <span class="app-header-title">
+            Instituto Superior de Formación Docente y<br />
+            Tecnica N°93
+        </span>
+
+        <div class="app-header-user">
+            <MudBadge Dot="true" Color="Color.Surface" Overlap="true">
+                <MudIconButton Icon="@Icons.Material.Outlined.NotificationsNone"
+                               Color="Color.Inherit"
+                               Size="Size.Small"
+                               aria-label="Notificaciones" />
+            </MudBadge>
+
+            <span class="app-header-user-name">@_userName</span>
+
+            <MudAvatar Class="app-header-user-avatar" Size="Size.Medium" Variant="Variant.Filled" Color="Color.Surface">
+                <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Large" Color="Color.Primary" />
+            </MudAvatar>
+        </div>
+    </MudAppBar>
+</div>
+
+@code {
+    private string _userName = "Estudiante";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var user = await AccountApiClient.GetCurrentUserAsync();
+            if (user is not null)
+            {
+                _userName = user.Nombre;
+            }
+        }
+        catch
+        {
+            // Sin sesión o sin API: se muestra el nombre por defecto.
+        }
+    }
+}
