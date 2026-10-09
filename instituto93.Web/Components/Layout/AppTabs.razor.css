@@ -48,3 +48,39 @@
 .app-tabs ::deep .app-tab-icon {
     font-size: 1.55rem;
 }
+
+/* --- Menús desplegables (Instituto / Calendario / Trámites) ---------- */
+
+/* El MudMenu debe ocupar la altura completa de la barra para que el
+   activador se vea igual que los demás ítems (mismo centro vertical). */
+.app-tabs ::deep .app-tab-menu {
+    align-self: stretch;
+}
+
+/* Menor separación entre el texto y el chevron que entre ítems. */
+.app-tabs ::deep .app-tab-menu .app-tab {
+    gap: 4px;
+}
+
+.app-tabs ::deep .app-tab-chevron {
+    font-size: 1.4rem;
+    color: #ffffff;
+    transition: transform 0.2s ease;
+}
+
+/* Detalle opcional: el chevron rota 180° cuando el menú está abierto
+   (el activador expone aria-expanded="true"). */
+.app-tabs ::deep .app-tab-menu .mud-menu-activator[aria-expanded="true"] .app-tab-chevron {
+    transform: rotate(180deg);
+}
+
+/* El foco de teclado cae en el div activador, que usa display:contents y
+   no dibuja outline; el outline se pinta en su hijo .app-tab. */
+.app-tabs ::deep .app-tab-menu .mud-menu-activator:focus {
+    outline: none;
+}
+
+.app-tabs ::deep .app-tab-menu .mud-menu-activator:focus-within .app-tab {
+    outline: 2px solid rgba(255, 255, 255, 0.6);
+    outline-offset: -2px;
+}
