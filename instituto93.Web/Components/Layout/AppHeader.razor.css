@@ -59,3 +59,46 @@
 .app-header-wrapper ::deep .app-header-user-avatar .mud-icon-root {
     font-size: 1.8rem;
 }
+
+/* --- Menú de usuario (Cerrar sesión) -------------------------------- */
+
+/* El form solo existe para envolver el menú y poder hacer el POST a
+   /account/logout con token antiforgery; no debe afectar el layout. */
+.app-header-logout-form {
+    display: contents;
+}
+
+/* Bloque nombre + avatar + chevron: mismo look que antes, todo clickeable. */
+.app-header-wrapper ::deep .app-header-user-block {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    cursor: pointer;
+}
+
+.app-header-wrapper ::deep .app-header-user-chevron {
+    font-size: 1.2rem;
+    color: #ffffff;
+
+    /* pegado al avatar (gap del bloque 0.75rem menos 0.5rem) */
+    margin-left: -0.5rem;
+    transition: transform 0.2s ease;
+}
+
+/* Detalle: el chevron rota 180° con el menú abierto (aria-expanded). */
+.app-header-wrapper ::deep .app-header-user-menu .mud-menu-activator[aria-expanded="true"] .app-header-user-chevron {
+    transform: rotate(180deg);
+}
+
+/* El foco de teclado cae en el div activador (display:contents, sin outline):
+   el outline se pinta en su hijo. */
+.app-header-wrapper ::deep .app-header-user-menu .mud-menu-activator:focus {
+    outline: none;
+}
+
+.app-header-wrapper ::deep .app-header-user-menu .mud-menu-activator:focus-within .app-header-user-block {
+    outline: 2px solid rgba(255, 255, 255, 0.6);
+    outline-offset: -2px;
+    border-radius: 4px;
+}
