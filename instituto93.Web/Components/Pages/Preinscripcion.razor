@@ -105,13 +105,14 @@
                         }
                     </MudSelect>
 
-                    <MudTextField
+                    <MudNumericField
                         Label="Número de documento *"
                         @bind-Value="_model.NumeroDocumento"
                         For="@(() => _model.NumeroDocumento)"
                         Variant="Variant.Outlined"
                         MaxLength="8"
-                        FullWidth />
+                        FullWidth
+                        HideSpinButtons />
 
                     <MudSelect
                         Label="Pais de nacimiento *"
@@ -182,13 +183,14 @@
                         MaxLength="255"
                         FullWidth />
 
-                    <MudTextField 
+                    <MudNumericField 
                         Label="Número *"
                         @bind-Value="_model.Numero"
                         For="@(() => _model.Numero)"
                         Variant="Variant.Outlined"
                         MaxLength="10"
-                        FullWidth />
+                        FullWidth
+                        HideSpinButtons />
 
                     <MudTextField
                         Label="Piso"
@@ -257,21 +259,23 @@
                         MaxLength="255"
                         FullWidth />
 
-                    <MudTextField 
+                    <MudNumericField 
                         Label="Celular *"
                         @bind-Value="_model.Celular"
                         For="@(() => _model.Celular)"
                         Variant="Variant.Outlined"
                         MaxLength="30"
-                        FullWidth />
+                        FullWidth
+                        HideSpinButtons />
 
-                    <MudTextField
+                    <MudNumericField
                         Label="Teléfono fijo *"
                         @bind-Value="_model.Telefono"
                         For="@(() => _model.Telefono)"
                         Variant="Variant.Outlined"
                         MaxLength="30"
-                        FullWidth />
+                        FullWidth
+                        HideSpinButtons />
 
                     
                 </div>
@@ -612,13 +616,14 @@
                         MaxLength="100"
                         FullWidth />
 
-                    <MudTextField 
+                    <MudNumericField 
                         Label="Teléfono del contacto de emergencia *"
                         @bind-Value="_model.TelefonoContacto"
                         For="@(() => _model.TelefonoContacto)"
                         Variant="Variant.Outlined"
                         MaxLength="20"
-                        FullWidth />
+                        FullWidth
+                        HideSpinButtons />
                 </div>
             </article>
 
