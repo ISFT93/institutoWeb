@@ -1,0 +1,40 @@
+.app-tabs {
+    background-color: #43669A;
+    height: 50px;
+    width: 100%;
+    overflow-x: auto;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.app-tabs-inner {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    gap: 5rem;
+
+    height: 100%;
+    min-width: max-content;
+}
+
+.app-tabs ::deep .app-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    color: #ffffff;
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-transform: none;
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+}
+
+.app-tabs ::deep .app-tab.active {
+    border-bottom-color: #ffffff;
+}
+
+.app-tabs ::deep .app-tab-icon {
+    font-size: 1.55rem;
+}
