@@ -1,6 +1,5 @@
 .mesas-finales-page {
     min-height: 100vh;
-    padding-top: 124px; /* evitar solapamiento con header sticky */
 
     background: #F5F8FD;
 }
@@ -10,7 +9,7 @@
 
     margin-left: 6.5%;
     margin-right: 10%;
-    padding: 2rem 0 3rem;
+    padding: 2.5rem 0 3rem; /* el header sticky ya ocupa su lugar en el flujo: solo 40px hasta el título */
 }
 
 /* Título */
