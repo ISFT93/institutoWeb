@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscripción Provisoria - Instituto 93</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body style="background-color: #fff8f3;">
+
+    <div class="container-fluid min-vh-100 p-4 p-md-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-xl-10">
+                
+                <h2 class="fw-bold mb-1">Inscripción Provisoria al Instituto</h2>
+                <p class="text-muted mb-4">Completá el formulario con tus datos para registrar tu solicitud de ingreso.</p>
+
+                <!-- Alerta de Éxito -->
+                <div id="alertaExito" class="alert alert-success alert-dismissible fade show mb-4 d-none" role="alert">
+                    <strong>¡Inscripción enviada con éxito!</strong> Se registraron tus datos correctamente.
+                    <button type="button" class="btn-close" onclick="ocultarAlertas()"></button>
+                </div>
+
+                <!-- Alerta de Error -->
+                <div id="alertaError" class="alert alert-danger alert-dismissible fade show mb-4 d-none" role="alert">
+                    <strong>¡Error!</strong> <span id="textoError"></span>
+                    <button type="button" class="btn-close" onclick="ocultarAlertas()"></button>
+                </div>
+
+                <!-- Formulario -->
+                <form id="formInscripcion" onsubmit="guardarPreinscripcion(event)">
+
+                    <!-- DATOS PERSONALES -->
+                    <h5 class="fw-bold text-secondary border-bottom pb-2 mb-3">Datos Personales</h5>
+                    
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold text-uppercase small">Nombre</label>
+                            <input type="text" id="nombre" class="form-control" placeholder="Ej: Juan" required />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold text-uppercase small">Apellido</label>
+                            <input type="text" id="apellido" class="form-control" placeholder="Ej: Pérez" required />
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold text-uppercase small">D.N.I.</label>
+                            <input type="text" id="dni" class="form-control" placeholder="Sin puntos" required />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold text-uppercase small">Sexo</label>
+                            <input type="text" id="sexo" class="form-control" placeholder="Un solo carácter" />
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold text-uppercase small">Fecha de Nacimiento</label>
+                            <input type="date" id="fechaNacimiento" class="form-control" />
+                        </div>
+                    </div>
+
+                    <!-- CONTACTO -->
+                    <h5 class="fw-bold text-secondary border-bottom pb-2 mb-3">Contacto</h5>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold text-uppercase small">Correo Electrónico</label>
+                            <input type="email" id="email" class="form-control" placeholder="nombre@ejemplo.com" required />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold text-uppercase small">Teléfono Móvil</label>
+                            <input type="text" id="telefono" class="form-control" placeholder="Ej: 1112345678" />
+                        </div>
+                    </div>
+
+                    <!-- DOMICILIO -->
+                    <h5 class="fw-bold text-secondary border-bottom pb-2 mb-3">Domicilio</h5>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold text-uppercase small">Dirección (Calle y Número)</label>
+                            <input type="text" id="calle" class="form-control" placeholder="Ej: Av. Rivadavia 1234" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold text-uppercase small">Localidad / Municipio</label>
+                            <input type="text" id="localidad" class="form-control" placeholder="Ej: San Vicente" />
+                        </div>
+                    </div>
+
+                    <!-- CARRERA A INSCRIBIRSE -->
+                    <h5 class="fw-bold text-secondary border-bottom pb-2 mb-3">Selección de Carrera</h5>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label class="form-label fw-bold text-uppercase small">Carrera</label>
+                            <select id="carrera" class="form-select" required>
+                                <option value="">-- Seleccioná una carrera --</option>
+                                <option value="Análisis, Desarrollo y Programación de Aplicaciones">Análisis, Desarrollo y Programación de Aplicaciones</option>
+                                <option value="Tecnicatura Superior en Enfermería">Tecnicatura Superior en Enfermería</option>
+                                <option value="Tecnicatura Superior en Higiene y Seguridad">Tecnicatura Superior en Higiene y Seguridad</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- BOTÓN DE ENVÍO -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <button type="submit" id="btnSubmit" class="btn btn-primary btn-lg px-5">
+                            <span id="btnText">Enviar Inscripción Provisoria</span>
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+
+    <!-- JavaScript Lógica -->
+    <script>
+        // Establecer la fecha actual por defecto en el input de fecha al cargar la página
+        document.addEventListener("DOMContentLoaded", () => {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('fechaNacimiento').value = today;
+        });
+
+        function ocultarAlertas() {
+            document.getElementById('alertaExito').classList.add('d-none');
+            document.getElementById('alertaError').classList.add('d-none');
+        }
+
+        async function guardarPreinscripcion(event) {
+            event.preventDefault();
+            ocultarAlertas();
+
+            const btnSubmit = document.getElementById('btnSubmit');
+            const btnText = document.getElementById('btnText');
+
+            // Cambiar estado a "Guardando..." con spinner
+            btnSubmit.disabled = true;
+            btnText.innerHTML = `
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                <span>Enviando...</span>
+            `;
+
+            // Construir el objeto JSON equivalente al DTO de C#
+            const modelo = {
+                Apellido: document.getElementById('apellido').value,
+                Nombre: document.getElementById('nombre').value,
+                TipoDocumento: "Dni",
+                Dni: document.getElementById('dni').value,
+                Sexo: document.getElementById('sexo').value,
+                FechaNacimiento: document.getElementById('fechaNacimiento').value,
+                Calle: document.getElementById('calle').value,
+                Localidad: document.getElementById('localidad').value,
+                Telefono: document.getElementById('telefono').value,
+                Email: document.getElementById('email').value,
+                Carrera: document.getElementById('carrera').value
+            };
+
+            try {
+                // Realizar la petición POST a tu API
+                const response = await fetch("https://localhost:7275/Alumno", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+  "alumnoId": 0,
+  "apellido": modelo.Apellido,
+  "nombre": modelo.Nombre,
+  "tipoDocumento": modelo.TipoDocumento,
+  "numeroDocumento": modelo.Dni,
+  "estadoCivil": "string",
+  "sexo": modelo.Sexo,
+  "fechaNacimiento": modelo.FechaNacimiento,
+  "localidadNacimiento": "string",
+  "paisNacimiento": "string",
+  "calle": modelo.Calle,
+  "numero": "string",
+  "piso": "string",
+  "departamento": "string",
+  "provincia": "string",
+  "distrito": "string",
+  "localidad": modelo.Localidad,
+  "codigoPostal": "string",
+  "telefono": modelo.Telefono,
+  "celular": "string",
+  "email": modelo.Email,
+  "tituloSecundario": true,
+  "materiasAdeuda": 0,
+  "descripcionMaterias": "string",
+  "titulo": "string",
+  "orientacion": "string",
+  "otorgadoPor": "string",
+  "anioEgreso": 0,
+  "promedio": 0,
+  "tituloTramite": true,
+  "mayorTitulo": "string",
+  "otroTitulo": "string",
+  "mayorOtorgadoPor": "string",
+  "mayorPromedio": 0,
+  "fotocopiaTitulo": true,
+  "constanciaTituloTramite": true,
+  "constanciaAdeudaMaterias": true,
+  "cantidadAdeudaMaterias": 0,
+  "certificadoAptitud": true,
+  "fotocopiaDocumento": true,
+  "fotoCarnet": true,
+  "fotocopiaPartidaNacimiento": true,
+  "vacunaAntihepatitis": true,
+  "vacunaAntitetanica": true,
+  "recibo": 0,
+  "monto": 0,
+  "obraSocialPrepaga": true,
+  "descripcionObraSocial": "string",
+  "tratamientoMedico": true,
+  "descripcionTratamiento": "string",
+  "medicacion": true,
+  "descripcionMedicacion": "string",
+  "discapacidad": true,
+  "descripcionDiscapacidad": "string",
+  "estadoDiscapacidad": "string",
+  "certificadoDiscapacidad": true,
+  "contactoEmergencia": "string",
+  "telefonoContacto": "string",
+  "fotoUrl": "string",
+  "activo": true,
+  "carrera": modelo.Carrera
+})
+                });
+
+                if (response.ok) {
+                    document.getElementById('alertaExito').classList.remove('d-none');
+                   // document.getElementById('formInscripcion').reset();
+                    // Restaurar fecha por defecto tras limpiar
+                  //  document.getElementById('fechaNacimiento').value = new Date().toISOString().split('T')[0];
+                } else {
+                    document.getElementById('textoError').innerText = `No se pudo completar el registro. Código de error: ${response.status}`;
+                    document.getElementById('alertaError').classList.remove('d-none');
+                }
+            } catch (error) {
+                document.getElementById('textoError').innerText = `Error de conexión con la API: ${error.message}`;
+                document.getElementById('alertaError').classList.remove('d-none');
+            } finally {
+                // Restaurar botón
+                btnSubmit.disabled = false;
+                btnText.innerHTML = `<span>Enviar Inscripción Provisoria</span>`;
+            }
+        }
+    </script>
+</body>
+</html>
