@@ -12,6 +12,8 @@ using WebApplication1.Middleware;
 
 Env.NoClobber().TraversePath().Load();
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Configuración simple: puedes mover esto a appsettings.json / User Secrets
@@ -26,6 +28,12 @@ builder.Services.AddScoped<instituto93.Data.Repositories.ICargosRepository, inst
 builder.Services.AddScoped<ICargosService, CargosService>();
 builder.Services.AddScoped<IPaisRepository, PaisRepository>();
 builder.Services.AddScoped<IPaisService, PaisService>();
+
+builder.Services.AddScoped<IAlumnoRepository, AlumnoRepository>();
+builder.Services.AddScoped<IAlumnoService, AlumnoService>();
+builder.Services.AddScoped<IAlumnosCarrerasRepository, AlumnosCarrerasRepository>();
+builder.Services.AddScoped<IAlumnosCarrerasService, AlumnosCarrerasService>();
+
 builder.Services.AddScoped<IInscripcionMateriaRepository, InscripcionMateriaRepository>();
 builder.Services.AddScoped<IInscripcionMateriaService, InscripcionMateriaService>();
 builder.Services.AddScoped<IPersonalRepository, PersonalRepository>();
@@ -56,7 +64,28 @@ builder.Services.AddSwaggerGen(c =>
         });
 });
 
+
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirBlazor",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
+
+
+
+
 var app = builder.Build();
+
+
+app.UseCors("PermitirBlazor");
+
 
 if (app.Environment.IsDevelopment())
 {

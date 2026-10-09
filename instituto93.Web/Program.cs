@@ -20,7 +20,29 @@ builder.Services.AddHttpClient<AuthApiClient>(client =>
     client.BaseAddress = new Uri($"{apiUri.AbsoluteUri.TrimEnd('/')}/");
 });
 
+
+
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirBlazor",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
+
+
+
+
+
 var app = builder.Build();
+
+
+app.UseCors("PermitirBlazor");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

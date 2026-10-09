@@ -31,5 +31,18 @@ namespace instituto93.Controller.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        [HttpPost]
+        public async Task<ActionResult<int>> CreateAlumno([FromBody] AlumnoModelo alumno, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var alumnoId = await _service.CreateAlumnoModelo(alumno, cancellationToken);
+                return Ok(alumnoId);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

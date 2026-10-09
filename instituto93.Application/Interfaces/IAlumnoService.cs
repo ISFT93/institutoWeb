@@ -9,5 +9,6 @@ namespace instituto93.Application
     public interface IAlumnoService
     {
         Task<List<AlumnoModelo>> GetAlumnosModelos(CancellationToken cancellationToken = default);
+        Task<int> CreateAlumnoModelo(AlumnoModelo alumno, CancellationToken cancellationToken = default);
     }
 }

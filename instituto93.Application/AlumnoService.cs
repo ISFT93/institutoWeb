@@ -17,6 +17,9 @@ namespace instituto93.Application
             var alumnosModelos = await _repo.GetAllAsync(cancellationToken);
             return alumnosModelos.ToList();
         }
-
+        public async Task<int> CreateAlumnoModelo(AlumnoModelo alumno, CancellationToken cancellationToken = default)
+        {
+            return await _repo.CreateAsync(alumno, cancellationToken);
+        }
     }
 }
