@@ -1,0 +1,74 @@
+<nav class="app-tabs">
+    <div class="app-tabs-inner">
+        <NavLink class="app-tab"
+                 href="/"
+                 Match="NavLinkMatch.All">
+            <MudIcon Icon="@Icons.Material.Filled.Home" Class="app-tab-icon" />
+            <span>Inicio</span>
+        </NavLink>
+
+        @* Instituto, Calendario y Trámites son menús desplegables con opciones
+           placeholder hardcodeadas en cada ChildContent de más abajo.
+
+           Para editar las opciones: cambiar el texto de cada MudMenuItem.
+           Cuando exista la página, cada opción navega agregándole Href, por
+           ejemplo: <MudMenuItem Href="/calendario">Calendario</MudMenuItem>
+           (sin Href no navegan ni cambian la URL).
+
+           Si en el futuro cada ítem pasa a ser una página simple, reemplazar
+           todo el MudMenu por un NavLink como el de "Inicio":
+           <NavLink class="app-tab" href="/instituto">Instituto</NavLink> *@
+
+        <MudMenu Class="app-tab-menu"
+                 PopoverClass="app-tab-menu-popover"
+                 AnchorOrigin="Origin.BottomCenter"
+                 TransformOrigin="Origin.TopCenter"
+                 ActivationEvent="MouseEvent.LeftClick">
+            <ActivatorContent>
+                <span class="app-tab" @onclick="context.ToggleAsync">
+                    <span>Instituto</span>
+                    <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowDown" Class="app-tab-chevron" />
+                </span>
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem>Nuestras Carreras</MudMenuItem>
+                <MudMenuItem>Perfil del Egresado</MudMenuItem>
+                <MudMenuItem>Datos Institucionales</MudMenuItem>
+            </ChildContent>
+        </MudMenu>
+
+        <MudMenu Class="app-tab-menu"
+                 PopoverClass="app-tab-menu-popover"
+                 AnchorOrigin="Origin.BottomCenter"
+                 TransformOrigin="Origin.TopCenter"
+                 ActivationEvent="MouseEvent.LeftClick">
+            <ActivatorContent>
+                <span class="app-tab" @onclick="context.ToggleAsync">
+                    <span>Calendario</span>
+                    <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowDown" Class="app-tab-chevron" />
+                </span>
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem>Calendario Academico 2026</MudMenuItem>
+            </ChildContent>
+        </MudMenu>
+
+        <MudMenu Class="app-tab-menu"
+                 PopoverClass="app-tab-menu-popover"
+                 AnchorOrigin="Origin.BottomCenter"
+                 TransformOrigin="Origin.TopCenter"
+                 ActivationEvent="MouseEvent.LeftClick">
+            <ActivatorContent>
+                <span class="app-tab" @onclick="context.ToggleAsync">
+                    <span>Trámites</span>
+                    <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowDown" Class="app-tab-chevron" />
+                </span>
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem>Formularios</MudMenuItem>
+                <MudMenuItem>Becas PROGRESAR</MudMenuItem>
+                <MudMenuItem>Horarios Ciclo Lectivo 2026</MudMenuItem>
+            </ChildContent>
+        </MudMenu>
+    </div>
+</nav>

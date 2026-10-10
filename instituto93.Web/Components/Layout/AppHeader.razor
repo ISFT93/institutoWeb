@@ -1,0 +1,91 @@
+@using instituto93.Web.Services
+@inject AccountApiClient AccountApiClient
+
+<div class="app-header-wrapper">
+    <MudAppBar Class="app-header"
+               Fixed="false"
+               Color="Color.Primary"
+               Elevation="0">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                       Color="Color.Inherit"
+                       Edge="Edge.Start"
+                       Size="Size.Small"
+                       aria-label="Abrir menú" />
+
+        <MudAvatar Class="app-header-logo" Size="Size.Medium" Color="Color.Surface">
+            <MudImage Src="/images/logo.png"
+                      Alt="Logo del Instituto Superior de Formación Docente y Técnica N°93" />
+        </MudAvatar>
+
+        <span class="app-header-title">
+            Instituto Superior de Formación Docente y<br />
+            Tecnica N°93
+        </span>
+
+        <div class="app-header-user">
+            <MudBadge Dot="true" Color="Color.Surface" Overlap="true">
+                <MudIconButton Icon="@Icons.Material.Outlined.NotificationsNone"
+                               Color="Color.Inherit"
+                               Size="Size.Small"
+                               aria-label="Notificaciones" />
+            </MudBadge>
+
+            @* La cookie de sesión (HttpOnly) solo se borra desde una request HTTP: el menú
+               vive dentro de este form (display:contents, invisible para el layout) y el
+               item "Cerrar sesión" lo envía vía js/app-header.js → POST /account/logout,
+               que revoca el refresh token, borra la cookie y redirige al login. *@
+            <form method="post" action="/account/logout" id="app-header-logout-form" class="app-header-logout-form">
+                <AntiforgeryToken />
+
+                <MudMenu Class="app-header-user-menu"
+                         PopoverClass="app-tab-menu-popover"
+                         AnchorOrigin="Origin.BottomRight"
+                         TransformOrigin="Origin.TopRight"
+                         ActivationEvent="MouseEvent.LeftClick">
+                    <ActivatorContent>
+                        <span class="app-header-user-block" @onclick="context.ToggleAsync">
+                            <span class="app-header-user-name">@_userName</span>
+
+                            <MudAvatar Class="app-header-user-avatar" Size="Size.Medium" Variant="Variant.Filled" Color="Color.Surface">
+                                <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Large" Color="Color.Primary" />
+                            </MudAvatar>
+
+                            <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowDown" Class="app-header-user-chevron" />
+                        </span>
+                    </ActivatorContent>
+                    <ChildContent>
+                        <MudMenuItem Icon="@Icons.Material.Outlined.Logout" OnClick="CerrarSesion">
+                            Cerrar sesión
+                        </MudMenuItem>
+                    </ChildContent>
+                </MudMenu>
+            </form>
+        </div>
+    </MudAppBar>
+</div>
+
+@code {
+    [Inject]
+    private IJSRuntime Js { get; set; } = default!;
+
+    private string _userName = "Estudiante";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var user = await AccountApiClient.GetCurrentUserAsync();
+            if (user is not null)
+            {
+                _userName = user.Nombre;
+            }
+        }
+        catch
+        {
+            // Sin sesión o sin API: se muestra el nombre por defecto.
+        }
+    }
+
+    private Task CerrarSesion(MouseEventArgs _) =>
+        Js.InvokeVoidAsync("appHeader.submitLogout").AsTask();
+}

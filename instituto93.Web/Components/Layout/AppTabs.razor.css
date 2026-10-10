@@ -1,0 +1,86 @@
+.app-tabs {
+    background-color: #43669A;
+    height: 50px;
+    width: 100%;
+    overflow-x: auto;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.app-tabs-inner {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    gap: 5rem;
+
+    height: 100%;
+    min-width: max-content;
+}
+
+.app-tabs ::deep .app-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+
+    color: #ffffff;
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-transform: none;
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+}
+
+.app-tabs ::deep .app-tab.active {
+    border-bottom-color: #ffffff;
+}
+
+.app-tabs ::deep .app-tab:focus {
+    outline: none;
+}
+
+.app-tabs ::deep .app-tab:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.6);
+    outline-offset: -2px;
+}
+
+.app-tabs ::deep .app-tab-icon {
+    font-size: 1.55rem;
+}
+
+/* --- Menús desplegables (Instituto / Calendario / Trámites) ---------- */
+
+/* El MudMenu debe ocupar la altura completa de la barra para que el
+   activador se vea igual que los demás ítems (mismo centro vertical). */
+.app-tabs ::deep .app-tab-menu {
+    align-self: stretch;
+}
+
+/* Menor separación entre el texto y el chevron que entre ítems. */
+.app-tabs ::deep .app-tab-menu .app-tab {
+    gap: 4px;
+}
+
+.app-tabs ::deep .app-tab-chevron {
+    font-size: 1.4rem;
+    color: #ffffff;
+    transition: transform 0.2s ease;
+}
+
+/* Detalle opcional: el chevron rota 180° cuando el menú está abierto
+   (el activador expone aria-expanded="true"). */
+.app-tabs ::deep .app-tab-menu .mud-menu-activator[aria-expanded="true"] .app-tab-chevron {
+    transform: rotate(180deg);
+}
+
+/* El foco de teclado cae en el div activador, que usa display:contents y
+   no dibuja outline; el outline se pinta en su hijo .app-tab. */
+.app-tabs ::deep .app-tab-menu .mud-menu-activator:focus {
+    outline: none;
+}
+
+.app-tabs ::deep .app-tab-menu .mud-menu-activator:focus-within .app-tab {
+    outline: 2px solid rgba(255, 255, 255, 0.6);
+    outline-offset: -2px;
+}
