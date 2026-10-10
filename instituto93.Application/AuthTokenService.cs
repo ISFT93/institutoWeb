@@ -12,6 +12,8 @@ namespace instituto93.Application;
 public sealed class AuthTokenService : IAuthTokenService
 {
     public const string AlumnoIdClaim = "alumnoId";
+    public const string ProfesorIdClaim = "profesorId";
+    public const string RolClaim = "rol";
 
     private const int RefreshTokenBytes = 32;
 
@@ -72,7 +74,7 @@ public sealed class AuthTokenService : IAuthTokenService
             return null;
 
         var usuario = await _usuarios.GetByIdAsync(current.UsuarioId, cancellationToken);
-        if (usuario is null || !usuario.Activo || usuario.Alumno?.Activo == false)
+        if (usuario is null || !usuario.Activo || !usuario.PersonaActiva)
         {
             await _refreshTokens.RevokeFamilyAsync(current.FamilyId, cancellationToken);
             return null;
@@ -113,20 +115,25 @@ public sealed class AuthTokenService : IAuthTokenService
     private TokenPair CreatePair(Usuario usuario, DateTime now, string refreshToken, DateTime refreshTokenExpiresAt)
     {
         var accessTokenExpiresAt = now.Add(_settings.AccessTokenLifetime);
-        var alumno = usuario.Alumno;
-
         var claims = new Dictionary<string, object>
         {
             [JwtRegisteredClaimNames.Sub] = usuario.Id.ToString(),
             [JwtRegisteredClaimNames.Jti] = Guid.NewGuid().ToString("N"),
-            [AlumnoIdClaim] = usuario.AlumnoId.ToString()
+            [RolClaim] = usuario.NombreRol
         };
 
-        if (alumno is not null)
-            claims[JwtRegisteredClaimNames.Name] = $"{alumno.Nombre} {alumno.Apellido}".Trim();
+        if (usuario.AlumnoId is int alumnoId)
+            claims[AlumnoIdClaim] = alumnoId.ToString();
 
-        if (!string.IsNullOrWhiteSpace(alumno?.Email))
-            claims[JwtRegisteredClaimNames.Email] = alumno.Email;
+        if (usuario.ProfesorId is int profesorId)
+            claims[ProfesorIdClaim] = profesorId.ToString();
+
+        var nombre = usuario.NombreCompleto;
+        if (nombre.Length > 0)
+            claims[JwtRegisteredClaimNames.Name] = nombre;
+
+        if (!string.IsNullOrWhiteSpace(usuario.Email))
+            claims[JwtRegisteredClaimNames.Email] = usuario.Email;
 
         var accessToken = TokenHandler.CreateToken(new SecurityTokenDescriptor
         {

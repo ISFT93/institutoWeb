@@ -20,9 +20,17 @@ public static class AuthCookie
         {
             new(ClaimTypes.NameIdentifier, user.UsuarioId.ToString()),
             new(AuthClaimTypes.UsuarioId, user.UsuarioId.ToString()),
-            new(AuthClaimTypes.AlumnoId, user.AlumnoId.ToString()),
             new(ClaimTypes.Name, user.Nombre)
         };
+
+        if (user.AlumnoId is int alumnoId)
+            claims.Add(new Claim(AuthClaimTypes.AlumnoId, alumnoId.ToString()));
+
+        if (user.ProfesorId is int profesorId)
+            claims.Add(new Claim(AuthClaimTypes.ProfesorId, profesorId.ToString()));
+
+        if (!string.IsNullOrWhiteSpace(user.Rol))
+            claims.Add(new Claim(ClaimTypes.Role, user.Rol));
 
         if (!string.IsNullOrWhiteSpace(user.Email))
             claims.Add(new Claim(ClaimTypes.Email, user.Email));

@@ -6,8 +6,8 @@
 - Flow is controller -> application service -> data repository. Register each new repository/service pair in `instituto93.Controller/Program.cs`. Many existing controllers/services are not registered there (e.g. `AlumnoController` + `IAlumnoService`), so their endpoints fail at runtime with a DI error.
 - `instituto93.Application` references `instituto93.Data` (not clean-architecture direction). Repository interfaces live under `Data/Repositories/Interfaces`.
 - `instituto93.Web` is a separate process from the API. It calls the API through typed `HttpClient`s registered in `Web/Program.cs` (`AuthApiClient`), base URL from `Api:BaseUrl` (default `http://localhost:8000`). Never hardcode URLs in Razor components.
-- The database schema is not in the repo except `Data/Queries/CreateUsuariosTable.sql`; `Alumnos` and `Localidades` are assumed to exist. Repository SQL does not always match the real DB (e.g. `AlumnoRepository.GetByIdAsync`/`UpdateAsync` reference a `Carrera` column that doesn't exist in `Alumnos`). Check the real schema before trusting a repository.
-- `CreateUsuariosTable.sql` is idempotent and also migrates the old `Usuarios` schema (with personal-data columns). Run it manually; nothing applies migrations automatically.
+- The database schema is not in the repo except the numbered scripts in `Data/Queries/`; `Alumnos`, `Personal` (docentes) and `Localidades` are assumed to exist. Repository SQL does not always match the real DB (e.g. `AlumnoRepository.GetByIdAsync`/`UpdateAsync` reference a `Carrera` column that doesn't exist in `Alumnos`). Check the real schema before trusting a repository.
+- Run the `Data/Queries` scripts manually, in order (all idempotent; nothing applies migrations automatically): `01-CreateRolesTable.sql` (roles `Alumno`, `Docente`), `02-CreateUsuariosTable.sql` (also migrates the old schema with personal-data columns), `03-CreateRefreshTokensTable.sql`. For an existing `Usuarios` without `RolId`, also run `04-MigrateUsuariosRoles.sql` (existing users become `Alumno`).
 
 ## Commands
 
@@ -18,16 +18,16 @@
 ## Runtime gotchas
 
 - DB connection: `ConnectionStrings:InstiDb`. `appsettings.json` has `Password=CHANGE_ME`. Locally copy `.env.example` to `.env` (gitignored, loaded by `DotNetEnv` with `TraversePath`) or set `ConnectionStrings__InstiDb`.
-- In Development the API runs `DevelopmentUserSeed` at startup, so it crashes on boot if the DB is unreachable or `Usuarios` still has the old schema. The seed creates an `Alumnos` row (DNI `99999999`) plus its `Usuarios` row, password `PruebaInstituto93!`.
+- In Development the API runs `DevelopmentUserSeed` at startup, so it crashes on boot if the DB is unreachable or `Usuarios` still has the old schema. The seed creates an `Alumnos` row (DNI `99999999`) and a `Personal` row (docente, DNI `88888888`), each with its `Usuarios` row, password `PruebaInstituto93!`.
 - `start-dev.sh` uses `dotnet watch`: saving code recompiles and reruns the seed against the DB immediately. If one service exits, the script stops both.
 - API auth uses standard `AddJwtBearer` (`MapInboundClaims = false`, so claims are `sub`, `name`, `email`, `alumnoId`). `Jwt:Secret` (>= 32 bytes, env `Jwt__Secret`) is required outside Development; Development falls back to a constant in `Controller/Program.cs`. Lifetimes: `Jwt:AccessTokenMinutes` (15), `Jwt:RefreshTokenDays` (14, sliding), `Jwt:RefreshTokenAbsoluteDays` (30).
-- `Data/Queries/CreateRefreshTokensTable.sql` must be applied manually (idempotent) after `CreateUsuariosTable.sql`, or login fails.
+- `03-CreateRefreshTokensTable.sql` must be applied manually after the `Usuarios` scripts, or login fails.
 - Routes are inconsistent: `AuthController` and `CursadaController` use `api/[controller]`; the rest use `[controller]` without the `api/` prefix.
 - No CORS policy. Blazor Server's server-side `HttpClient` doesn't need one; a browser client from another origin would.
 
 ## Login/auth flow
 
-- `Alumnos` is the source of truth for identity. `Usuarios` only stores credentials: `Id, AlumnoId (unique FK to Alumnos), Password, Activo`. Never add personal data to `Usuarios` or `Usuario`; read it through the `Alumnos` join (`Usuario.Alumno`).
+- `Alumnos` (rol `Alumno`) and `Personal` (rol `Docente`, active = `FechaBaja IS NULL`; `Usuarios.ProfesorId` references `Personal.PersonalId`) are the source of truth for identity. `Usuarios` only stores credentials and role: `Id, RolId (FK to Roles), AlumnoId` or `ProfesorId` (exactly one, each unique), `Password, Activo`. Never add personal data to `Usuarios` or `Usuario`; read it through the joins (`Usuario.Alumno` / `Usuario.Profesor`). If a DNI exists in both tables, the docente wins in `dni-status`/`create-password`. The JWT carries `rol` plus `alumnoId` or `profesorId`.
 - `Login.razor` is a step flow: DNI -> (password login | create password) -> success. Endpoints: `POST api/Auth/dni-status`, `POST api/Auth/create-password`, `POST api/Auth/login` (body `{ dni, password }`, DNI only). There is no register endpoint; `create-password` is the only way to create a user.
 - DNI lookup matches `Alumnos.NumeroDocumento` with dots, spaces and hyphens stripped on both sides (`AlumnoAccesoService.NormalizarDni` in C#, `AlumnoRepository.NumeroDocumentoNormalizadoSql` in SQL, and again in `Login.razor`). "Has a password" means a `Usuarios` row exists for that `AlumnoId`.
 - The DNI field is formatted as `12.345.678` in the browser by `wwwroot/js/dni-input.js` (applies to any input inside a `.dni-input` container). Don't use MudBlazor `Mask`/`PatternMask` for it: in Blazor Server every keystroke round-trips to the server and the caret races, scrambling digits when typing fast or on mobile.

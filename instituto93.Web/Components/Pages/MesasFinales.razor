@@ -10,38 +10,38 @@
 
         <div class="mesas-filtros">
             <MudTextField T="string"
-                          Class="mesas-buscador"
-                          Placeholder="Buscar materia, docente, año...."
-                          Adornment="Adornment.Start"
-                          AdornmentIcon="@Icons.Material.Filled.Search"
-                          Variant="Variant.Outlined" />
+                Class="mesas-buscador"
+                Placeholder="Buscar materia, docente, año...."
+                Adornment="Adornment.Start"
+                AdornmentIcon="@Icons.Material.Filled.Search"
+                Variant="Variant.Outlined" />
 
             <div class="mesas-select mesas-select-turno">
                 <span class="mesas-select-etiqueta">Turno:</span>
 
                 <MudSelect T="string"
-                           Placeholder="Nov/Dic"
-                           Variant="Variant.Outlined" />
+                    Placeholder="Nov/Dic"
+                    Variant="Variant.Outlined" />
             </div>
 
             <div class="mesas-select">
                 <MudIcon Class="mesas-select-icono"
-                         Icon="@Icons.Material.Filled.School" />
+                    Icon="@Icons.Material.Filled.School" />
 
                 <MudSelect T="string"
-                           Placeholder="Carrera"
-                           Variant="Variant.Outlined" />
+                    Placeholder="Carrera"
+                    Variant="Variant.Outlined" />
             </div>
 
             <div class="mesas-select">
                 <MudIcon Class="mesas-select-icono"
-                         Icon="@Icons.Material.Filled.CalendarMonth" />
+                    Icon="@Icons.Material.Filled.CalendarMonth" />
 
                 <MudSelect T="string"
-                           Class="mesas-select-anio"
-                           @bind-Value="_anioAcademico"
-                           Placeholder="Año academico"
-                           Variant="Variant.Outlined">
+                    Class="mesas-select-anio"
+                    @bind-Value="_anioAcademico"
+                    Placeholder="Año academico"
+                    Variant="Variant.Outlined">
                     <MudSelectItem Value="@("1°")">1°</MudSelectItem>
                     <MudSelectItem Value="@("2°")">2°</MudSelectItem>
                     <MudSelectItem Value="@("3°")">3°</MudSelectItem>
@@ -94,8 +94,8 @@
 
             <div class="mesas-acciones">
                 <MudButton Class="mesas-btn-anotarse"
-                           Variant="Variant.Filled"
-                           Color="Color.Primary">
+                    Variant="Variant.Filled"
+                    Color="Color.Primary">
                     Anotarse
                 </MudButton>
             </div>

@@ -7,11 +7,11 @@
 .home-container {
     display: grid;
     grid-template-columns: 56fr 30fr;
-    column-gap: 25px;
+    column-gap: var(--space-8);
     align-items: start;
 
     box-sizing: border-box;
-    padding: 0 2% 0 10%;
+    padding: var(--space-8) 5% var(--space-12) 10%;
     width: 100%;
 }
 
@@ -19,10 +19,6 @@
 .home-col-der {
     min-width: 0;
     width: 100%;
-}
-
-.home-col-der {
-    /* Contenido de la columna derecha (etapas siguientes) */
 }
 
 /* Hero banner */
@@ -36,7 +32,7 @@
 
     /* Placeholder de color hasta que exista /images/hero.jpg */
     background: #93A5C4 url("/images/hero.jpg") center / cover no-repeat;
-    border-radius: 0 0 0.75rem 0.75rem;
+    border-radius: 0.75rem;
 }
 
 .hero-overlay {
@@ -59,19 +55,19 @@
     margin: 0;
 
     color: #ffffff;
-    font-size: 3rem;
-    font-weight: 600;
-    line-height: 1.15;
+    font-size: var(--font-size-5xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
     text-transform: uppercase;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
 .hero-subtitle {
-    margin: 0.75rem 0 0;
+    margin: var(--space-4) 0 0;
 
     color: #ffffff;
-    font-size: 2rem;
-    font-weight: 400;
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-regular);
     text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
 }
 
@@ -80,11 +76,11 @@
 .home-cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 35px;
+    gap: var(--space-6);
 
     width: 100%;
 
-    margin-top: 23px;
+    margin-top: var(--space-8);
 }
 
 .home-cards ::deep .home-card {
@@ -124,7 +120,7 @@
 }
 
 .home-cards ::deep .home-card-content {
-    padding: 12px 16px;
+    padding: var(--space-4) var(--space-4) var(--space-6);
     cursor: inherit;
 
     text-align: center;
@@ -134,17 +130,19 @@
     margin: 0;
 
     color: #333333;
-    font-size: 1.375rem;
-    font-weight: 600;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
     text-transform: uppercase;
 }
 
 .home-card-subtitle {
-    margin: 0.5rem 0 0;
+    margin: var(--space-2) 0 0;
 
     color: #333333;
-    font-size: 1.1875rem;
-    font-weight: 400;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-base);
 }
 
 /* Paneles columna derecha */
@@ -152,60 +150,69 @@
 .home-col-der {
     display: flex;
     flex-direction: column;
-    gap: 32px;
-
-    margin-top: 27px;
+    gap: var(--space-6);
 }
 
-.panel-eventos {
+.panel-eventos,
+.panel-avisos {
+    box-sizing: border-box;
     min-height: 315px;
 
-    padding: 30px;
+    padding: var(--space-8);
 
     background-color: #E6EAF1;
     border-radius: 12px;
 }
 
 .panel-titulo {
-    margin: 0 0 16px;
+    margin: 0 0 var(--space-6);
 
     color: #333333;
-    font-size: 2rem;
-    font-weight: 500;
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-tight);
 }
 
-.panel-eventos-lista {
+.panel-eventos-lista,
+.panel-avisos-lista {
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: var(--space-4);
 
-    overflow-y: scroll;
+    overflow-y: auto;
     max-height: 200px;
+    padding-right: var(--space-2);
 
     scrollbar-width: thin;
     scrollbar-color: #B8C2D4 transparent;
 }
 
-.panel-eventos-lista::-webkit-scrollbar {
+.panel-eventos-lista::-webkit-scrollbar,
+.panel-avisos-lista::-webkit-scrollbar {
     width: 6px;
 }
 
-.panel-eventos-lista::-webkit-scrollbar-thumb {
+.panel-eventos-lista::-webkit-scrollbar-thumb,
+.panel-avisos-lista::-webkit-scrollbar-thumb {
     background-color: #B8C2D4;
     border-radius: 3px;
 }
 
-.panel-eventos-lista::-webkit-scrollbar-track {
+.panel-eventos-lista::-webkit-scrollbar-track,
+.panel-avisos-lista::-webkit-scrollbar-track {
     background-color: transparent;
 }
 
-.evento-card {
+.evento-card,
+.aviso-card {
     display: flex;
     align-items: center;
-    gap: 12px;
+    flex-shrink: 0;
+    gap: var(--space-4);
 
-    height: 80px;
-    padding: 0 16px;
+    box-sizing: border-box;
+    min-height: 80px;
+    padding: var(--space-3) var(--space-4);
 
     background-color: #ffffff;
     border: 1px solid var(--color-border);
@@ -215,7 +222,7 @@
 .evento-texto {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--space-1);
 
     flex: 1;
 }
@@ -223,15 +230,16 @@
 .evento-titulo {
     color: #333333;
 
-    font-size: 1.5rem;
-    font-weight: 500;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-tight);
 }
 
 .evento-subtitulo {
     color: #777777;
 
-    font-size: 1.3125rem;
-    font-weight: 400;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-regular);
 }
 
 .home-col-der ::deep .evento-icono,
@@ -239,64 +247,16 @@
     color: #3D5A80;
 }
 
-.home-col-der ::deep .evento-chevron,
-.home-col-der ::deep .aviso-chevron {
+.home-col-der ::deep .evento-chevron {
     color: #22426A;
-}
-
-.panel-avisos {
-    min-height: 315px;
-
-    padding: 30px;
-
-    background-color: #E6EAF1;
-    border-radius: 12px;
-}
-
-.panel-avisos .panel-titulo {
-    margin-bottom: 40px;
-}
-
-.panel-avisos-lista {
-    overflow-y: scroll;
-    max-height: 200px;
-
-    scrollbar-width: thin;
-    scrollbar-color: #B8C2D4 transparent;
-}
-
-.panel-avisos-lista::-webkit-scrollbar {
-    width: 6px;
-}
-
-.panel-avisos-lista::-webkit-scrollbar-thumb {
-    background-color: #B8C2D4;
-    border-radius: 3px;
-}
-
-.panel-avisos-lista::-webkit-scrollbar-track {
-    background-color: transparent;
-}
-
-.aviso-card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    height: 80px;
-    padding: 0 16px;
-
-    background-color: #ffffff;
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
 }
 
 .aviso-texto {
     flex: 1;
 
     color: #333333;
-    font-size: 1.625rem;
-    font-weight: 500;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-medium);
 }
 
 .home-col-der ::deep .aviso-chevron {
@@ -306,15 +266,20 @@
 @media (max-width: 768px) {
     .home-container {
         grid-template-columns: 1fr;
+        row-gap: var(--space-8);
 
-        padding-inline: 5%;
+        padding: var(--space-6) 5% var(--space-8);
+    }
+
+    .home-cards {
+        grid-template-columns: 1fr;
     }
 
     .hero-title {
-        font-size: 1.75rem;
+        font-size: var(--font-size-2xl);
     }
 
     .hero-subtitle {
-        font-size: 1.125rem;
+        font-size: var(--font-size-base);
     }
 }

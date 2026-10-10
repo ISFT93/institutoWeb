@@ -1,7 +1,7 @@
 -- Refresh tokens opacos con rotación (RFC 9700 §4.14.2). Solo se guarda el hash SHA-256.
 -- Todos los tokens emitidos a partir de un mismo login comparten FamilyId; si se reutiliza
 -- un token ya rotado se revoca la familia completa.
--- Script idempotente. Requiere dbo.Usuarios (CreateUsuariosTable.sql).
+-- Script idempotente. Requiere dbo.Usuarios (02-CreateUsuariosTable.sql).
 
 IF OBJECT_ID(N'dbo.Usuarios', N'U') IS NULL
     THROW 50000, 'La tabla dbo.Usuarios debe existir antes de crear dbo.RefreshTokens.', 1;

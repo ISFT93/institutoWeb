@@ -1,8 +1,22 @@
--- Usuarios solo guarda credenciales. Los datos personales viven en dbo.Alumnos.
+-- Usuarios solo guarda credenciales y el rol. Los datos personales viven en dbo.Alumnos
+-- (rol Alumno) o dbo.Personal (rol Docente); exactamente uno de AlumnoId/ProfesorId está cargado.
 -- Script idempotente: crea la tabla o migra el esquema anterior (con Nombre, Dni, Email, etc.).
+-- Requiere dbo.Roles (01-CreateRolesTable.sql). Si Usuarios ya existía sin RolId, ejecutar luego
+-- 04-MigrateUsuariosRoles.sql.
+
+SET QUOTED_IDENTIFIER ON; -- requerido por los índices filtrados (sqlcmd lo deja en OFF por defecto)
+GO
 
 IF OBJECT_ID(N'dbo.Alumnos', N'U') IS NULL
     THROW 50000, 'La tabla dbo.Alumnos debe existir antes de crear dbo.Usuarios.', 1;
+GO
+
+IF OBJECT_ID(N'dbo.Personal', N'U') IS NULL
+    THROW 50000, 'La tabla dbo.Personal debe existir antes de crear dbo.Usuarios.', 1;
+GO
+
+IF OBJECT_ID(N'dbo.Roles', N'U') IS NULL
+    THROW 50000, 'La tabla dbo.Roles debe existir antes de crear dbo.Usuarios (01-CreateRolesTable.sql).', 1;
 GO
 
 IF OBJECT_ID(N'dbo.Usuarios', N'U') IS NULL
@@ -10,13 +24,23 @@ BEGIN
     CREATE TABLE dbo.Usuarios
     (
         Id INT IDENTITY(1, 1) NOT NULL CONSTRAINT PK_Usuarios PRIMARY KEY,
-        AlumnoId INT NOT NULL,
+        RolId INT NOT NULL,
+        AlumnoId INT NULL,
+        ProfesorId INT NULL,
         Password NVARCHAR(512) NOT NULL,
         Activo BIT NOT NULL CONSTRAINT DF_Usuarios_Activo DEFAULT (1),
-        CONSTRAINT UQ_Usuarios_AlumnoId UNIQUE (AlumnoId),
+        CONSTRAINT FK_Usuarios_Roles
+            FOREIGN KEY (RolId) REFERENCES dbo.Roles (Id),
         CONSTRAINT FK_Usuarios_Alumnos
-            FOREIGN KEY (AlumnoId) REFERENCES dbo.Alumnos (AlumnoId)
+            FOREIGN KEY (AlumnoId) REFERENCES dbo.Alumnos (AlumnoId),
+        CONSTRAINT FK_Usuarios_Profesores
+            FOREIGN KEY (ProfesorId) REFERENCES dbo.Personal (PersonalId),
+        CONSTRAINT CK_Usuarios_AlumnoOProfesor
+            CHECK ((AlumnoId IS NOT NULL AND ProfesorId IS NULL) OR (AlumnoId IS NULL AND ProfesorId IS NOT NULL))
     );
+
+    EXEC (N'CREATE UNIQUE INDEX UX_Usuarios_AlumnoId ON dbo.Usuarios (AlumnoId) WHERE AlumnoId IS NOT NULL;');
+    EXEC (N'CREATE UNIQUE INDEX UX_Usuarios_ProfesorId ON dbo.Usuarios (ProfesorId) WHERE ProfesorId IS NOT NULL;');
 END;
 GO
 

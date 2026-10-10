@@ -2,7 +2,9 @@
 {
     public interface IUsuario
     {
-        int AlumnoId { get; set; }
+        int RolId { get; set; }
+        int? AlumnoId { get; set; }
+        int? ProfesorId { get; set; }
         string Password { get; set; }
         bool Activo { get; set; }
     }

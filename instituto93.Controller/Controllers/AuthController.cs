@@ -58,7 +58,7 @@ namespace WebApplication1.Controllers
             var (estado, nombre) = await _alumnoAccesoService.ConsultarAccesoAsync(model.Dni, cancellationToken);
             return estado switch
             {
-                EstadoAccesoDni.NoEncontrado => NotFound(new { message = "No encontramos un alumno con ese DNI. Revisá el número ingresado o comunicate con el instituto." }),
+                EstadoAccesoDni.NoEncontrado => NotFound(new { message = "No encontramos un alumno o docente con ese DNI. Revisá el número ingresado o comunicate con el instituto." }),
                 EstadoAccesoDni.ConContrasena => Ok(new { estado = nameof(EstadoAccesoDni.ConContrasena), nombre }),
                 _ => Ok(new { estado = nameof(EstadoAccesoDni.SinContrasena), nombre })
             };
@@ -81,7 +81,7 @@ namespace WebApplication1.Controllers
             {
                 CrearContrasenaEstado.Creada => Ok(new { message = "Contraseña creada correctamente." }),
                 CrearContrasenaEstado.ContrasenaInvalida => BadRequest(new { message = resultado.Mensaje }),
-                CrearContrasenaEstado.DniNoEncontrado => NotFound(new { message = "No encontramos un alumno con ese DNI." }),
+                CrearContrasenaEstado.DniNoEncontrado => NotFound(new { message = "No encontramos un alumno o docente con ese DNI." }),
                 _ => Conflict(new { message = "Este DNI ya tiene una contraseña. Volvé al inicio para iniciar sesión." })
             };
         }
@@ -133,7 +133,9 @@ namespace WebApplication1.Controllers
             return Ok(new
             {
                 usuarioId = int.Parse(User.FindFirstValue(JwtRegisteredClaimNames.Sub)!),
-                alumnoId = int.Parse(User.FindFirstValue(AuthTokenService.AlumnoIdClaim)!),
+                alumnoId = int.TryParse(User.FindFirstValue(AuthTokenService.AlumnoIdClaim), out var alumnoId) ? alumnoId : (int?)null,
+                profesorId = int.TryParse(User.FindFirstValue(AuthTokenService.ProfesorIdClaim), out var profesorId) ? profesorId : (int?)null,
+                rol = User.FindFirstValue(AuthTokenService.RolClaim) ?? string.Empty,
                 nombre = User.FindFirstValue(JwtRegisteredClaimNames.Name) ?? string.Empty,
                 email = User.FindFirstValue(JwtRegisteredClaimNames.Email)
             });

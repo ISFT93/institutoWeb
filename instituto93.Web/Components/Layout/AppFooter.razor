@@ -1,21 +1,22 @@
 <div class="app-footer-wrapper">
     <MudAppBar Class="app-footer"
-               Fixed="false"
-               Color="Color.Primary"
-               Elevation="0">
+        Fixed="false"
+        Color="Color.Primary"
+        Elevation="0">
+        <div class="app-footer-brand">
+            @* <MudAvatar Class="app-footer-logo" Size="Size.Large" Color="Color.Surface">
+                <MudImage Src="/images/logo.png" Alt="Logo del instituto" />
+            </MudAvatar> *@
+
+            <span class="app-footer-titulo">
+                Instituto Superior de Formación Docente y<br />
+                Tecnica N°93
+            </span>
+        </div>
+        <hr class="app-footer-separador" />
         <div class="app-footer-inner">
-            <div class="app-footer-brand">
-                <MudAvatar Class="app-footer-logo" Size="Size.Large" Color="Color.Surface">
-                    <MudImage Src="/images/logo.png" Alt="Logo del instituto" />
-                </MudAvatar>
-
-                <span class="app-footer-titulo">
-                    Instituto Superior de Formación Docente y<br />
-                    Tecnica N°93
-                </span>
-            </div>
-
             <div class="app-footer-contacto">
+                <h3>Contacto</h3>
                 <div class="app-footer-fila">
                     <MudIcon Icon="@Icons.Material.Filled.Phone" Size="Size.Small" Color="Color.Inherit" />
                     <span>02225 48–1175</span>
@@ -27,17 +28,20 @@
             </div>
 
             <div class="app-footer-sedes">
-                <span class="app-footer-sedes-titulo">SEDES DEL INSTITUTO</span>
-                <span class="app-footer-sedes-linea">SEDE SAN VICENTE - San Martín 101 - San Vicente</span>
-                <span class="app-footer-sedes-linea">SEDE ENFERMERÍA - E.E.S. N° 5 (Alejandro Korn) Juan B. Justo 263 - Alejandro Korn</span>
-                <span class="app-footer-sedes-linea">SEDE UnSav - Av. Sarmiento esquina Illia - San Vicente</span>
+                <h3>Sedes del instituto</h3>
+                <span class="app-footer-sedes-linea"><a href="https://maps.app.goo.gl/kfQUpu4rjd9w262y7" target="_blank" rel="noopener noreferrer">Sede San Vicente - San Martín 101 - San Vicente</a></span>
+                <span class="app-footer-sedes-linea"><a href="https://maps.app.goo.gl/BxbBzk5VLGzGtvHo9" target="_blank" rel="noopener noreferrer">Anexo Enfermería - E.E.S. N° 5 (Alejandro Korn) Juan B. Justo 263 - Alejandro Korn</a></span>
+                <span class="app-footer-sedes-linea"><a href="https://maps.app.goo.gl/sLkF66hxRhRjPEKWA" target="_blank" rel="noopener noreferrer">Anexo UnSav - Av. Sarmiento esquina Illia - San Vicente</a></span>
             </div>
 
             <div class="app-footer-social">
-                <MudIconButton Icon="@Icons.Custom.Brands.YouTube" Color="Color.Inherit" aria-label="YouTube" />
-                <MudIconButton Icon="@Icons.Custom.Brands.Facebook" Color="Color.Inherit" aria-label="Facebook" />
-                <MudIconButton Icon="@Icons.Custom.Brands.Instagram" Color="Color.Inherit" aria-label="Instagram" />
-                <MudIconButton Icon="@Icons.Custom.Brands.Twitter" Color="Color.Inherit" aria-label="X" />
+                <h3>Redes sociales</h3>
+                <div class="app-footer-social-iconos">
+                    <MudIconButton Icon="@Icons.Custom.Brands.YouTube" Color="Color.Inherit" aria-label="YouTube" />
+                    <MudIconButton Icon="@Icons.Custom.Brands.Facebook" Color="Color.Inherit" aria-label="Facebook" />
+                    <MudIconButton Icon="@Icons.Custom.Brands.Instagram" Color="Color.Inherit" aria-label="Instagram" />
+                    <MudIconButton Icon="@Icons.Custom.Brands.Twitter" Color="Color.Inherit" aria-label="X" />
+                </div>
             </div>
         </div>
     </MudAppBar>
