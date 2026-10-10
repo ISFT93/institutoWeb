@@ -6,4 +6,15 @@
 <MudSnackbarProvider />
 <MudThemeProvider />
 
-@Body
+<div class="app-shell">
+    <div class="sticky-header">
+        <AppHeader />
+        <AppTabs />
+    </div>
+
+    <main class="app-main">
+        @Body
+    </main>
+
+    <AppFooter />
+</div>

@@ -1,41 +1,108 @@
 @page "/"
-@using System.Net
-@using instituto93.Web.Models
-@using instituto93.Web.Services
-@inject AccountApiClient AccountApiClient
+@inject NavigationManager Navigation
 
 <PageTitle>Instituto 93</PageTitle>
 
-<h1 class="mud-typography mud-typography-h5 mud-primary-text">Instituto 93 — Web</h1>
+<div class="home-page">
+    <div class="home-container">
+        <div class="home-col-izq">
+            <section class="hero">
+                <div class="hero-overlay"></div>
 
-@if (_user is not null)
-{
-    <p class="mud-typography mud-typography-body1">Hola, @_user.Nombre.</p>
-}
-else if (_error is not null)
-{
-    <MudAlert Severity="Severity.Error" Class="mt-4">@_error</MudAlert>
-}
+                <div class="hero-text">
+                    <h2 class="hero-title">BIENVENIDO AL PORTAL<br />ACADEMICO</h2>
+                    <p class="hero-subtitle">Acompañandote en tu formación</p>
+                </div>
+            </section>
 
-<LogoutForm />
+            <div class="home-cards">
+                <MudCard Class="home-card" Elevation="0" @onclick="IrAMesasFinales">
+                    <div class="card-img-wrap">
+                        <img src="/images/mesas-finales.jpg" alt="Mesas finales" class="home-card-img" />
+                    </div>
+                    <MudCardContent Class="home-card-content">
+                        <h3 class="home-card-title">MESAS FINALES</h3>
+                        <p class="home-card-subtitle">Inscribite y consulta fechas</p>
+                    </MudCardContent>
+                </MudCard>
+
+                <MudCard Class="home-card" Elevation="0">
+                    <div class="card-img-wrap">
+                        <img src="/images/mis-materias.jpg" alt="Mis materias" class="home-card-img" />
+                    </div>
+                    <MudCardContent Class="home-card-content">
+                        <h3 class="home-card-title">MIS MATERIAS</h3>
+                        <p class="home-card-subtitle">Consulta tus materias</p>
+                    </MudCardContent>
+                </MudCard>
+
+                <MudCard Class="home-card" Elevation="0">
+                    <div class="card-img-wrap">
+                        <img src="/images/mi-carrera.jpg" alt="Mi carrera" class="home-card-img" />
+                    </div>
+                    <MudCardContent Class="home-card-content">
+                        <h3 class="home-card-title">MI CARRERA</h3>
+                        <p class="home-card-subtitle">Consulta el plan de estudio</p>
+                    </MudCardContent>
+                </MudCard>
+            </div>
+        </div>
+
+        <div class="home-col-der">
+            <section class="panel-eventos">
+                <h2 class="panel-titulo">Mis eventos</h2>
+
+                <div class="panel-eventos-lista">
+                    <div class="evento-card">
+                        <MudIcon Class="evento-icono"
+                                 Icon="@Icons.Material.Filled.CalendarMonth"
+                                 Size="Size.Large"
+                                 Color="Color.Primary" />
+                        <div class="evento-texto">
+                            <span class="evento-titulo">Examenes finales</span>
+                            <span class="evento-subtitulo">Turno Nov/Dic ....</span>
+                        </div>
+                        <MudIcon Class="evento-chevron"
+                                 Icon="@Icons.Material.Filled.ChevronRight"
+                                 Size="Size.Large" />
+                    </div>
+
+                    <div class="evento-card">
+                        <MudIcon Class="evento-icono"
+                                 Icon="@Icons.Material.Filled.CalendarMonth"
+                                 Size="Size.Large"
+                                 Color="Color.Primary" />
+                        <div class="evento-texto">
+                            <span class="evento-titulo">Actividad Instituto</span>
+                            <span class="evento-subtitulo">Reunión de estudiantes ....</span>
+                        </div>
+                        <MudIcon Class="evento-chevron"
+                                 Icon="@Icons.Material.Filled.ChevronRight"
+                                 Size="Size.Large" />
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel-avisos">
+                <h2 class="panel-titulo">Avisos</h2>
+
+                <div class="panel-avisos-lista">
+                    <div class="aviso-card">
+                        <MudIcon Class="aviso-icono"
+                                 Icon="@Icons.Material.Filled.Campaign"
+                                 Size="Size.Large"
+                                 Color="Color.Primary" />
+                        <span class="aviso-texto">Incripciones abiertas</span>
+                        <MudIcon Class="aviso-chevron"
+                                 Icon="@Icons.Material.Filled.ChevronRight"
+                                 Size="Size.Large" />
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
 
 @code {
-    private CurrentUser? _user;
-    private string? _error;
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            _user = await AccountApiClient.GetCurrentUserAsync();
-        }
-        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
-        {
-            _error = "Tu sesión venció. Recargá la página para continuar.";
-        }
-        catch (HttpRequestException)
-        {
-            _error = "No fue posible conectar con la API.";
-        }
-    }
+    private void IrAMesasFinales() => Navigation.NavigateTo("/mesas-finales");
 }

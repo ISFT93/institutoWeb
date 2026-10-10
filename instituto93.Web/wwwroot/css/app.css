@@ -46,3 +46,32 @@ html, body {
 h1:focus {
     outline: none;
 }
+
+/* ---------------------------------------------------------------------------
+   Menús desplegables de la barra de tabs (AppTabs.razor).
+
+   El panel del menú lo renderiza <MudPopoverProvider /> (MainLayout), fuera
+   del árbol de AppTabs, por lo que los estilos scoped de AppTabs.razor.css
+   no pueden alcanzarlo aunque se use ::deep. Por eso cada MudMenu lleva
+   PopoverClass="app-tab-menu-popover" y estos estilos van en un CSS global.
+   --------------------------------------------------------------------------- */
+.app-tab-menu-popover {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: #333333;
+    font-size: 1rem;
+}
+
+.app-tab-menu-popover .mud-menu-item-text {
+    color: #333333;
+    font-size: 1rem;
+}
+
+.app-tab-menu-popover .mud-list-item-clickable:hover {
+    background-color: #f0f3f8;
+}
+
+.app-tab-menu-popover .mud-list-item-clickable.mud-disabled:hover {
+    background-color: transparent;
+}
