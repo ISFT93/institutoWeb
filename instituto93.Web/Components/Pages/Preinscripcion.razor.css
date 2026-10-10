@@ -1,0 +1,142 @@
+.preinscripcion-page {
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    background: var(--color-background);
+
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.preinscripcion-body {
+    width: 100%;
+    max-width: 960px;
+
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+}
+
+.preinscripcion-intro h1 {
+    margin: 0 0 0.5rem;
+
+    color: var(--color-text);
+    font-size: 2rem;
+    line-height: 1.2;
+}
+
+.preinscripcion-intro p {
+    margin: 0 0 2rem;
+
+    color: var(--color-text-secondary);
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+.form-section {
+    margin-bottom: 1.5rem;
+    padding: 2rem;
+
+    background: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-radius: 1.25rem;
+}
+
+.form-section h2 {
+    margin: 0 0 1.5rem;
+
+    color: var(--color-text);
+    font-size: 1.4rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+.form-radios {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    margin-bottom: 1.25rem;
+}
+
+.salud-fila {
+    display: grid;
+    grid-template-columns: minmax(0, auto) 1fr;
+    align-items: center;
+    gap: 1rem 1.5rem;
+
+    margin-bottom: 1.25rem;
+}
+
+.salud-discapacidad {
+    display: grid;
+    gap: 1rem;
+}
+
+.documentos {
+    display: none;
+}
+
+.documentos-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+.documento-upload {
+    padding: 1rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    background: var(--color-surface);
+
+    border: 1px dashed var(--color-border);
+    border-radius: 1rem;
+}
+
+.documento-upload-label {
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+.documento-upload-hint {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+}
+
+@media (max-width: 768px) {
+    .preinscripcion-navbar {
+        flex-direction: column;
+        align-items: flex-start;
+
+        padding: 1rem;
+    }
+
+    .preinscripcion-navbar .institution strong {
+        white-space: normal;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .documentos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .salud-fila {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+    }
+
+    .preinscripcion-body {
+        padding: 1.5rem 1rem 3rem;
+    }
+}

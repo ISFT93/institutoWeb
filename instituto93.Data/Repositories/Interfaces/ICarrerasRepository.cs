@@ -10,6 +10,7 @@ namespace instituto93.Data.Repositories.Interfaces
     public interface ICarrerasRepository
     {
         Task<IEnumerable<CarrerasModelo>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<IEnumerable<CarrerasLookup>> GetLookupAsync(CancellationToken cancellationToken = default);
         Task<CarrerasModelo?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
         Task<int> CreateAsync(CarrerasModelo carreras, CancellationToken cancellationToken = default);
         Task<bool> UpdateAsync(CarrerasModelo carreras, CancellationToken cancellationToken = default);

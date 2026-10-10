@@ -1,0 +1,1104 @@
+@page "/preinscripcion"
+
+@inject PreinscripcionApiClient PreinscripcionApi
+@inject CarrerasApiClient CarrerasApi
+@using instituto93.Web.Models;
+@using instituto93.Web.Components.Shared
+@using instituto93.Web.Services
+
+<PageTitle>Preinscripción</PageTitle>
+
+<main class="preinscripcion-page">
+
+    <Navbar />
+
+    <section class="preinscripcion-body">
+
+        <header class="preinscripcion-intro">
+            <h1>Preinscripción de alumnos</h1>
+            <p>
+                Completá tus datos para comenzar el trámite de inscripción.
+                Los campos marcados con <strong>*</strong> son obligatorios.
+            </p>
+        </header>
+
+    
+        <EditForm Model="_model"
+                  OnValidSubmit="HandleSubmit"
+                  OnInvalidSubmit="HandleInvalidSubmit">
+            <DataAnnotationsValidator />
+            @* <ValidationSummary /> *@
+
+            <article class="form-section">
+                <h2>Carrera de interés</h2>
+                <div class="form-grid">
+                    <MudSelect
+                        T="int?"
+                        Label="Carrera *"
+                        @bind-Value="_model.CarreraId"
+                        For="@(() => _model.CarreraId)"
+                        Variant="Variant.Outlined"
+                        Disabled="@(_carrerasLoading || _carrerasError is not null)"
+                        Error="_carrerasError is not null"
+                        ErrorText="@_carrerasError"
+                        FullWidth>
+                        @foreach (var carrera in _carreras)
+                        {
+                            <MudSelectItem T="int?" Value="@carrera.CarreraId">@carrera.Nombre</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    @if (_carrerasLoading)
+                    {
+                        <div class="carreras-estado">
+                            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Small" />
+                            <span>Cargando carreras...</span>
+                        </div>
+                    }
+
+                    @if (_carrerasError is not null)
+                    {
+                        <div class="carreras-estado">
+                            <MudIcon Icon="@Icons.Material.Filled.WarningAmber" Color="Color.Warning" />
+                            <span>No se pudieron cargar las carreras desde la base de datos.</span>
+                            <MudButton Variant="Variant.Outlined"
+                                       Color="Color.Primary"
+                                       Size="Size.Small"
+                                       OnClick="CargarCarrerasAsync">
+                                Reintentar
+                            </MudButton>
+                        </div>
+                    }
+                </div>
+            </article>
+
+            <article class="form-section">
+                <h2>Datos personales</h2>
+                <div class="form-grid">
+
+                    <MudTextField
+                        Label="Nombre *"
+                        @bind-Value="_model.Nombre"
+                        For="@(() => _model.Nombre)"
+                        Variant="Variant.Outlined"
+                        MaxLength="50"
+                        FullWidth/>
+
+                    <MudTextField 
+                        Label="Apellido *"
+                        @bind-Value="_model.Apellido"
+                        For="@(() => _model.Apellido)"
+                        Variant="Variant.Outlined"
+                        MaxLength="50"
+                        FullWidth/>
+
+                    <MudSelect
+                        Label="Tipo de documento *"
+                        @bind-Value="_model.TipoDocumento"
+                        For="@(() => _model.TipoDocumento)"
+                        Variant="Variant.Outlined"
+                        MaxLength="10"
+                        FullWidth>
+                        @foreach (var tipo in _tiposDocumento)
+                        {
+                            <MudSelectItem Value="@tipo">@tipo</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    <MudNumericField
+                        Label="Número de documento *"
+                        @bind-Value="_model.NumeroDocumento"
+                        For="@(() => _model.NumeroDocumento)"
+                        Variant="Variant.Outlined"
+                        MaxLength="8"
+                        FullWidth
+                        HideSpinButtons />
+
+                    <MudSelect
+                        Label="Pais de nacimiento *"
+                        @bind-Value="_model.PaisNacimiento"
+                        For="@(() => _model.PaisNacimiento)"
+                        MaxLength="50"
+                        Variant="Variant.Outlined"
+                        FullWidth>
+                        @foreach (var paises in _paises)
+                        {
+                            <MudSelectItem Value="@paises">@paises</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                     <MudTextField
+                        Label="Localidad de nacimiento *"
+                        @bind-Value="_model.LocalidadNacimiento"
+                        For="@(() => _model.LocalidadNacimiento)"
+                        Variant="Variant.Outlined"
+                        MaxLength="15"
+                        FullWidth />
+
+                    <MudDatePicker
+                        Label="Fecha de nacimiento *"
+                        @bind-Date="_model.FechaNacimiento"
+                        For="@(() => _model.FechaNacimiento)"
+                        Variant="Variant.Outlined"
+                        DateFormat="dd/MM/yyyy" />                    
+
+                    <MudSelect
+                        Label="Sexo *"
+                        @bind-Value="_model.Sexo"
+                        For="@(() => _model.Sexo)"
+                        Variant="Variant.Outlined"
+                        FullWidth>
+
+                        @foreach (var sexo in _sexos)
+                        {
+                            <MudSelectItem Value="@sexo.Codigo">
+                                @sexo.Descripcion
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    <MudSelect
+                        Label="Estado civil *"
+                        @bind-Value="_model.EstadoCivil"
+                        For="@(() => _model.EstadoCivil)"
+                        Variant="Variant.Outlined"
+                        MaxLength="15"
+                        FullWidth>
+                        @foreach (var estado in _estadosCiviles)
+                        {
+                            <MudSelectItem Value="@estado">@estado</MudSelectItem>
+                        }
+                    </MudSelect>
+                </div>
+            </article>
+
+            <article class="form-section">
+                <h2>Domicilio</h2>
+                <div class="form-grid">
+                    <MudTextField
+                        Label="Calle *"
+                        @bind-Value="_model.Calle"
+                        For="@(() => _model.Calle)"
+                        Variant="Variant.Outlined"
+                        MaxLength="255"
+                        FullWidth />
+
+                    <MudNumericField 
+                        Label="Número *"
+                        @bind-Value="_model.Numero"
+                        For="@(() => _model.Numero)"
+                        Variant="Variant.Outlined"
+                        MaxLength="10"
+                        FullWidth
+                        HideSpinButtons />
+
+                    <MudTextField
+                        Label="Piso"
+                        @bind-Value="_model.Piso"
+                        Variant="Variant.Outlined"
+                        MaxLength="10"
+                        FullWidth />
+
+                    <MudTextField
+                        Label="Departamento"
+                        @bind-Value="_model.Departamento"
+                        Variant="Variant.Outlined"
+                        MaxLength="10"
+                        FullWidth />
+
+                    <MudTextField 
+                        Label="Distrito *"
+                        @bind-Value="_model.Distrito"
+                        For="@(() => _model.Distrito)"
+                        Variant="Variant.Outlined"
+                        MaxLength="50"
+                        FullWidth/>
+
+                    <MudSelect
+                        Label="Provincia *"
+                        @bind-Value="_model.Provincia"
+                        For="@(() => _model.Provincia)"
+                        Variant="Variant.Outlined"
+                        MaxLength="50"
+                        FullWidth>
+
+                        @foreach (var provincia in _provincias)
+                        {
+                        <MudSelectItem Value="@provincia">
+                        @provincia
+                       </MudSelectItem>
+                       }
+                    </MudSelect>
+                                     
+                    <MudTextField 
+                        Label="Localidad *"
+                        @bind-Value="_model.Localidad"
+                        For="@(() => _model.Localidad)"
+                        Variant="Variant.Outlined"
+                        MaxLength="50"
+                        FullWidth />
+
+                    <MudTextField 
+                        Label="Código postal *"
+                        @bind-Value="_model.CodigoPostal"
+                        For="@(() => _model.CodigoPostal)"
+                        Variant="Variant.Outlined"
+                        MaxLength="10"
+                        FullWidth />
+                </div>
+            </article>
+
+            <article class="form-section">
+                <h2>Contacto</h2>
+                <div class="form-grid">
+                    <MudTextField
+                        Label="Correo electrónico *"
+                        @bind-Value="_model.Email"
+                        For="@(() => _model.Email)"
+                        Variant="Variant.Outlined"
+                        MaxLength="255"
+                        FullWidth />
+
+                    <MudNumericField 
+                        Label="Celular *"
+                        @bind-Value="_model.Celular"
+                        For="@(() => _model.Celular)"
+                        Variant="Variant.Outlined"
+                        MaxLength="30"
+                        FullWidth
+                        HideSpinButtons />
+
+                    <MudNumericField
+                        Label="Teléfono fijo *"
+                        @bind-Value="_model.Telefono"
+                        For="@(() => _model.Telefono)"
+                        Variant="Variant.Outlined"
+                        MaxLength="30"
+                        FullWidth
+                        HideSpinButtons />
+
+                    
+                </div>
+            </article>
+
+            <article class="form-section">
+                <h2>Formación</h2>
+
+                <div class="form-radios">
+                    <h3>Título Secundario</h3>
+                    <MudRadioGroup T="bool" @bind-Value="_model.TituloSecundario" @bind-Value:after="TituloChanged">
+                        <MudRadio T="bool" Value="@true">Si</MudRadio>
+                        <MudRadio T="bool" Value="@false">No</MudRadio>
+                    </MudRadioGroup>
+                </div>                 
+
+                <div class="form-grid">
+
+                    @if (!_model.TituloSecundario)
+                    {
+                        <MudNumericField Label="Cantidad de materias adeudadas"
+                                         T="int?"
+                                         @bind-Value="_model.CantidadAdeudaMaterias"
+                                         Variant="Variant.Outlined"
+                                         Min="0"
+                                         Max="20"
+                                         Disabled="_model.TituloSecundario"
+                                         FullWidth />
+
+                        <MudTextField Label="Descripción de materias adeudadas"
+                                      @bind-Value="_model.DescripcionMaterias"
+                                      Variant="Variant.Outlined"
+                                      MaxLength="150"
+                                      Disabled="_model.TituloSecundario"
+                                      Lines="3"
+                                      FullWidth />
+                    }
+
+                    @if(_model.TituloSecundario)
+                    {
+                       
+                        <MudTextField Label="Título"
+                                      @bind-Value="_model.Titulo"
+                                      Variant="Variant.Outlined"
+                                      MaxLength="50"
+                                      Disabled="!_model.TituloSecundario"
+                                      FullWidth />
+
+                        <MudTextField Label="Orientación"
+                                      @bind-Value="_model.Orientacion"
+                                      Variant="Variant.Outlined"
+                                      MaxLength="50"
+                                      Disabled="!_model.TituloSecundario"
+                                      FullWidth />
+
+                        <MudTextField Label="Institución que lo otorgó"
+                                      @bind-Value="_model.OtorgadoPor"
+                                      Variant="Variant.Outlined"
+                                      MaxLength="50"
+                                      Disabled="!_model.TituloSecundario"
+                                      FullWidth />
+
+                        <MudNumericField Label="Año de egreso"
+                                         T="int?"
+                                         @bind-Value="_model.AnioEgreso"
+                                         Variant="Variant.Outlined"
+                                         Disabled="!_model.TituloSecundario"
+                                         Min="1900"
+                                         Max="@DateTime.Now.Year"
+                                         FullWidth />
+
+                        <MudNumericField Label="Promedio"
+                                         T="decimal?"
+                                         @bind-Value="_model.Promedio"
+                                         Variant="Variant.Outlined"
+                                         Min="1"
+                                         Max="10"
+                                         Disabled="!_model.TituloSecundario"
+                                         FullWidth />
+
+                        <div class="form-radios">
+                            <h3>Título en Trámite</h3>
+                            <MudRadioGroup T="bool" @bind-Value="_model.TituloTramite" Disabled="!_model.TituloSecundario">
+                                <MudRadio T="bool" Value="@true">Si</MudRadio>
+                                <MudRadio T="bool" Value="@false">No</MudRadio>
+                            </MudRadioGroup>
+                        </div>
+
+                        <MudSelect Label="Mayor título"
+                                   @bind-Value="_model.MayorTitulo"
+                                   Variant="Variant.Outlined"
+                                   MaxLength="50"
+                                   @bind-Value:after="OnMayorTituloChanged"
+                                   Disabled="!_model.TituloSecundario"
+                                   FullWidth>
+                            @foreach (var mayorTitulo in _mayorTitulo)
+                            {
+                                <MudSelectItem Value="@mayorTitulo">@mayorTitulo</MudSelectItem>
+                            }
+                        </MudSelect>
+
+                        <MudTextField Label="Otro título"
+                                      @bind-Value="_model.OtroTitulo"
+                                      Disabled="@(_model.MayorTitulo == "Ninguno")"
+                                      Variant="Variant.Outlined"
+                                      MaxLength="50"
+                                      FullWidth />
+
+                        <MudTextField Label="Institución que otorgó el mayor título"
+                                      @bind-Value="_model.MayorOtorgadoPor"
+                                      Disabled="@(_model.MayorTitulo == "Ninguno")"
+                                      Variant="Variant.Outlined"
+                                      MaxLength="50"
+                                      FullWidth />
+
+                        <MudNumericField Label="Mayor promedio"
+                                         T="decimal?"
+                                         @bind-Value="_model.MayorPromedio"
+                                         Min="1"
+                                         Max="10"
+                                         Disabled="@(_model.MayorTitulo == "Ninguno")"
+                                         Variant="Variant.Outlined"
+                                         FullWidth />
+                    }
+                    
+                    
+
+                    
+                </div>
+            </article>
+
+            @* Esta sección actualmente esta oculta. Modificar la propiedad display del selector de clase .documentos para hacerla visible*@
+            <article class="form-section documentos">
+                <h2>Documentación a presentar</h2>
+
+                <div class="documentos-grid">
+                    <div class="documento-upload">
+                        <span class="documento-upload-label">Fotocopia del título</span>
+                        <MudFileUpload
+                            T="IBrowserFile"
+                            @bind-Files="_model.FotocopiaTitulo"
+                            MaxFileSize="@_maxFileSizeBytes"
+                            Accept="@_formatsDocumento"
+                            DragAndDrop="true" />
+                        <span class="documento-upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
+                    </div>
+
+                    <div class="documento-upload">
+                        <span class="documento-upload-label">Constancia de título en trámite</span>
+                        <MudFileUpload
+                            T="IBrowserFile"
+                            @bind-Files="_model.ConstanciaTituloTramite"
+                            MaxFileSize="@_maxFileSizeBytes"
+                            Accept="@_formatsDocumento"
+                            DragAndDrop="true" />
+                        <span class="documento-upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
+                    </div>
+
+                    <div class="documento-upload">
+                        <span class="documento-upload-label">Constancia de materias adeudadas</span>
+                        <MudFileUpload
+                            T="IBrowserFile"
+                            @bind-Files="_model.ConstanciaAdeudaMaterias"
+                            MaxFileSize="@_maxFileSizeBytes"
+                            Accept="@_formatsDocumento"
+                            DragAndDrop="true" />
+                        <span class="documento-upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
+                    </div>
+
+                    <div class="documento-upload">
+                        <span class="documento-upload-label">Certificado de aptitud</span>
+                        <MudFileUpload
+                            T="IBrowserFile"
+                            @bind-Files="_model.CertificadoAptitud"
+                            MaxFileSize="@_maxFileSizeBytes"
+                            Accept="@_formatsDocumento"
+                            DragAndDrop="true" />
+                        <span class="documento-upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
+                    </div>
+
+                    <div class="documento-upload">
+                        <span class="documento-upload-label">Fotocopia del documento</span>
+                        <MudFileUpload
+                            T="IBrowserFile"
+                            @bind-Files="_model.FotocopiaDocumento"
+                            MaxFileSize="@_maxFileSizeBytes"
+                            Accept="@_formatsDocumento"
+                            DragAndDrop="true" />
+                        <span class="documento-upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
+                    </div>
+
+                    <div class="documento-upload">
+                        <span class="documento-upload-label">Foto carnet</span>
+                        <MudFileUpload
+                            T="IBrowserFile"
+                            @bind-Files="_model.FotoCarnet"
+                            MaxFileSize="@_maxFileSizeBytes"
+                            Accept="@_formatsImagen"
+                            DragAndDrop="true" />
+                        <span class="documento-upload-hint">JPG o PNG · máx. 5 MB</span>
+                    </div>
+
+                    <div class="documento-upload">
+                        <span class="documento-upload-label">Fotocopia de partida de nacimiento</span>
+                        <MudFileUpload
+                            T="IBrowserFile"
+                            @bind-Files="_model.FotocopiaPartidaNacimiento"
+                            MaxFileSize="@_maxFileSizeBytes"
+                            Accept="@_formatsDocumento"
+                            DragAndDrop="true" />
+                        <span class="documento-upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
+                    </div>
+
+                    <div class="documento-upload">
+                        <span class="documento-upload-label">Vacuna antihepatitis</span>
+                        <MudFileUpload
+                            T="IBrowserFile"
+                            @bind-Files="_model.VacunaAntihepatitis"
+                            MaxFileSize="@_maxFileSizeBytes"
+                            Accept="@_formatsDocumento"
+                            DragAndDrop="true" />
+                        <span class="documento-upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
+                    </div>
+
+                    <div class="documento-upload">
+                        <span class="documento-upload-label">Vacuna antitetánica</span>
+                        <MudFileUpload
+                            T="IBrowserFile"
+                            @bind-Files="_model.VacunaAntitetanica"
+                            MaxFileSize="@_maxFileSizeBytes"
+                            Accept="@_formatsDocumento"
+                            DragAndDrop="true" />
+                        <span class="documento-upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="form-section">
+                <h2>Salud</h2>
+
+                <div class="salud-fila">
+                    <MudCheckBox
+                        T="bool"
+                        @bind-Value="_model.ObraSocialPrepaga"
+                        @bind-Value:after="OnObraSocialChanged"
+                        Label="Poseo obra social / prepaga" />
+                    <MudTextField
+                        Label="Obra social / prepaga"
+                        @bind-Value="_model.DescripcionObraSocial"
+                        Variant="Variant.Outlined"
+                        MaxLength="50"
+                        FullWidth
+                        Disabled="!_model.ObraSocialPrepaga" />
+                </div>
+
+                <div class="salud-fila">
+                    <MudCheckBox
+                        T="bool"
+                        @bind-Value="_model.TratamientoMedico"
+                        @bind-Value:after="OnTratamientoMedicoChanged"
+                        Label="Me encuentro en tratamiento médico" />
+                    <MudTextField
+                        Label="Descripción del tratamiento"
+                        @bind-Value="_model.DescripcionTratamiento"                        
+                        Variant="Variant.Outlined"
+                        MaxLength="150"
+                        FullWidth
+                        Disabled="!_model.TratamientoMedico" />
+                </div>
+
+                <div class="salud-fila">
+                    <MudCheckBox
+                        T="bool"
+                        @bind-Value="_model.Medicacion"
+                        @bind-Value:after="OnMedicacionChanged"
+                        Label="Consumo medicación" />
+                    <MudTextField
+                        Label="Descripción de la medicación"
+                        @bind-Value="_model.DescripcionMedicacion"                        
+                        Variant="Variant.Outlined"
+                        MaxLength="150"
+                        FullWidth
+                        Disabled="!_model.Medicacion" />
+                </div>
+
+                <div class="salud-fila">
+                    <MudCheckBox
+                        T="bool"
+                        @bind-Value="_model.Discapacidad"
+                        @bind-Value:after="OnDiscapacidadChanged"
+                        Label="Presento discapacidad" />
+
+                    <div class="salud-discapacidad">
+
+                        <MudSelect Label="Estado de discapacidad"
+                                   @bind-Value="_model.EstadoDiscapacidad"                                   
+                                   Variant="Variant.Outlined"
+                                   MaxLength="15"
+                                   Disabled="!_model.Discapacidad"
+                                   FullWidth>
+                            @foreach (var estado in _estadoDiscapacidad)
+                            {
+                                <MudSelectItem Value="@estado">@estado</MudSelectItem>
+                            }
+                        </MudSelect> 
+
+                        <MudTextField
+                            Label="Descripción de discapacidad"
+                            @bind-Value="_model.DescripcionDiscapacidad"
+                            Variant="Variant.Outlined"
+                            MaxLength="150"
+                            FullWidth
+                            Disabled="!_model.Discapacidad" />
+
+                        <div class="documento-upload">
+                            <span class="documento-upload-label">Certificado de discapacidad</span>
+                            <MudFileUpload
+                                @key="_fileUploadKeyDiscapacidad"
+                                T="IBrowserFile"
+                                @bind-Files="_model.CertificadoDiscapacidad"
+                                MaxFileSize="@_maxFileSizeBytes"
+                                Accept="@_formatsDocumento"
+                                DragAndDrop="true"
+                                Disabled="!_model.Discapacidad" />
+                            <span class="documento-upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>En caso de emergencia:</h3>
+                <div class="form-grid">
+                    
+                    <MudTextField 
+                        Label="Nombre del contacto de emergencia *"
+                        @bind-Value="_model.ContactoEmergencia"
+                        For="@(() => _model.ContactoEmergencia)"
+                        Variant="Variant.Outlined"
+                        MaxLength="100"
+                        FullWidth />
+
+                    <MudNumericField 
+                        Label="Teléfono del contacto de emergencia *"
+                        @bind-Value="_model.TelefonoContacto"
+                        For="@(() => _model.TelefonoContacto)"
+                        Variant="Variant.Outlined"
+                        MaxLength="20"
+                        FullWidth
+                        HideSpinButtons />
+                </div>
+            </article>
+
+                         
+            @if (!string.IsNullOrWhiteSpace(_submitSuccess))
+            {
+                <MudAlert Severity="Severity.Success"
+                          Variant="Variant.Outlined"
+                          Class="mb-3">
+
+                    @_submitSuccess
+
+                </MudAlert>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(_submitError))
+            {
+                <MudAlert Severity="Severity.Error"
+                          Variant="Variant.Outlined"
+                          Class="mb-3">
+
+                    @_submitError
+
+                </MudAlert>
+            }
+            
+            <MudButton
+                
+              ButtonType="ButtonType.Submit"
+              Variant="Variant.Filled"
+              Color="Color.Primary"
+              Size="Size.Large"
+              Disabled="_sending"
+              FullWidth>
+
+              @(
+              _sending
+              ? "Guardando..."
+              : "Enviar preinscripción"
+              )
+                
+            </MudButton>
+
+        </EditForm>
+
+    </section>
+
+</main>
+
+@code {
+
+    private bool _sending = false;
+
+    private string? _submitSuccess;
+
+    private string? _submitError;
+
+    private PreinscripcionModel _model = new PreinscripcionModel();
+
+    private List<CarrerasLookupModel> _carreras = new();
+
+    private bool _carrerasLoading = true;
+
+    private string? _carrerasError;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarCarrerasAsync();
+    }
+
+    private async Task CargarCarrerasAsync()
+    {
+        _carrerasLoading = true;
+        _carrerasError = null;
+
+        try
+        {
+            var result = await CarrerasApi.GetAsync();
+
+            if (result.IsSuccess)
+            {
+                _carreras = result.Carreras;
+
+                if (_carreras.Count == 0)
+                    _carrerasError = "No hay carreras cargadas en la base de datos.";
+            }
+            else
+            {
+                _carreras = new();
+                _carrerasError = result.Error;
+            }
+        }
+        finally
+        {
+            _carrerasLoading = false;
+        }
+    }
+
+    private readonly string[] _tiposDocumento = { "DNI", "LE", "LC" };
+
+    private readonly string[] _paises = new[]
+    {
+        "Afganistán",
+        "Albania",
+        "Alemania",
+        "Andorra",
+        "Angola",
+        "Antigua y Barbuda",
+        "Arabia Saudita",
+        "Argelia",
+        "Argentina",
+        "Armenia",
+        "Australia",
+        "Austria",
+        "Azerbaiyán",
+        "Bahamas",
+        "Bangladés",
+        "Barbados",
+        "Baréin",
+        "Bélgica",
+        "Belice",
+        "Benín",
+        "Bielorrusia",
+        "Birmania",
+        "Bolivia",
+        "Bosnia y Herzegovina",
+        "Botsuana",
+        "Brasil",
+        "Brunéi",
+        "Bulgaria",
+        "Burkina Faso",
+        "Burundi",
+        "Bután",
+        "Cabo Verde",
+        "Camboya",
+        "Camerún",
+        "Canadá",
+        "Catar",
+        "Chad",
+        "Chile",
+        "China",
+        "Chipre",
+        "Colombia",
+        "Comoras",
+        "Congo",
+        "Corea del Norte",
+        "Corea del Sur",
+        "Costa de Marfil",
+        "Costa Rica",
+        "Croacia",
+        "Cuba",
+        "Dinamarca",
+        "Dominica",
+        "Ecuador",
+        "Egipto",
+        "El Salvador",
+        "Emiratos Árabes Unidos",
+        "Eritrea",
+        "Eslovaquia",
+        "Eslovenia",
+        "España",
+        "Estados Unidos",
+        "Estonia",
+        "Esuatini",
+        "Etiopía",
+        "Fiji",
+        "Filipinas",
+        "Finlandia",
+        "Francia",
+        "Gabón",
+        "Gambia",
+        "Georgia",
+        "Ghana",
+        "Granada",
+        "Grecia",
+        "Guatemala",
+        "Guinea",
+        "Guinea-Bisáu",
+        "Guinea Ecuatorial",
+        "Guyana",
+        "Haití",
+        "Honduras",
+        "Hungría",
+        "India",
+        "Indonesia",
+        "Irak",
+        "Irán",
+        "Irlanda",
+        "Islandia",
+        "Islas Marshall",
+        "Islas Salomón",
+        "Israel",
+        "Italia",
+        "Jamaica",
+        "Japón",
+        "Jordania",
+        "Kazajistán",
+        "Kenia",
+        "Kirguistán",
+        "Kiribati",
+        "Kuwait",
+        "Laos",
+        "Lesoto",
+        "Letonia",
+        "Líbano",
+        "Liberia",
+        "Libia",
+        "Liechtenstein",
+        "Lituania",
+        "Luxemburgo",
+        "Madagascar",
+        "Malasia",
+        "Malaui",
+        "Maldivas",
+        "Malí",
+        "Malta",
+        "Marruecos",
+        "Mauricio",
+        "Mauritania",
+        "México",
+        "Micronesia",
+        "Moldavia",
+        "Mónaco",
+        "Mongolia",
+        "Montenegro",
+        "Mozambique",
+        "Namibia",
+        "Nauru",
+        "Nepal",
+        "Nicaragua",
+        "Níger",
+        "Nigeria",
+        "Noruega",
+        "Nueva Zelanda",
+        "Omán",
+        "Países Bajos",
+        "Pakistán",
+        "Palaos",
+        "Palestina",
+        "Panamá",
+        "Papúa Nueva Guinea",
+        "Paraguay",
+        "Perú",
+        "Polonia",
+        "Portugal",
+        "Reino Unido",
+        "República Centroafricana",
+        "República Checa",
+        "República del Congo",
+        "República Democrática del Congo",
+        "República Dominicana",
+        "Ruanda",
+        "Rumania",
+        "Rusia",
+        "Samoa",
+        "San Cristóbal y Nieves",
+        "San Marino",
+        "San Vicente y las Granadinas",
+        "Santa Lucía",
+        "Santo Tomé y Príncipe",
+        "Senegal",
+        "Serbia",
+        "Seychelles",
+        "Sierra Leona",
+        "Singapur",
+        "Siria",
+        "Somalia",
+        "Sri Lanka",
+        "Sudáfrica",
+        "Sudán",
+        "Sudán del Sur",
+        "Suecia",
+        "Suiza",
+        "Surinam",
+        "Tailandia",
+        "Tanzania",
+        "Tayikistán",
+        "Timor Oriental",
+        "Togo",
+        "Tonga",
+        "Trinidad y Tobago",
+        "Túnez",
+        "Turkmenistán",
+        "Turquía",
+        "Tuvalu",
+        "Ucrania",
+        "Uganda",
+        "Uruguay",
+        "Uzbekistán",
+        "Vanuatu",
+        "Vaticano",
+        "Venezuela",
+        "Vietnam",
+        "Yemen",
+        "Yibuti",
+        "Zambia",
+        "Zimbabue"
+    };
+
+
+    private readonly string[] _provincias = new[]
+    {
+        "Buenos Aires",
+        "Catamarca",
+        "Chaco",
+        "Chubut",
+        "Ciudad Autónoma de Buenos Aires",
+        "Córdoba",
+        "Corrientes",
+        "Entre Ríos",
+        "Formosa",
+        "Jujuy",
+        "La Pampa",
+        "La Rioja",
+        "Mendoza",
+        "Misiones",
+        "Neuquén",
+        "Río Negro",
+        "Salta",
+        "San Juan",
+        "San Luis",
+        "Santa Cruz",
+        "Santa Fe",
+        "Santiago del Estero",
+        "Tierra del Fuego",
+        "Tucumán"
+    };
+
+    private readonly (string Codigo, string Descripcion)[] _sexos =
+    {
+        ("F", "Femenino"),
+        ("M", "Masculino"),
+        ("S", "Sin Especificar"),
+        ("O", "Otro")
+    };
+
+    private readonly string[] _estadosCiviles = { "Soltero/a", "Casado/a", "Divorciado/a", "Viudo/a" };
+
+    private readonly string[] _mayorTitulo = { "Ninguno", "Terciario", "Universitario", "Postgrado" };
+
+    private readonly string[] _estadoDiscapacidad = { "Temporal", "Permanente"};
+
+    private const long _maxFileSizeBytes = 5 * 1024 * 1024;
+
+    private const string _formatsDocumento = ".pdf,.jpg,.jpeg,.png";
+
+    private const string _formatsImagen = ".jpg,.jpeg,.png";
+
+    private void TituloChanged()
+    {
+        // Al seleccionar la opción No se limpian los controles
+        if (_model.TituloSecundario == false)
+        {
+            _model.Titulo = string.Empty;
+            _model.Orientacion = string.Empty;
+            _model.OtorgadoPor = string.Empty;
+            _model.AnioEgreso = null;
+            _model.TituloTramite = false;
+            _model.Promedio = null;
+            _model.CantidadAdeudaMaterias = null;
+            _model.DescripcionMaterias = string.Empty;
+
+            _model.MayorTitulo = "Ninguno";
+
+            _model.OtroTitulo = string.Empty;
+            _model.MayorOtorgadoPor = string.Empty;
+            _model.MayorPromedio = null;
+        }
+    }
+
+    private void OnMayorTituloChanged()
+    {
+        // Al seleccionar la opción Ninguno se limpian los controles
+        if (_model.MayorTitulo == "Ninguno")
+        {
+            _model.OtroTitulo = string.Empty;
+            _model.MayorOtorgadoPor = string.Empty;
+            _model.MayorPromedio = null;
+        }
+    }
+
+    private void OnObraSocialChanged()
+    {
+        if (_model.ObraSocialPrepaga == false)
+        {
+            _model.DescripcionObraSocial = string.Empty;
+        }
+    }
+
+    private void OnTratamientoMedicoChanged()
+    {
+        if (_model.TratamientoMedico == false)
+        {
+            _model.DescripcionTratamiento = string.Empty;
+        }
+    }
+
+    private void OnMedicacionChanged()
+    {
+        if (_model.Medicacion == false)
+        {
+            _model.DescripcionMedicacion = string.Empty;
+        }
+    }
+
+    private Guid _fileUploadKeyDiscapacidad = Guid.NewGuid();
+    private void OnDiscapacidadChanged()
+    {
+        if (_model.Discapacidad == false)
+        {
+            _model.EstadoDiscapacidad = string.Empty;
+            _model.DescripcionDiscapacidad = string.Empty;        
+            _model.CertificadoDiscapacidad = null;
+            _fileUploadKeyDiscapacidad = Guid.NewGuid();
+        }
+    }
+
+    private void HandleInvalidSubmit(EditContext editContext)
+    {
+        _submitSuccess = null;
+
+        _submitError =
+            "No se pudo enviar la preinscripción porque hay campos obligatorios o datos inválidos. Revisá el formulario.";
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (_sending)
+            return;
+
+        _sending = true;
+
+        _submitSuccess = null;
+        _submitError = null;
+
+        try
+        {
+            var result =
+                await PreinscripcionApi.CreateAsync(
+                    _model);
+
+            if (!result.IsSuccess)
+            {
+                _submitError = result.Error;
+
+                return;
+            }
+
+            _submitSuccess =
+                result.AlumnoId is { } alumnoId
+                    ? $"Preinscripción guardada correctamente. AlumnoId: {alumnoId}"
+                    : "Preinscripción guardada correctamente.";
+
+            _model =
+                new PreinscripcionModel();
+        }
+        catch (HttpRequestException ex)
+        {
+            _submitError =
+                "No se pudo conectar con instituto93.Controller. " +
+                "Verificá que la API esté iniciada. " +
+                ex.Message;
+        }
+        catch (Exception ex)
+        {
+            _submitError =
+                "Se produjo un error al guardar la preinscripción: " +
+                ex.Message;
+        }
+        finally
+        {
+            _sending = false;
+        }
+    }
+
+
+
+}

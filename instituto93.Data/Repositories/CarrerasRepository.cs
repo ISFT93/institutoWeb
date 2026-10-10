@@ -59,6 +59,34 @@ namespace instituto93.Data.Repositories
 
             return lista;
         }
+        public async Task<IEnumerable<CarrerasLookup>> GetLookupAsync(CancellationToken cancellationToken = default)
+        {
+            var lista = new List<CarrerasLookup>();
+
+            // Solo CarreraId y Nombre          
+            const string sql = "SELECT CarreraId, Nombre FROM Carreras WHERE Activo = 1 ORDER BY Nombre";
+
+            try
+            {
+                await _conexion.OpenAsync(cancellationToken);
+                using var cmd = _conexion.Conector.CreateCommand();
+                cmd.CommandText = sql;
+                using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+                while (await reader.ReadAsync(cancellationToken))
+                {
+                    lista.Add(new CarrerasLookup(
+                        reader.GetInt32(0),
+                        reader.GetString(1)));
+                }
+            }
+            finally
+            {
+                _conexion.Close();
+            }
+
+            return lista;
+        }
+
         public async Task<CarrerasModelo?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             const string sql = "SELECT CarreraId, Titulo, Nombre, DescripcionCorta, JefeCatedra, AnioInicio, AnioFin, Activo, PlanEstudio, Resolucion, Correlatividades, "

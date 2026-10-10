@@ -219,33 +219,208 @@ namespace instituto93.Data.Repositories
             }
         }
 
+
         public async Task<int> CreateAsync(AlumnoModelo alumno, CancellationToken cancellationToken = default)
         {
             if (alumno == null) throw new ArgumentNullException(nameof(alumno));
             const string sql = @"
-                    INSERT INTO Alumnos (
-                        Apellido, Nombre, TipoDocumento, NumeroDocumento, Sexo, FechaNacimiento,
-                        Calle, Localidad, Email, Activo
-                    ) VALUES (
-                        @Apellido, @Nombre, @TipoDocumento, @NumeroDocumento, @Sexo, @FechaNacimiento,
-                        @Calle, @Localidad, @Email, @Activo
-                    );
-                    SELECT CAST(SCOPE_IDENTITY() AS INT);";
+                INSERT INTO Alumnos (
+                    -- DATOS PERSONALES
+                    Apellido,
+                    Nombre,
+                    TipoDocumento,
+                    NumeroDocumento,
+                    PaisNacimiento,
+                    LocalidadNacimiento,
+                    FechaNacimiento,
+                    Sexo,
+                    EstadoCivil,
+
+                    -- DOMICILIO
+                    Calle,
+                    Numero,
+                    Piso,
+                    Departamento,
+                    Distrito,
+                    Provincia,
+                    Localidad,
+                    CodigoPostal,
+
+                    -- CONTACTO
+                    Email,
+                    Celular,
+                    Telefono,
+
+                    -- FORMACIÓN
+                    TituloSecundario,
+                    MateriasAdeuda,
+                    DescripcionMaterias,
+                    Titulo,
+                    Orientacion,
+                    OtorgadoPor,
+                    AnioEgreso,
+                    Promedio,
+                    TituloTramite,
+                    MayorTitulo,
+                    OtroTitulo,
+                    MayorOtorgadoPor,
+                    MayorPromedio,
+
+                    -- DOCUMENTACIÓN
+                    -- Agregar aquí los campos de documentación
+                    -- cuando estén definidos en AlumnoModelo/BD
+
+                    -- SALUD
+                    ObraSocialPrepaga,
+                    DescripcionObraSocial,
+                    TratamientoMedico,
+                    DescripcionTratamiento,
+                    Medicacion,
+                    DescripcionMedicacion,
+                    Discapacidad,
+                    DescripcionDiscapacidad,
+                    EstadoDiscapacidad,
+                    -- DocumentoDiscapacidad,
+                    ContactoEmergencia,
+                    TelefonoContacto,
+
+                    -- ESTADO
+                    Activo
+                )
+                VALUES (
+                    -- DATOS PERSONALES
+                    @Apellido,
+                    @Nombre,
+                    @TipoDocumento,
+                    @NumeroDocumento,
+                    @PaisNacimiento,
+                    @LocalidadNacimiento,
+                    @FechaNacimiento,
+                    @Sexo,
+                    @EstadoCivil,
+
+                    -- DOMICILIO
+                    @Calle,
+                    @Numero,
+                    @Piso,
+                    @Departamento,
+                    @Distrito,
+                    @Provincia,
+                    @Localidad,
+                    @CodigoPostal,
+
+                    -- CONTACTO
+                    @Email,
+                    @Celular,
+                    @Telefono,
+
+                    -- FORMACIÓN
+                    @TituloSecundario,
+                    @MateriasAdeuda,
+                    @DescripcionMaterias,
+                    @Titulo,
+                    @Orientacion,
+                    @OtorgadoPor,
+                    @AnioEgreso,
+                    @Promedio,
+                    @TituloTramite,
+                    @MayorTitulo,
+                    @OtroTitulo,
+                    @MayorOtorgadoPor,
+                    @MayorPromedio,
+
+                    -- DOCUMENTACIÓN
+                    -- @...
+
+                    -- SALUD
+                    @ObraSocialPrepaga,
+                    @DescripcionObraSocial,
+                    @TratamientoMedico,
+                    @DescripcionTratamiento,
+                    @Medicacion,
+                    @DescripcionMedicacion,
+                    @Discapacidad,
+                    @DescripcionDiscapacidad,
+                    @EstadoDiscapacidad,
+                    -- @DocumentoDiscapacidad,
+                    @ContactoEmergencia,
+                    @TelefonoContacto,
+
+                    -- ESTADO
+                    @Activo
+                );
+
+                SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
 
             try
             {
                 await _conexion.OpenAsync(cancellationToken);
                 using var cmd = _conexion.Conector.CreateCommand();
                 cmd.CommandText = sql;
-                cmd.Parameters.AddWithValue("@Apellido", (object?)alumno.Apellido ?? DBNull.Value);
+
+                //DATOS PERSONALES
                 cmd.Parameters.AddWithValue("@Nombre", (object?)alumno.Nombre ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Apellido", (object?)alumno.Apellido ?? DBNull.Value);                
                 cmd.Parameters.AddWithValue("@TipoDocumento", (object?)alumno.TipoDocumento ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@NumeroDocumento", (object?)alumno.NumeroDocumento ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@Sexo", (object?)alumno.Sexo ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@PaisNacimiento", (object?)alumno.PaisNacimiento ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@LocalidadNacimiento", (object?)alumno.LocalidadNacimiento ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@FechaNacimiento", alumno.FechaNacimiento == default ? DBNull.Value : alumno.FechaNacimiento);
+                cmd.Parameters.AddWithValue("@Sexo", (object?)alumno.Sexo ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@EstadoCivil", (object?)alumno.EstadoCivil ?? DBNull.Value);
+
+                //DOMICILIO           
                 cmd.Parameters.AddWithValue("@Calle", (object?)alumno.Calle ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@Localidad", (object?)alumno.Localidad ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Numero", (object?)alumno.Numero ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Piso", (object?)alumno.Piso ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Departamento", (object?)alumno.Departamento ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Distrito", (object?)alumno.Distrito ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Provincia", (object?)alumno.Provincia ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Localidad", (object?)alumno.Localidad ?? DBNull.Value);                
+                cmd.Parameters.AddWithValue("@CodigoPostal", (object?)alumno.CodigoPostal ?? DBNull.Value);
+
+                //CONTACTO
                 cmd.Parameters.AddWithValue("@Email", (object?)alumno.Email ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Celular", (object?)alumno.Celular ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Telefono", (object?)alumno.Telefono ?? DBNull.Value);
+                
+                //FORMACIÓN
+                cmd.Parameters.AddWithValue("@TituloSecundario", (object?)alumno.TituloSecundario ?? DBNull.Value);
+                //Titulo No
+                cmd.Parameters.AddWithValue("@MateriasAdeuda", (object?)alumno.MateriasAdeuda ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@DescripcionMaterias", (object?)alumno.DescripcionMaterias ?? DBNull.Value);
+                //Titulo Si
+                cmd.Parameters.AddWithValue("@Titulo", (object?)alumno.Titulo ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Orientacion", (object?)alumno.Orientacion ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@OtorgadoPor", (object?)alumno.OtorgadoPor ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@AnioEgreso", (object?)alumno.AnioEgreso ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Promedio", (object?)alumno.Promedio ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@TituloTramite", (object?)alumno.TituloTramite ?? DBNull.Value);
+                //Mayor Titulo
+                cmd.Parameters.AddWithValue("@MayorTitulo", (object?)alumno.MayorTitulo ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@OtroTitulo", (object?)alumno.OtroTitulo ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@MayorOtorgadoPor", (object?)alumno.MayorOtorgadoPor ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@MayorPromedio", (object?)alumno.MayorPromedio ?? DBNull.Value);
+
+                //
+                //FALTA AGREGAR CAMPOS DE DOCUMENTACION A PRESENTAR
+                //
+
+                //SALUD
+                cmd.Parameters.AddWithValue("@ObraSocialPrepaga", (object?)alumno.ObraSocialPrepaga ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@DescripcionObraSocial", (object?)alumno.DescripcionObraSocial ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@TratamientoMedico", (object?)alumno.TratamientoMedico ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@DescripcionTratamiento", (object?)alumno.DescripcionTratamiento ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Medicacion", (object?)alumno.Medicacion ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@DescripcionMedicacion", (object?)alumno.DescripcionMedicacion ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Discapacidad", (object?)alumno.Discapacidad ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@DescripcionDiscapacidad", (object?)alumno.DescripcionDiscapacidad ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@EstadoDiscapacidad", (object?)alumno.EstadoDiscapacidad ?? DBNull.Value);
+                //FALTA AGREGAR CAMPO DE DOCUMENTO DE DISCAPACIDAD
+                cmd.Parameters.AddWithValue("@ContactoEmergencia", (object?)alumno.ContactoEmergencia ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@TelefonoContacto", (object?)alumno.TelefonoContacto ?? DBNull.Value);
+
                 cmd.Parameters.AddWithValue("@Activo", (object?)alumno.Activo ?? DBNull.Value);
 
                 var result = await cmd.ExecuteScalarAsync(cancellationToken);
@@ -256,6 +431,8 @@ namespace instituto93.Data.Repositories
                 _conexion.Close();
             }
         }
+
+
 
         public async Task<bool> UpdateAsync(AlumnoModelo alumno, CancellationToken cancellationToken = default)
         {

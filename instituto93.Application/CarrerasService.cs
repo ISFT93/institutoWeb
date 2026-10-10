@@ -22,5 +22,11 @@ namespace instituto93.Application
             var carreras = await _repo.GetAllAsync(cancellationToken);
             return carreras.ToList();
         }
+
+        public async Task<List<CarrerasLookup>> GetLookupAsync(CancellationToken cancellationToken = default)
+        {
+            var carreras = await _repo.GetLookupAsync(cancellationToken);
+            return carreras.ToList();
+        }
     }
 }

@@ -8,5 +8,7 @@ namespace instituto93.Application.Interfaces
     public interface ICarrerasService
     {
         Task<List<CarrerasModelo>> GetCarreras(CancellationToken cancellationToken = default);
+
+        Task<List<CarrerasLookup>> GetLookupAsync(CancellationToken cancellationToken = default);
     }
 }
