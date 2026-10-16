@@ -212,6 +212,50 @@
     background: var(--color-primary-dark);
 }
 
+/* Botón secundario "Quiero preinscribirme": reutiliza la base .btn, así que comparte
+   ancho (100%), radio y fuente con "Continuar"; solo cambian color y borde. */
+.btn-secondary {
+    color: #22426A;
+    background: var(--color-surface);
+
+    /* borde de 2px (vs 1px del primario): se compensa el padding para que midan igual */
+    padding: calc(0.875rem - 1px) 1rem;
+
+    border: 2px solid #22426A;
+    text-transform: none;
+}
+
+.btn-secondary:hover {
+    background: #F0F3F8;
+}
+
+.btn-secondary:focus-visible {
+    outline: 2px solid rgba(34, 66, 106, 0.45);
+    outline-offset: 2px;
+}
+
+/* Divisor "o" entre "Continuar" y el botón secundario. */
+.login-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* ~12px de aire a cada lado de la letra */
+
+    margin: 1.25rem 0; /* 20px arriba (desde "Continuar") y 20px abajo (hasta el botón) */
+}
+
+.login-divider-line {
+    flex: 1;
+    height: 1px;
+
+    background: #D9DDE3;
+}
+
+.login-divider-text {
+    color: #8A94A6;
+
+    font-size: 0.8rem;
+}
+
 .btn-text {
     margin-top: 0.5rem;
 
