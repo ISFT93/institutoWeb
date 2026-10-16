@@ -113,27 +113,8 @@
                         MaxLength="8"
                         FullWidth
                         HideSpinButtons />
+                    
 
-                    <MudSelect
-                        Label="Pais de nacimiento *"
-                        @bind-Value="_model.PaisNacimiento"
-                        For="@(() => _model.PaisNacimiento)"
-                        MaxLength="50"
-                        Variant="Variant.Outlined"
-                        FullWidth>
-                        @foreach (var paises in _paises)
-                        {
-                            <MudSelectItem Value="@paises">@paises</MudSelectItem>
-                        }
-                    </MudSelect>
-
-                     <MudTextField
-                        Label="Localidad de nacimiento *"
-                        @bind-Value="_model.LocalidadNacimiento"
-                        For="@(() => _model.LocalidadNacimiento)"
-                        Variant="Variant.Outlined"
-                        MaxLength="15"
-                        FullWidth />
 
                     <MudDatePicker
                         Label="Fecha de nacimiento *"
@@ -157,18 +138,6 @@
                         }
                     </MudSelect>
 
-                    <MudSelect
-                        Label="Estado civil *"
-                        @bind-Value="_model.EstadoCivil"
-                        For="@(() => _model.EstadoCivil)"
-                        Variant="Variant.Outlined"
-                        MaxLength="15"
-                        FullWidth>
-                        @foreach (var estado in _estadosCiviles)
-                        {
-                            <MudSelectItem Value="@estado">@estado</MudSelectItem>
-                        }
-                    </MudSelect>
                 </div>
             </article>
 
@@ -182,53 +151,6 @@
                         Variant="Variant.Outlined"
                         MaxLength="255"
                         FullWidth />
-
-                    <MudNumericField 
-                        Label="Número *"
-                        @bind-Value="_model.Numero"
-                        For="@(() => _model.Numero)"
-                        Variant="Variant.Outlined"
-                        MaxLength="10"
-                        FullWidth
-                        HideSpinButtons />
-
-                    <MudTextField
-                        Label="Piso"
-                        @bind-Value="_model.Piso"
-                        Variant="Variant.Outlined"
-                        MaxLength="10"
-                        FullWidth />
-
-                    <MudTextField
-                        Label="Departamento"
-                        @bind-Value="_model.Departamento"
-                        Variant="Variant.Outlined"
-                        MaxLength="10"
-                        FullWidth />
-
-                    <MudTextField 
-                        Label="Distrito *"
-                        @bind-Value="_model.Distrito"
-                        For="@(() => _model.Distrito)"
-                        Variant="Variant.Outlined"
-                        MaxLength="50"
-                        FullWidth/>
-
-                    <MudSelect
-                        Label="Provincia *"
-                        @bind-Value="_model.Provincia"
-                        For="@(() => _model.Provincia)"
-                        Variant="Variant.Outlined"
-                        MaxLength="50"
-                        FullWidth>
-
-                        @foreach (var provincia in _provincias)
-                        {
-                        <MudSelectItem Value="@provincia">
-                        @provincia
-                       </MudSelectItem>
-                       }
-                    </MudSelect>
                                      
                     <MudTextField 
                         Label="Localidad *"
@@ -238,13 +160,6 @@
                         MaxLength="50"
                         FullWidth />
 
-                    <MudTextField 
-                        Label="Código postal *"
-                        @bind-Value="_model.CodigoPostal"
-                        For="@(() => _model.CodigoPostal)"
-                        Variant="Variant.Outlined"
-                        MaxLength="10"
-                        FullWidth />
                 </div>
             </article>
 
@@ -259,14 +174,6 @@
                         MaxLength="255"
                         FullWidth />
 
-                    <MudNumericField 
-                        Label="Celular *"
-                        @bind-Value="_model.Celular"
-                        For="@(() => _model.Celular)"
-                        Variant="Variant.Outlined"
-                        MaxLength="30"
-                        FullWidth
-                        HideSpinButtons />
 
                     <MudNumericField
                         Label="Teléfono fijo *"
@@ -283,349 +190,12 @@
 
             <article class="form-section">
                 <h2>Formación</h2>
+              
 
-                <div class="form-radios">
-                    <h3>Título Secundario</h3>
-                    <MudRadioGroup T="bool" @bind-Value="_model.TituloSecundario" @bind-Value:after="TituloChanged">
-                        <MudRadio T="bool" Value="@true">Si</MudRadio>
-                        <MudRadio T="bool" Value="@false">No</MudRadio>
-                    </MudRadioGroup>
-                </div>                 
-
-                <div class="form-grid">
-
-                    @if (!_model.TituloSecundario)
-                    {
-                        <MudNumericField Label="Cantidad de materias adeudadas"
-                                         T="int?"
-                                         @bind-Value="_model.CantidadAdeudaMaterias"
-                                         Variant="Variant.Outlined"
-                                         Min="0"
-                                         Max="20"
-                                         Disabled="_model.TituloSecundario"
-                                         FullWidth />
-
-                        <MudTextField Label="Descripción de materias adeudadas"
-                                      @bind-Value="_model.DescripcionMaterias"
-                                      Variant="Variant.Outlined"
-                                      MaxLength="150"
-                                      Disabled="_model.TituloSecundario"
-                                      Lines="3"
-                                      FullWidth />
-                    }
-
-                    @if(_model.TituloSecundario)
-                    {
-                       
-                        <MudTextField Label="Título"
-                                      @bind-Value="_model.Titulo"
-                                      Variant="Variant.Outlined"
-                                      MaxLength="50"
-                                      Disabled="!_model.TituloSecundario"
-                                      FullWidth />
-
-                        <MudTextField Label="Orientación"
-                                      @bind-Value="_model.Orientacion"
-                                      Variant="Variant.Outlined"
-                                      MaxLength="50"
-                                      Disabled="!_model.TituloSecundario"
-                                      FullWidth />
-
-                        <MudTextField Label="Institución que lo otorgó"
-                                      @bind-Value="_model.OtorgadoPor"
-                                      Variant="Variant.Outlined"
-                                      MaxLength="50"
-                                      Disabled="!_model.TituloSecundario"
-                                      FullWidth />
-
-                        <MudNumericField Label="Año de egreso"
-                                         T="int?"
-                                         @bind-Value="_model.AnioEgreso"
-                                         Variant="Variant.Outlined"
-                                         Disabled="!_model.TituloSecundario"
-                                         Min="1900"
-                                         Max="@DateTime.Now.Year"
-                                         FullWidth />
-
-                        <MudNumericField Label="Promedio"
-                                         T="decimal?"
-                                         @bind-Value="_model.Promedio"
-                                         Variant="Variant.Outlined"
-                                         Min="1"
-                                         Max="10"
-                                         Disabled="!_model.TituloSecundario"
-                                         FullWidth />
-
-                        <div class="form-radios">
-                            <h3>Título en Trámite</h3>
-                            <MudRadioGroup T="bool" @bind-Value="_model.TituloTramite" Disabled="!_model.TituloSecundario">
-                                <MudRadio T="bool" Value="@true">Si</MudRadio>
-                                <MudRadio T="bool" Value="@false">No</MudRadio>
-                            </MudRadioGroup>
-                        </div>
-
-                        <MudSelect Label="Mayor título"
-                                   @bind-Value="_model.MayorTitulo"
-                                   Variant="Variant.Outlined"
-                                   MaxLength="50"
-                                   @bind-Value:after="OnMayorTituloChanged"
-                                   Disabled="!_model.TituloSecundario"
-                                   FullWidth>
-                            @foreach (var mayorTitulo in _mayorTitulo)
-                            {
-                                <MudSelectItem Value="@mayorTitulo">@mayorTitulo</MudSelectItem>
-                            }
-                        </MudSelect>
-
-                        <MudTextField Label="Otro título"
-                                      @bind-Value="_model.OtroTitulo"
-                                      Disabled="@(_model.MayorTitulo == "Ninguno")"
-                                      Variant="Variant.Outlined"
-                                      MaxLength="50"
-                                      FullWidth />
-
-                        <MudTextField Label="Institución que otorgó el mayor título"
-                                      @bind-Value="_model.MayorOtorgadoPor"
-                                      Disabled="@(_model.MayorTitulo == "Ninguno")"
-                                      Variant="Variant.Outlined"
-                                      MaxLength="50"
-                                      FullWidth />
-
-                        <MudNumericField Label="Mayor promedio"
-                                         T="decimal?"
-                                         @bind-Value="_model.MayorPromedio"
-                                         Min="1"
-                                         Max="10"
-                                         Disabled="@(_model.MayorTitulo == "Ninguno")"
-                                         Variant="Variant.Outlined"
-                                         FullWidth />
-                    }
-                    
-                    
-
-                    
-                </div>
             </article>
 
-            @* Esta sección actualmente esta oculta. Modificar la propiedad display del selector de clase .documentos para hacerla visible*@
-            <article class="form-section documentos">
-                <h2>Documentación a presentar</h2>
 
-                <div class="documentos-grid">
-                    <div class="documento-upload">
-                        <span class="documento-upload-label">Fotocopia del título</span>
-                        <MudFileUpload
-                            T="IBrowserFile"
-                            @bind-Files="_model.FotocopiaTitulo"
-                            MaxFileSize="@_maxFileSizeBytes"
-                            Accept="@_formatsDocumento"
-                            DragAndDrop="true" />
-                        <span class="documento-upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
-                    </div>
-
-                    <div class="documento-upload">
-                        <span class="documento-upload-label">Constancia de título en trámite</span>
-                        <MudFileUpload
-                            T="IBrowserFile"
-                            @bind-Files="_model.ConstanciaTituloTramite"
-                            MaxFileSize="@_maxFileSizeBytes"
-                            Accept="@_formatsDocumento"
-                            DragAndDrop="true" />
-                        <span class="documento-upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
-                    </div>
-
-                    <div class="documento-upload">
-                        <span class="documento-upload-label">Constancia de materias adeudadas</span>
-                        <MudFileUpload
-                            T="IBrowserFile"
-                            @bind-Files="_model.ConstanciaAdeudaMaterias"
-                            MaxFileSize="@_maxFileSizeBytes"
-                            Accept="@_formatsDocumento"
-                            DragAndDrop="true" />
-                        <span class="documento-upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
-                    </div>
-
-                    <div class="documento-upload">
-                        <span class="documento-upload-label">Certificado de aptitud</span>
-                        <MudFileUpload
-                            T="IBrowserFile"
-                            @bind-Files="_model.CertificadoAptitud"
-                            MaxFileSize="@_maxFileSizeBytes"
-                            Accept="@_formatsDocumento"
-                            DragAndDrop="true" />
-                        <span class="documento-upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
-                    </div>
-
-                    <div class="documento-upload">
-                        <span class="documento-upload-label">Fotocopia del documento</span>
-                        <MudFileUpload
-                            T="IBrowserFile"
-                            @bind-Files="_model.FotocopiaDocumento"
-                            MaxFileSize="@_maxFileSizeBytes"
-                            Accept="@_formatsDocumento"
-                            DragAndDrop="true" />
-                        <span class="documento-upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
-                    </div>
-
-                    <div class="documento-upload">
-                        <span class="documento-upload-label">Foto carnet</span>
-                        <MudFileUpload
-                            T="IBrowserFile"
-                            @bind-Files="_model.FotoCarnet"
-                            MaxFileSize="@_maxFileSizeBytes"
-                            Accept="@_formatsImagen"
-                            DragAndDrop="true" />
-                        <span class="documento-upload-hint">JPG o PNG · máx. 5 MB</span>
-                    </div>
-
-                    <div class="documento-upload">
-                        <span class="documento-upload-label">Fotocopia de partida de nacimiento</span>
-                        <MudFileUpload
-                            T="IBrowserFile"
-                            @bind-Files="_model.FotocopiaPartidaNacimiento"
-                            MaxFileSize="@_maxFileSizeBytes"
-                            Accept="@_formatsDocumento"
-                            DragAndDrop="true" />
-                        <span class="documento-upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
-                    </div>
-
-                    <div class="documento-upload">
-                        <span class="documento-upload-label">Vacuna antihepatitis</span>
-                        <MudFileUpload
-                            T="IBrowserFile"
-                            @bind-Files="_model.VacunaAntihepatitis"
-                            MaxFileSize="@_maxFileSizeBytes"
-                            Accept="@_formatsDocumento"
-                            DragAndDrop="true" />
-                        <span class="documento-upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
-                    </div>
-
-                    <div class="documento-upload">
-                        <span class="documento-upload-label">Vacuna antitetánica</span>
-                        <MudFileUpload
-                            T="IBrowserFile"
-                            @bind-Files="_model.VacunaAntitetanica"
-                            MaxFileSize="@_maxFileSizeBytes"
-                            Accept="@_formatsDocumento"
-                            DragAndDrop="true" />
-                        <span class="documento-upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
-                    </div>
-                </div>
-            </article>
-
-            <article class="form-section">
-                <h2>Salud</h2>
-
-                <div class="salud-fila">
-                    <MudCheckBox
-                        T="bool"
-                        @bind-Value="_model.ObraSocialPrepaga"
-                        @bind-Value:after="OnObraSocialChanged"
-                        Label="Poseo obra social / prepaga" />
-                    <MudTextField
-                        Label="Obra social / prepaga"
-                        @bind-Value="_model.DescripcionObraSocial"
-                        Variant="Variant.Outlined"
-                        MaxLength="50"
-                        FullWidth
-                        Disabled="!_model.ObraSocialPrepaga" />
-                </div>
-
-                <div class="salud-fila">
-                    <MudCheckBox
-                        T="bool"
-                        @bind-Value="_model.TratamientoMedico"
-                        @bind-Value:after="OnTratamientoMedicoChanged"
-                        Label="Me encuentro en tratamiento médico" />
-                    <MudTextField
-                        Label="Descripción del tratamiento"
-                        @bind-Value="_model.DescripcionTratamiento"                        
-                        Variant="Variant.Outlined"
-                        MaxLength="150"
-                        FullWidth
-                        Disabled="!_model.TratamientoMedico" />
-                </div>
-
-                <div class="salud-fila">
-                    <MudCheckBox
-                        T="bool"
-                        @bind-Value="_model.Medicacion"
-                        @bind-Value:after="OnMedicacionChanged"
-                        Label="Consumo medicación" />
-                    <MudTextField
-                        Label="Descripción de la medicación"
-                        @bind-Value="_model.DescripcionMedicacion"                        
-                        Variant="Variant.Outlined"
-                        MaxLength="150"
-                        FullWidth
-                        Disabled="!_model.Medicacion" />
-                </div>
-
-                <div class="salud-fila">
-                    <MudCheckBox
-                        T="bool"
-                        @bind-Value="_model.Discapacidad"
-                        @bind-Value:after="OnDiscapacidadChanged"
-                        Label="Presento discapacidad" />
-
-                    <div class="salud-discapacidad">
-
-                        <MudSelect Label="Estado de discapacidad"
-                                   @bind-Value="_model.EstadoDiscapacidad"                                   
-                                   Variant="Variant.Outlined"
-                                   MaxLength="15"
-                                   Disabled="!_model.Discapacidad"
-                                   FullWidth>
-                            @foreach (var estado in _estadoDiscapacidad)
-                            {
-                                <MudSelectItem Value="@estado">@estado</MudSelectItem>
-                            }
-                        </MudSelect> 
-
-                        <MudTextField
-                            Label="Descripción de discapacidad"
-                            @bind-Value="_model.DescripcionDiscapacidad"
-                            Variant="Variant.Outlined"
-                            MaxLength="150"
-                            FullWidth
-                            Disabled="!_model.Discapacidad" />
-
-                        <div class="documento-upload">
-                            <span class="documento-upload-label">Certificado de discapacidad</span>
-                            <MudFileUpload
-                                @key="_fileUploadKeyDiscapacidad"
-                                T="IBrowserFile"
-                                @bind-Files="_model.CertificadoDiscapacidad"
-                                MaxFileSize="@_maxFileSizeBytes"
-                                Accept="@_formatsDocumento"
-                                DragAndDrop="true"
-                                Disabled="!_model.Discapacidad" />
-                            <span class="documento-upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
-                        </div>
-                    </div>
-                </div>
-
-                <h3>En caso de emergencia:</h3>
-                <div class="form-grid">
-                    
-                    <MudTextField 
-                        Label="Nombre del contacto de emergencia *"
-                        @bind-Value="_model.ContactoEmergencia"
-                        For="@(() => _model.ContactoEmergencia)"
-                        Variant="Variant.Outlined"
-                        MaxLength="100"
-                        FullWidth />
-
-                    <MudNumericField 
-                        Label="Teléfono del contacto de emergencia *"
-                        @bind-Value="_model.TelefonoContacto"
-                        For="@(() => _model.TelefonoContacto)"
-                        Variant="Variant.Outlined"
-                        MaxLength="20"
-                        FullWidth
-                        HideSpinButtons />
-                </div>
-            </article>
+            
 
                          
             @if (!string.IsNullOrWhiteSpace(_submitSuccess))
@@ -972,75 +542,15 @@
 
     private const string _formatsImagen = ".jpg,.jpeg,.png";
 
-    private void TituloChanged()
-    {
-        // Al seleccionar la opción No se limpian los controles
-        if (_model.TituloSecundario == false)
-        {
-            _model.Titulo = string.Empty;
-            _model.Orientacion = string.Empty;
-            _model.OtorgadoPor = string.Empty;
-            _model.AnioEgreso = null;
-            _model.TituloTramite = false;
-            _model.Promedio = null;
-            _model.CantidadAdeudaMaterias = null;
-            _model.DescripcionMaterias = string.Empty;
+    
 
-            _model.MayorTitulo = "Ninguno";
+    
 
-            _model.OtroTitulo = string.Empty;
-            _model.MayorOtorgadoPor = string.Empty;
-            _model.MayorPromedio = null;
-        }
-    }
+    
 
-    private void OnMayorTituloChanged()
-    {
-        // Al seleccionar la opción Ninguno se limpian los controles
-        if (_model.MayorTitulo == "Ninguno")
-        {
-            _model.OtroTitulo = string.Empty;
-            _model.MayorOtorgadoPor = string.Empty;
-            _model.MayorPromedio = null;
-        }
-    }
+    
 
-    private void OnObraSocialChanged()
-    {
-        if (_model.ObraSocialPrepaga == false)
-        {
-            _model.DescripcionObraSocial = string.Empty;
-        }
-    }
-
-    private void OnTratamientoMedicoChanged()
-    {
-        if (_model.TratamientoMedico == false)
-        {
-            _model.DescripcionTratamiento = string.Empty;
-        }
-    }
-
-    private void OnMedicacionChanged()
-    {
-        if (_model.Medicacion == false)
-        {
-            _model.DescripcionMedicacion = string.Empty;
-        }
-    }
-
-    private Guid _fileUploadKeyDiscapacidad = Guid.NewGuid();
-    private void OnDiscapacidadChanged()
-    {
-        if (_model.Discapacidad == false)
-        {
-            _model.EstadoDiscapacidad = string.Empty;
-            _model.DescripcionDiscapacidad = string.Empty;        
-            _model.CertificadoDiscapacidad = null;
-            _fileUploadKeyDiscapacidad = Guid.NewGuid();
-        }
-    }
-
+    
     private void HandleInvalidSubmit(EditContext editContext)
     {
         _submitSuccess = null;

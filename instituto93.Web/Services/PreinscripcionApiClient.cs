@@ -38,95 +38,16 @@ public sealed class PreinscripcionApiClient(HttpClient httpClient)
             TipoDocumento = model.TipoDocumento,
             NumeroDocumento = model.NumeroDocumento,
 
-            EstadoCivil = model.EstadoCivil,
             Sexo = model.Sexo,
 
             FechaNacimiento = model.FechaNacimiento,
 
-            LocalidadNacimiento = model.LocalidadNacimiento,
-            PaisNacimiento = model.PaisNacimiento,
 
             Calle = model.Calle,
-            Numero = model.Numero,
-            Piso = model.Piso,
-            Departamento = model.Departamento,
-
-            Provincia = model.Provincia,
-            Distrito = model.Distrito,
-            Localidad = model.Localidad,
-            CodigoPostal = model.CodigoPostal,
-
+            Localidad=model.Localidad,
             Telefono = model.Telefono,
-            Celular = model.Celular,
-            Email = model.Email,
+            Email = model.Email
 
-            TituloSecundario = model.TituloSecundario,
-
-            DescripcionMaterias = model.DescripcionMaterias,
-
-            Titulo = model.Titulo,
-            Orientacion = model.Orientacion,
-            OtorgadoPor = model.OtorgadoPor,
-
-            AnioEgreso = model.AnioEgreso,
-            Promedio = model.Promedio,
-
-            TituloTramite = model.TituloTramite,
-
-            MayorTitulo = model.MayorTitulo,
-            OtroTitulo = model.OtroTitulo,
-
-            MayorOtorgadoPor = model.MayorOtorgadoPor,
-
-            MayorPromedio = model.MayorPromedio,
-
-            FotocopiaTitulo = model.FotocopiaTitulo is not null,
-
-            ConstanciaTituloTramite = model.ConstanciaTituloTramite is not null,
-
-            ConstanciaAdeudaMaterias = model.ConstanciaAdeudaMaterias is not null,
-
-            CantidadAdeudaMaterias = model.CantidadAdeudaMaterias,
-
-            CertificadoAptitud = model.CertificadoAptitud is not null,
-
-            FotocopiaDocumento = model.FotocopiaDocumento is not null,
-
-            FotoCarnet = model.FotoCarnet is not null,
-
-            FotocopiaPartidaNacimiento = model.FotocopiaPartidaNacimiento is not null,
-
-            VacunaAntihepatitis = model.VacunaAntihepatitis is not null,
-
-            VacunaAntitetanica = model.VacunaAntitetanica is not null,
-
-            Recibo = model.Recibo,
-
-            Monto = model.Monto,
-
-            ObraSocialPrepaga = model.ObraSocialPrepaga,
-
-            DescripcionObraSocial = model.DescripcionObraSocial,
-
-            TratamientoMedico = model.TratamientoMedico,
-
-            DescripcionTratamiento = model.DescripcionTratamiento,
-
-            Medicacion = model.Medicacion,
-
-            DescripcionMedicacion = model.DescripcionMedicacion,
-
-            Discapacidad = model.Discapacidad,
-
-            DescripcionDiscapacidad = model.DescripcionDiscapacidad,
-
-            EstadoDiscapacidad = model.EstadoDiscapacidad,
-
-            CertificadoDiscapacidad = model.CertificadoDiscapacidad is not null,
-
-            ContactoEmergencia = model.ContactoEmergencia,
-
-            TelefonoContacto = model.TelefonoContacto
         };
 
     // La API puede devolver { message, detail } o, en Development, el HTML/text de la pagina de excepcion.
