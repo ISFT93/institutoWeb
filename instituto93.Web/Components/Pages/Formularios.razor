@@ -1,0 +1,25 @@
+@page "/docentes/formularios"
+@attribute [Authorize(Roles = "Docente")]
+
+<PageTitle>Formularios</PageTitle>
+
+<EnlacesDocumentos Titulo="Formularios"
+                   Subtitulo="Formularios docentes para descargar"
+                   Enlaces="_enlaces" />
+
+@code {
+    private const string Uploads = "https://isfdyt93-bue.infd.edu.ar/sitio/wp-content/uploads/";
+
+    private static readonly IReadOnlyList<EnlacesDocumentos.Enlace> _enlaces =
+    [
+        new("Declaración Jurada de Cargos y Horas", "https://docs.google.com/spreadsheets/d/1288Z8fbf6ZsVVWucVz1E73OLDJISRzRT/edit?usp=sharing&ouid=110884923402001790349&rtpof=true&sd=true"),
+        new("SET 4 – Calificación Anual Docente", Uploads + "2019/10/SET4.pdf"),
+        new("Ficha Afiliación IOMA", Uploads + "2019/10/Ficha-IOMA.pdf"),
+        new("Art. 114° – Instructivo", "https://isfdyt93-bue.infd.edu.ar/sitio/licencia-art-114-o-4/"),
+        new("Solicitud de Licencia Art. 114º y 115º", Uploads + "2019/10/Licencia-114-y-115.pdf"),
+        new("Anexo III para Concursos", Uploads + "2019/10/Anexo-III-para-Concursos.pdf"),
+        new("Instructivo para Concursos", Uploads + "2019/10/INSTRUCTIVO-PARA-CONCURSOS.pdf"),
+        new("Constancia de Participación como JURADO", Uploads + "2025/03/CONSTANCIA-DE-PARTICIPACION-CONCURSOS-JURADO-1.pdf"),
+        new("Constancia de Participación como ASPIRANTE", Uploads + "2025/03/CONSTANCIA-DE-PARTICIPACION-CONCURSOS-ASPIRANTE.pdf"),
+    ];
+}

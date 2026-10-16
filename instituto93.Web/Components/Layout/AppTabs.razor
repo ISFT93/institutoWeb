@@ -49,7 +49,8 @@
                 </span>
             </ActivatorContent>
             <ChildContent>
-                <MudMenuItem>Calendario Academico 2026</MudMenuItem>
+                <MudMenuItem Href="https://isfdyt93-bue.infd.edu.ar/sitio/wp-content/uploads/2026/06/Calendario-2026-ISFT93_v2.pdf"
+                             Target="_blank">Calendario Academico 2026</MudMenuItem>
             </ChildContent>
         </MudMenu>
 
@@ -70,5 +71,25 @@
                 <MudMenuItem>Horarios Ciclo Lectivo 2026</MudMenuItem>
             </ChildContent>
         </MudMenu>
+
+        <AuthorizeView Roles="Docente" Context="auth">
+            <MudMenu Class="app-tab-menu"
+                     PopoverClass="app-tab-menu-popover"
+                     AnchorOrigin="Origin.BottomCenter"
+                     TransformOrigin="Origin.TopCenter"
+                     ActivationEvent="MouseEvent.LeftClick">
+                <ActivatorContent>
+                    <span class="app-tab" @onclick="context.ToggleAsync">
+                        <span>Docentes</span>
+                        <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowDown" Class="app-tab-chevron" />
+                    </span>
+                </ActivatorContent>
+                <ChildContent>
+                    <MudMenuItem Href="/docentes/normativa">Normativa</MudMenuItem>
+                    <MudMenuItem Href="/docentes/formularios">Formularios</MudMenuItem>
+                    <MudMenuItem Href="/docentes/calendario">Calendario</MudMenuItem>
+                </ChildContent>
+            </MudMenu>
+        </AuthorizeView>
     </div>
 </nav>

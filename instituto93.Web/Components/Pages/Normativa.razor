@@ -1,0 +1,40 @@
+@page "/docentes/normativa"
+@attribute [Authorize(Roles = "Docente")]
+
+<PageTitle>Normativa</PageTitle>
+
+<EnlacesDocumentos Titulo="Normativa"
+                   Icono="@Icons.Material.Filled.Gavel"
+                   Enlaces="_enlaces" />
+
+@code {
+    private const string Uploads = "https://isfdyt93-bue.infd.edu.ar/sitio/wp-content/uploads/";
+
+    private static readonly IReadOnlyList<EnlacesDocumentos.Enlace> _enlaces =
+    [
+        new("COMUNICACIÓN 4/21 – FORTALECIMIENTO DE CURSADA", Uploads + "2021/10/com.conj-4-21.pdf"),
+        new("LEY DE EDUCACIÓN NACIONAL – Nº 26206", Uploads + "2019/10/ley_de_educacionn_nacional_n26206.pdf"),
+        new("LEY PROVINCIAL DE EDUCACIÓN – Nº 13688", Uploads + "2019/10/Ley-Provincial-de-Educación-Provincia-de-Buenos-Aires.pdf"),
+        new("LEY DE EDUCACIÓN TÉCNICO PROFESIONAL – Nº 26058", Uploads + "2019/10/ley_26058_de_educacion_tecnica_profesional.pdf"),
+        new("LEY DE EDUCACIÓN SUPERIOR – Nº 24521", Uploads + "2019/10/LEY-DE-EDUCACION-SUPERIOR.pdf"),
+        new("DECRETO 2299/11 – REGLAMENTO GENERAL DE INSTITUCIONES EDUCATIVAS", Uploads + "2019/10/decreto-2299-2011-nuevo-reglamento-gral-escuelas.pdf"),
+        new("LEY PROVINCIAL DE CENTROS DE ESTUDIANTES – Nº 14581", Uploads + "2019/10/ley_14581_ley_provincial_de_centro_de_estudiantes.pdf"),
+        new("RES. 4900/05 – CENTROS DE ESTUDIANTES", Uploads + "2019/10/res_4900_05centro_estudiantes.pdf"),
+        new("LEY NACIONAL 26.892/13 CONVIVENCIA", Uploads + "2024/09/convivencia_marcos-normativos-54093-01.pdf"),
+        new("ACUERDO DE CONVIVENCIA 2025", Uploads + "2025/09/ACUERDO-DE-CONVIVENCIA-2025.pdf"),
+        new("DISPOSICIÓN 30/05 – PROPUESTA CURRICULAR", Uploads + "2019/10/Disposición-30-05.pdf"),
+        new("ESTATUTO DOCENTE", "https://abc.gob.ar/secretarias/sites/default/files/2021-04/ley_n_10.579_estatuto_del_docente_de_la_provincia_de_bs._as._decreto_reglamentario_ndeg_2485_92_su_complementario_ndeg_688_93_y_modifi.pdf"),
+        new("RES. 4044/09 – CONSEJO ACADÉMICO INSTITUCIONAL (CAI)", Uploads + "2019/10/res_4044cai.pdf"),
+        new("RES. 2383/05 – REGLAMENTO INSTITUTOS SUPERIORES", Uploads + "2019/10/resolucion_nro2383_reglamento_institutos_superiores2.pdf"),
+        new("RES. 3121/04 – AYUDANTES DE CÁTEDRA", Uploads + "2019/10/resolucion_nro3121ayudantedecatedra.pdf"),
+        new("RES. 5356/24 – PRÁCTICAS PROFESIONALIZANTES", Uploads + "2025/02/RESOLUCION-5356-2024-Practicas-formativas.pdf"),
+        new("INSTRUCTIVO ALTAS INSTITUCIÓN/OFERENTE", Uploads + "2024/03/IF-2024-07545711-GDEBA-CPEYTDGCYE.pdf"),
+        new("RES. 3871/24 – SALIDAS EDUCATIVAS", Uploads + "2024/11/3871-24_salidas-educativas.pdf"),
+        new("RES. 736/07 – PLAN DE FORTALECIMIENTO DE LA EDUCACIÓN TÉCNICO SUPERIOR", Uploads + "2019/10/resolucion_plan_-de_fortalecimiento_educacion_tecnica.pdf"),
+        new("MANUAL DE PROCEDIMIENTOS ADMINISTRATIVOS INSTITUTOS SUPERIORES", Uploads + "2019/10/IS93-Manual-de-procedimientos-administrativos-para-los-institutos-de-Educación-Superior.pdf"),
+        new("ART – IMPRESIÓN DE CREDENCIAL", Uploads + "2024/03/3.2.-INSTRUCTIVO-PARA-LA-IMPRESION-DE-CREDENCIALES.pdf"),
+        new("ART – GUÍA DE ACTUACIÓN", Uploads + "2024/03/3.1-GUIA-DE-ACTUACION-ART.docx"),
+        new("RÉGIMEN DE CORRELATIVIDADES", Uploads + "2026/08/CORRELATIVIDADES-TODAS-2026.pdf"),
+        new("CONSTANCIA DE PARTICIPACIÓN CONCURSOS – DOCENTES", Uploads + "2023/03/CONSTANCIA-DE-PARTICIPACION-CONCURSOS-DOCENTES.pdf"),
+    ];
+}

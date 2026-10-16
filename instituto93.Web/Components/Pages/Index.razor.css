@@ -83,6 +83,13 @@
     margin-top: var(--space-8);
 }
 
+.home-card-link {
+    display: block;
+
+    color: inherit;
+    text-decoration: none;
+}
+
 .home-cards ::deep .home-card {
     cursor: pointer;
 

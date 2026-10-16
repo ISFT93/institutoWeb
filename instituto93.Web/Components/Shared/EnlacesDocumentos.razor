@@ -1,0 +1,38 @@
+<div class="enlaces-page">
+    <div class="enlaces-container">
+        <MudText Typo="Typo.h5" Class="enlaces-titulo">@Titulo</MudText>
+
+        @if (!string.IsNullOrWhiteSpace(Subtitulo))
+        {
+            <MudText Class="enlaces-subtitulo">@Subtitulo</MudText>
+        }
+
+        <ul class="enlaces-lista">
+            @foreach (var enlace in Enlaces)
+            {
+                <li>
+                    <a href="@enlace.Url" target="_blank" rel="noopener noreferrer" class="enlaces-item">
+                        <MudIcon Icon="@Icono" Class="enlaces-icono" />
+                        <span>@enlace.Texto</span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+@code {
+    public record Enlace(string Texto, string Url);
+
+    [Parameter, EditorRequired]
+    public string Titulo { get; set; } = string.Empty;
+
+    [Parameter]
+    public string? Subtitulo { get; set; }
+
+    [Parameter]
+    public string Icono { get; set; } = Icons.Material.Filled.Description;
+
+    [Parameter, EditorRequired]
+    public IReadOnlyList<Enlace> Enlaces { get; set; } = [];
+}

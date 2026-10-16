@@ -1,0 +1,15 @@
+@page "/docentes/calendario"
+@attribute [Authorize(Roles = "Docente")]
+
+<PageTitle>Calendario</PageTitle>
+
+<EnlacesDocumentos Titulo="Calendario"
+                   Icono="@Icons.Material.Filled.CalendarMonth"
+                   Enlaces="_enlaces" />
+
+@code {
+    private static readonly IReadOnlyList<EnlacesDocumentos.Enlace> _enlaces =
+    [
+        new("Calendario Académico 2026", "https://isfdyt93-bue.infd.edu.ar/sitio/wp-content/uploads/2026/06/Calendario-2026-ISFT93_v2.pdf"),
+    ];
+}
