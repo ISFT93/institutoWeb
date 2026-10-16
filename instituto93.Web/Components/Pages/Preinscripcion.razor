@@ -1,4 +1,7 @@
 @page "/preinscripcion"
+@layout EmptyLayout
+@* Es para visitantes sin cuenta: el [Authorize] por defecto de Pages/_Imports.razor no aplica. *@
+@attribute [AllowAnonymous]
 
 @inject PreinscripcionApiClient PreinscripcionApi
 @inject CarrerasApiClient CarrerasApi
