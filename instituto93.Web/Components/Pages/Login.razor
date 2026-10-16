@@ -65,6 +65,16 @@
 
                     <button type="submit" class="btn btn-primary">Continuar</button>
                 </EditForm>
+
+                @* Divisor "o" + preinscripción. Va después del EditForm (no dentro): el enlace
+                   navega, nunca envía el formulario del D.N.I ni dispara su validación. *@
+                <div class="login-divider" aria-hidden="true">
+                    <span class="login-divider-line"></span>
+                    <span class="login-divider-text">o</span>
+                    <span class="login-divider-line"></span>
+                </div>
+
+                <a class="btn btn-secondary" href="/preinscripcion">Quiero preinscribirme</a>
             }
             else if (_step == LoginStep.Login)
             {
