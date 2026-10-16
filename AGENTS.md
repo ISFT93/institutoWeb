@@ -2,7 +2,7 @@
 
 ## Structure
 
-- `Instituto93.sln`: `instituto93.Controller` (ASP.NET Core API, the only DI composition root in `Program.cs`), `instituto93.Application` (services), `instituto93.Data` (raw ADO.NET/SQL Server repositories), `instituto93.Domain` (models/interfaces), `instituto93.Web` (.NET 8 Blazor Server + MudBlazor frontend).
+- `Instituto93.sln`: `instituto93.Controller` (ASP.NET Core API, the only DI composition root in `Program.cs`), `instituto93.Application` (services), `instituto93.Data` (raw ADO.NET/SQL Server repositories), `instituto93.Domain` (models/interfaces), `instituto93.Web` (.NET 10 Blazor Server + MudBlazor frontend).
 - Flow is controller -> application service -> data repository. Register each new repository/service pair in `instituto93.Controller/Program.cs`. Many existing controllers/services are not registered there (e.g. `AlumnoController` + `IAlumnoService`), so their endpoints fail at runtime with a DI error.
 - `instituto93.Application` references `instituto93.Data` (not clean-architecture direction). Repository interfaces live under `Data/Repositories/Interfaces`.
 - `instituto93.Web` is a separate process from the API. It calls the API through typed `HttpClient`s registered in `Web/Program.cs` (`AuthApiClient`), base URL from `Api:BaseUrl` (default `http://localhost:8000`). Never hardcode URLs in Razor components.
