@@ -1,5 +1,11 @@
 @page "/mesas-finales"
 
+@using instituto93.Web.Models
+@using instituto93.Web.Services
+@inject CarrerasApiClient CarrerasApi
+@inject TurnosApiClient TurnosApi
+@inject AniosCarrerasApiClient AniosCarrerasApi
+
 <PageTitle>Listado de Mesas Finales</PageTitle>
 
 <div class="mesas-finales-page">
@@ -19,38 +25,61 @@
             <div class="mesas-select mesas-select-turno">
                 <span class="mesas-select-etiqueta">Turno:</span>
 
-                <MudSelect T="string"
-                    Placeholder="Nov/Dic"
-                    Variant="Variant.Outlined" />
+                <MudSelect T="int?"
+                    @bind-Value="_turnoId"
+                    Placeholder="Turno"
+                    Variant="Variant.Outlined"
+                    Disabled="@(_turnosLoading)"
+                    Error="@(_turnosError is not null)"
+                    ErrorText="@_turnosError">
+                    @foreach (var turno in _turnos)
+                    {
+                        <MudSelectItem T="int?" Value="@turno.TurnoId">@turno.Descripcion</MudSelectItem>
+                    }
+                </MudSelect>
             </div>
 
             <div class="mesas-select">
                 <MudIcon Class="mesas-select-icono"
                     Icon="@Icons.Material.Filled.School" />
 
-                <MudSelect T="string"
+                <MudSelect T="int?"
+                    Value="_carreraId"
+                    ValueChanged="OnCarreraChanged"
                     Placeholder="Carrera"
-                    Variant="Variant.Outlined" />
+                    Variant="Variant.Outlined"
+                    Disabled="@(_carrerasLoading)"
+                    Error="@(_carrerasError is not null)"
+                    ErrorText="@_carrerasError">
+                    @foreach (var carrera in _carreras)
+                    {
+                        <MudSelectItem T="int?" Value="@carrera.CarreraId">@carrera.Nombre</MudSelectItem>
+                    }
+                </MudSelect>
             </div>
 
             <div class="mesas-select">
                 <MudIcon Class="mesas-select-icono"
                     Icon="@Icons.Material.Filled.CalendarMonth" />
 
-                <MudSelect T="string"
+                <MudSelect T="int?"
                     Class="mesas-select-anio"
-                    @bind-Value="_anioAcademico"
+                    @bind-Value="_anioCarreraId"
                     Placeholder="Año academico"
-                    Variant="Variant.Outlined">
-                    <MudSelectItem Value="@("1°")">1°</MudSelectItem>
-                    <MudSelectItem Value="@("2°")">2°</MudSelectItem>
-                    <MudSelectItem Value="@("3°")">3°</MudSelectItem>
+                    Variant="Variant.Outlined"
+                    Disabled="@(_carreraId is null || _aniosLoading)"
+                    Error="@(_aniosError is not null)"
+                    ErrorText="@_aniosError">
+                    @foreach (var anio in _anios)
+                    {
+                        <MudSelectItem T="int?" Value="@anio.AnioCarreraId">@(anio.AnioCarrera)°</MudSelectItem>
+                    }
                 </MudSelect>
             </div>
         </div>
 
         <div class="mesas-bloque-tabla">
-            <div class="mesas-tab">Carrera :</div>
+            <div class="mesas-tab">Carrera : @NombreCarreraSeleccionada</div>
 
             <div class="mesas-card">
                 <section class="mesas-anio">
@@ -104,5 +133,109 @@
 </div>
 
 @code {
-    private string? _anioAcademico;
+    private List<TurnosLookupModel> _turnos = new();
+    private bool _turnosLoading = true;
+    private string? _turnosError;
+    private int? _turnoId;
+
+    private List<CarrerasLookupModel> _carreras = new();
+    private bool _carrerasLoading = true;
+    private string? _carrerasError;
+    private int? _carreraId;
+
+    private List<AnioCarreraLookupModel> _anios = new();
+    private bool _aniosLoading;
+    private string? _aniosError;
+    private int? _anioCarreraId;
+
+    private string? NombreCarreraSeleccionada =>
+        _carreras.FirstOrDefault(c => c.CarreraId == _carreraId)?.Nombre;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.WhenAll(CargarTurnosAsync(), CargarCarrerasAsync());
+    }
+
+    private async Task CargarTurnosAsync()
+    {
+        _turnosLoading = true;
+        _turnosError = null;
+        try
+        {
+            var result = await TurnosApi.GetAsync();
+            if (result.IsSuccess)
+            {
+                _turnos = result.Turnos;
+                if (_turnos.Count == 0)
+                    _turnosError = "No hay turnos cargados en la base de datos.";
+            }
+            else
+            {
+                _turnos = new();
+                _turnosError = result.Error;
+            }
+        }
+        finally
+        {
+            _turnosLoading = false;
+        }
+    }
+
+    private async Task CargarCarrerasAsync()
+    {
+        _carrerasLoading = true;
+        _carrerasError = null;
+        try
+        {
+            var result = await CarrerasApi.GetAsync();
+            if (result.IsSuccess)
+            {
+                _carreras = result.Carreras;
+                if (_carreras.Count == 0)
+                    _carrerasError = "No hay carreras cargadas en la base de datos.";
+            }
+            else
+            {
+                _carreras = new();
+                _carrerasError = result.Error;
+            }
+        }
+        finally
+        {
+            _carrerasLoading = false;
+        }
+    }
+
+    private async Task OnCarreraChanged(int? carreraId)
+    {
+        _carreraId = carreraId;
+        _anioCarreraId = null;
+        _anios = new();
+        _aniosError = null;
+
+        if (carreraId is null)
+            return;
+
+        _aniosLoading = true;
+        _aniosError = null;
+        try
+        {
+            var result = await AniosCarrerasApi.GetAsync(carreraId.Value);
+            if (result.IsSuccess)
+            {
+                _anios = result.Anios;
+                if (_anios.Count == 0)
+                    _aniosError = "La carrera seleccionada no tiene años cargados.";
+            }
+            else
+            {
+                _anios = new();
+                _aniosError = result.Error;
+            }
+        }
+        finally
+        {
+            _aniosLoading = false;
+        }
+    }
 }
