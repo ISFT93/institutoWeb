@@ -1,0 +1,66 @@
+.notas-finales-page { min-height: calc(100vh - 124px); padding-bottom: 90px; background: var(--color-background); }
+.notas-finales-container { width: min(1180px, calc(100% - 2rem)); margin: 0 auto; padding-top: var(--space-4); }
+.back-button { margin-bottom: var(--space-4); }
+.back-button ::deep .mud-button-label { text-transform: none; }
+.page-heading { margin-bottom: var(--space-6); }
+.page-eyebrow { display: block; margin-bottom: var(--space-1); color: var(--color-primary); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); text-transform: uppercase; letter-spacing: .08em; }
+.page-heading h1 { margin: 0; color: var(--color-text); font-size: var(--font-size-3xl); line-height: var(--line-height-tight); }
+.page-heading p { margin: var(--space-2) 0 0; color: var(--color-text-secondary); }
+.mesa-summary { display: grid; gap: var(--space-4); margin-bottom: var(--space-6); padding: var(--space-4); background: #eaf0f8; border: 1px solid #d4deeb; border-radius: 12px; }
+.summary-item { display: flex; align-items: center; gap: var(--space-3); }
+.summary-item ::deep .mud-icon-root { flex: 0 0 auto; color: var(--color-primary); }
+.summary-item div, .summary-progress div { display: flex; flex-direction: column; gap: 2px; }
+.summary-item span, .summary-progress span { color: var(--color-text-secondary); font-size: var(--font-size-xs); }
+.summary-item strong, .summary-progress strong { color: var(--color-text); font-size: var(--font-size-sm); }
+.summary-progress { display: grid; gap: var(--space-2); }
+.students-section { margin-bottom: var(--space-6); }
+.section-heading { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); margin-bottom: var(--space-4); }
+.section-heading h2 { margin: 0; color: var(--color-text); font-size: var(--font-size-xl); }
+.section-heading p { margin: var(--space-1) 0 0; color: var(--color-text-secondary); font-size: var(--font-size-sm); }
+.changes-indicator { padding: .35rem .7rem; background: #edf0f4; border-radius: 999px; color: var(--color-text-secondary); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); }
+.changes-indicator.has-changes { background: #fff3df; color: #8b5300; }
+.students-list { display: flex; flex-direction: column; gap: var(--space-3); }
+.students-list-header { display: none; }
+.student-row { display: grid; gap: var(--space-4); padding: var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; }
+.student-name { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+.student-avatar { display: grid; flex: 0 0 42px; width: 42px; height: 42px; place-items: center; background: #e4ebf5; border-radius: 50%; color: var(--color-primary); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); }
+.student-name div { display: flex; min-width: 0; flex-direction: column; }
+.student-name strong { overflow: hidden; color: var(--color-text); text-overflow: ellipsis; }
+.mobile-dni { color: var(--color-text-secondary); font-size: var(--font-size-sm); }
+.desktop-dni { display: none; color: var(--color-text-secondary); }
+.grade-field label { display: block; margin-bottom: var(--space-2); color: var(--color-text-secondary); font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); }
+.grade-field ::deep .mud-input-control { max-width: 160px; }
+.status-badge { justify-self: start; padding: .4rem .75rem; border-radius: 999px; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); }
+.status-empty { background: #edf0f4; color: #506073; }
+.status-approved { background: #e2f3e5; color: #246b2b; }
+.status-failed { background: #fde8e8; color: #a32929; }
+.save-bar { position: fixed; right: 0; bottom: 0; left: 0; z-index: 1000; display: flex; align-items: center; justify-content: flex-end; padding: var(--space-3) var(--space-4); background: var(--color-surface); border-top: 1px solid var(--color-border); box-shadow: 0 -4px 16px rgba(35,65,98,.1); }
+.save-bar div { display: none; }
+.save-bar ::deep .mud-button-root { width: 100%; min-height: 46px; text-transform: none; }
+.state-panel { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); padding: var(--space-8) var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; text-align: center; }
+.state-panel div { display: flex; flex-direction: column; gap: var(--space-1); }
+.state-panel span { color: var(--color-text-secondary); }
+.state-panel-error { border-color: color-mix(in srgb, var(--color-error) 35%, white); }
+.state-panel-error ::deep .mud-icon-root { color: var(--color-error); }
+.empty-panel ::deep .mud-icon-root { color: var(--color-primary-light); font-size: 2.5rem; }
+@media (min-width: 700px) {
+    .notas-finales-page { padding-bottom: var(--space-12); }
+    .notas-finales-container { width: min(1180px, calc(100% - 4rem)); padding-top: var(--space-6); }
+    .mesa-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); padding: var(--space-6); }
+    .summary-progress { grid-column: 1 / -1; }
+    .section-heading { flex-direction: row; align-items: center; justify-content: space-between; }
+    .save-bar { position: static; justify-content: space-between; margin-top: var(--space-6); padding: var(--space-4) var(--space-6); border: 1px solid var(--color-border); border-radius: 12px; box-shadow: none; }
+    .save-bar div { display: flex; flex-direction: column; }
+    .save-bar span { color: var(--color-text-secondary); font-size: var(--font-size-sm); }
+    .save-bar ::deep .mud-button-root { width: auto; min-width: 170px; }
+}
+@media (min-width: 900px) {
+    .students-list { gap: 0; overflow: hidden; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; }
+    .students-list-header, .student-row { display: grid; grid-template-columns: minmax(260px, 1.5fr) minmax(130px, .7fr) minmax(140px, .7fr) minmax(130px, .6fr); align-items: center; gap: var(--space-6); }
+    .students-list-header { padding: var(--space-3) var(--space-6); background: #edf1f6; color: var(--color-text-secondary); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); }
+    .student-row { padding: var(--space-4) var(--space-6); border: 0; border-top: 1px solid var(--color-border); border-radius: 0; }
+    .student-row:first-of-type { border-top: 0; }
+    .mobile-dni { display: none; }
+    .desktop-dni { display: block; }
+    .grade-field label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}

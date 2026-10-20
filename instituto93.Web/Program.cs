@@ -46,10 +46,12 @@ void ConfigureApiClient(HttpClient client) => client.BaseAddress = new Uri($"{ap
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<TokenHandler>();
+builder.Services.AddScoped<AccessTokenProvider>();
 
 builder.Services.AddHttpClient<AuthApiClient>(ConfigureApiClient);
 builder.Services.AddHttpClient<AccountApiClient>(ConfigureApiClient)
     .AddHttpMessageHandler<TokenHandler>();
+builder.Services.AddHttpClient<DocenteMesasFinalesApiClient>(ConfigureApiClient);
 
 // BFF: el navegador solo recibe una cookie HttpOnly y cifrada; el access token y el refresh token
 // viajan dentro de ella y nunca llegan al JavaScript. CookieTokenRefresher los renueva.

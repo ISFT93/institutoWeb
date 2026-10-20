@@ -1,0 +1,204 @@
+@page "/docentes/mesas-finales"
+@attribute [Authorize(Roles = "Docente")]
+@inject DocenteMesasFinalesApiClient MesasApi
+@inject NavigationManager Navigation
+@using instituto93.Web.Models
+@using instituto93.Web.Services
+
+<PageTitle>Mis mesas finales</PageTitle>
+
+<main class="docente-mesas-page">
+    <div class="docente-mesas-container">
+        <header class="page-heading">
+            <div>
+                <span class="page-eyebrow">Docentes</span>
+                <h1>Mis mesas finales</h1>
+                <p>Consultá las mesas que tenés asignadas y cargá las notas de los estudiantes inscriptos.</p>
+            </div>
+        </header>
+
+        @if (_loading)
+        {
+            <section class="state-panel" aria-live="polite">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                <div>
+                    <strong>Cargando mesas finales</strong>
+                    <span>Estamos buscando tus mesas asignadas.</span>
+                </div>
+            </section>
+        }
+        else if (_error is not null)
+        {
+            <section class="state-panel state-panel-error" role="alert">
+                <MudIcon Icon="@Icons.Material.Outlined.ErrorOutline" />
+                <div>
+                    <strong>No pudimos cargar tus mesas</strong>
+                    <span>@_error</span>
+                </div>
+                <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="CargarMesasAsync">
+                    Reintentar
+                </MudButton>
+            </section>
+        }
+        else
+        {
+            <section class="filters-panel" aria-label="Filtros de mesas finales">
+                <MudTextField T="string"
+                              @bind-Value="_busqueda"
+                              @bind-Value:after="AplicarFiltros"
+                              Immediate="true"
+                              Label="Buscar por materia"
+                              Placeholder="Ej. Programación"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Outlined.Search"
+                              Variant="Variant.Outlined"
+                              Class="search-field" />
+
+                <MudSelect T="string" @bind-Value="_turno" @bind-Value:after="AplicarFiltros"
+                           Label="Turno" Variant="Variant.Outlined">
+                    <MudSelectItem Value="@Todos">Todos</MudSelectItem>
+                    @foreach (var turno in _mesas.Select(m => m.Turno).Distinct().Order())
+                    {
+                        <MudSelectItem Value="@turno">@turno</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudSelect T="string" @bind-Value="_estado" @bind-Value:after="AplicarFiltros"
+                           Label="Estado" Variant="Variant.Outlined">
+                    <MudSelectItem Value="@Todos">Todos</MudSelectItem>
+                    @foreach (var estado in _mesas.Select(m => m.Estado).Distinct().Order())
+                    {
+                        <MudSelectItem Value="@estado">@estado</MudSelectItem>
+                    }
+                </MudSelect>
+            </section>
+
+            <section class="summary-grid" aria-label="Resumen de mesas finales">
+                <article class="summary-card">
+                    <MudIcon Icon="@Icons.Material.Outlined.EventAvailable" />
+                    <div><strong>@_filtradas.Count</strong><span>mesas encontradas</span></div>
+                </article>
+                <article class="summary-card">
+                    <MudIcon Icon="@Icons.Material.Outlined.Groups" />
+                    <div><strong>@_filtradas.Sum(m => m.CantidadEstudiantes)</strong><span>estudiantes inscriptos</span></div>
+                </article>
+            </section>
+
+            @if (_filtradas.Count == 0)
+            {
+                <section class="state-panel empty-panel">
+                    <MudIcon Icon="@Icons.Material.Outlined.EventBusy" />
+                    <div>
+                        <strong>No hay mesas para mostrar</strong>
+                        <span>@(_mesas.Count == 0 ? "Todavía no tenés mesas finales asignadas." : "Probá cambiando la búsqueda o los filtros.")</span>
+                    </div>
+                    @if (_mesas.Count > 0)
+                    {
+                        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="LimpiarFiltros">
+                            Limpiar filtros
+                        </MudButton>
+                    }
+                </section>
+            }
+            else
+            {
+                <section class="mesas-list" aria-label="Mesas finales asignadas">
+                    <div class="mesas-list-header" aria-hidden="true">
+                        <span>Materia</span><span>Fecha y turno</span><span>Estudiantes</span><span>Estado</span><span></span>
+                    </div>
+
+                    @foreach (var mesa in _filtradas)
+                    {
+                        <article class="mesa-row">
+                            <div class="mesa-main">
+                                <h2>@mesa.Materia</h2>
+                                <p>@mesa.Carrera</p>
+                            </div>
+                            <div class="mesa-info mesa-date">
+                                <MudIcon Icon="@Icons.Material.Outlined.CalendarMonth" />
+                                <div><strong>@mesa.FechaHora.ToString("dd/MM/yyyy")</strong><span>@mesa.Turno</span></div>
+                            </div>
+                            <div class="mesa-info">
+                                <MudIcon Icon="@Icons.Material.Outlined.Groups" />
+                                <div><strong>@mesa.CantidadEstudiantes</strong><span>inscriptos</span></div>
+                            </div>
+                            <span class="status-badge @EstadoCss(mesa.Estado)">@mesa.Estado</span>
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                                       EndIcon="@Icons.Material.Filled.ArrowForward"
+                                       OnClick="@(() => AbrirMesa(mesa.MesaId))">
+                                Abrir mesa
+                            </MudButton>
+                        </article>
+                    }
+                </section>
+            }
+        }
+    </div>
+</main>
+
+@code {
+    private const string Todos = "Todos";
+    private readonly List<MesaFinalDocenteModel> _mesas = [];
+    private List<MesaFinalDocenteModel> _filtradas = [];
+    private bool _loading = true;
+    private string? _error;
+    private string? _busqueda;
+    private string _turno = Todos;
+    private string _estado = Todos;
+
+    protected override Task OnInitializedAsync() => CargarMesasAsync();
+
+    private async Task CargarMesasAsync()
+    {
+        _loading = true;
+        _error = null;
+        MesasFinalesResult result;
+        try
+        {
+            result = await MesasApi.GetMesasAsync();
+        }
+        finally
+        {
+            _loading = false;
+        }
+
+        if (!result.IsSuccess)
+        {
+            _error = result.Error;
+            return;
+        }
+
+        _mesas.Clear();
+        _mesas.AddRange(result.Mesas.OrderBy(m => m.FechaHora));
+        AplicarFiltros();
+    }
+
+    private void AplicarFiltros()
+    {
+        IEnumerable<MesaFinalDocenteModel> query = _mesas;
+        if (!string.IsNullOrWhiteSpace(_busqueda))
+            query = query.Where(m => m.Materia.Contains(_busqueda, StringComparison.OrdinalIgnoreCase));
+        if (_turno != Todos)
+            query = query.Where(m => m.Turno == _turno);
+        if (_estado != Todos)
+            query = query.Where(m => m.Estado == _estado);
+        _filtradas = query.ToList();
+    }
+
+    private void LimpiarFiltros()
+    {
+        _busqueda = null;
+        _turno = Todos;
+        _estado = Todos;
+        AplicarFiltros();
+    }
+
+    private void AbrirMesa(int mesaId) => Navigation.NavigateTo($"/docentes/mesas-finales/{mesaId}/notas");
+
+    private static string EstadoCss(string estado) => estado.ToLowerInvariant() switch
+    {
+        "abierta" or "pendiente" => "status-pending",
+        "completa" or "cerrada" => "status-complete",
+        _ => "status-neutral"
+    };
+}

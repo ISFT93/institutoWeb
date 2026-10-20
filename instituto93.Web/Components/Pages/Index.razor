@@ -15,14 +15,14 @@
             </section>
 
             <div class="home-cards">
-                <a href="/mesas-finales" class="home-card-link">
+                <a href="@MesasFinalesHref" class="home-card-link">
                     <MudCard Class="home-card" Elevation="0">
                         <div class="card-img-wrap">
-                            <img src="/images/mesas-finales.jpg" alt="Mesas finales" class="home-card-img" />
+                            <img src="/images/mesas-finales.jpg" alt="@MesasFinalesTitulo" class="home-card-img" />
                         </div>
                         <MudCardContent Class="home-card-content">
-                            <h3 class="home-card-title">MESAS FINALES</h3>
-                            <p class="home-card-subtitle">Inscribite y consulta fechas</p>
+                            <h3 class="home-card-title">@MesasFinalesTitulo</h3>
+                            <p class="home-card-subtitle">@MesasFinalesDescripcion</p>
                         </MudCardContent>
                     </MudCard>
                 </a>
@@ -112,6 +112,11 @@
     private Task<AuthenticationState>? AuthState { get; set; }
 
     private bool _esDocente;
+    private string MesasFinalesHref => _esDocente ? "/docentes/mesas-finales" : "/mesas-finales";
+    private string MesasFinalesTitulo => _esDocente ? "MIS MESAS FINALES" : "MESAS FINALES";
+    private string MesasFinalesDescripcion => _esDocente
+        ? "Consultá tus mesas y cargá notas"
+        : "Inscribite y consultá fechas";
 
     protected override async Task OnInitializedAsync()
     {
