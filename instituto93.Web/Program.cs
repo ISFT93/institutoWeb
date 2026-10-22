@@ -54,6 +54,8 @@ builder.Services.AddHttpClient<TurnosApiClient>(ConfigureApiClient)
     .AddHttpMessageHandler<TokenHandler>();
 builder.Services.AddHttpClient<AniosCarrerasApiClient>(ConfigureApiClient)
     .AddHttpMessageHandler<TokenHandler>();
+builder.Services.AddHttpClient<MesasFinalesApiClient>(ConfigureApiClient)
+    .AddHttpMessageHandler<TokenHandler>();
 
 // BFF: el navegador solo recibe una cookie HttpOnly y cifrada; el access token y el refresh token
 // viajan dentro de ella y nunca llegan al JavaScript. CookieTokenRefresher los renueva.
