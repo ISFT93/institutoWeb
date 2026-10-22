@@ -70,6 +70,17 @@
             }
             else
             {
+                <div class="search-row">
+                    <MudTextField T="string"
+                                  @bind-Value="_busqueda"
+                                  Immediate="true"
+                                  Placeholder="Buscar estudiante por nombre, DNI o estado..."
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                  Variant="Variant.Outlined"
+                                  aria-label="Buscar estudiantes para cargar notas finales" />
+                </div>
+
                 <EditForm Model="_mesa" OnSubmit="GuardarAsync">
                     <DataAnnotationsValidator />
 
@@ -81,38 +92,49 @@
                             </span>
                         </div>
 
-                        <div class="students-list">
-                            <div class="students-list-header" aria-hidden="true">
-                                <span>Estudiante</span><span>DNI</span><span>Nota final</span><span>Estado</span>
+                        @if (!EstudiantesFiltrados.Any())
+                        {
+                            <div class="filter-empty" role="status">
+                                <MudIcon Icon="@Icons.Material.Outlined.SearchOff" />
+                                <strong>No encontramos estudiantes</strong>
+                                <span>Probá con otro nombre, DNI o estado.</span>
                             </div>
+                        }
+                        else
+                        {
+                            <div class="students-list">
+                                <div class="students-list-header" aria-hidden="true">
+                                    <span>Estudiante</span><span>DNI</span><span>Nota final</span><span>Estado</span>
+                                </div>
 
-                            @foreach (var estudiante in _mesa.Estudiantes)
-                            {
-                                <article class="student-row">
-                                    <div class="student-name">
-                                        <span class="student-avatar" aria-hidden="true">@Iniciales(estudiante.NombreCompleto)</span>
-                                        <div><strong>@estudiante.NombreCompleto</strong><span class="mobile-dni">DNI @estudiante.Dni</span></div>
-                                    </div>
-                                    <span class="desktop-dni">@estudiante.Dni</span>
-                                    <div class="grade-field">
-                                        <label for="@($"nota-{estudiante.MesaAlumnoId}")">Nota final</label>
-                                        <MudNumericField T="decimal?"
-                                                         id="@($"nota-{estudiante.MesaAlumnoId}")"
-                                                         Value="estudiante.Nota"
-                                                         ValueChanged="@(value => CambiarNota(estudiante, value))"
-                                                         Min="_mesa.NotaMinima"
-                                                         Max="_mesa.NotaMaxima"
-                                                         Variant="Variant.Outlined"
-                                                         HideSpinButtons="true"
-                                                         Error="@_errores.ContainsKey(estudiante.MesaAlumnoId)"
-                                                         ErrorText="@ErrorDe(estudiante.MesaAlumnoId)"
-                                                         Immediate="true"
-                                                         aria-label="@($"Nota final de {estudiante.NombreCompleto}")" />
-                                    </div>
-                                    <span class="status-badge @NotaEstadoCss(estudiante.Nota)">@NotaEstado(estudiante.Nota)</span>
-                                </article>
-                            }
-                        </div>
+                                @foreach (var estudiante in EstudiantesFiltrados)
+                                {
+                                    <article class="student-row">
+                                        <div class="student-name">
+                                            <span class="student-avatar" aria-hidden="true">@Iniciales(estudiante.NombreCompleto)</span>
+                                            <div><strong>@estudiante.NombreCompleto</strong><span class="mobile-dni">DNI @estudiante.Dni</span></div>
+                                        </div>
+                                        <span class="desktop-dni">@estudiante.Dni</span>
+                                        <div class="grade-field">
+                                            <label for="@($"nota-{estudiante.MesaAlumnoId}")">Nota final</label>
+                                            <MudNumericField T="decimal?"
+                                                             id="@($"nota-{estudiante.MesaAlumnoId}")"
+                                                             Value="estudiante.Nota"
+                                                             ValueChanged="@(value => CambiarNota(estudiante, value))"
+                                                             Min="_mesa.NotaMinima"
+                                                             Max="_mesa.NotaMaxima"
+                                                             Variant="Variant.Outlined"
+                                                             HideSpinButtons="true"
+                                                             Error="@_errores.ContainsKey(estudiante.MesaAlumnoId)"
+                                                             ErrorText="@ErrorDe(estudiante.MesaAlumnoId)"
+                                                             Immediate="true"
+                                                             aria-label="@($"Nota final de {estudiante.NombreCompleto}")" />
+                                        </div>
+                                        <span class="status-badge @NotaEstadoCss(estudiante.Nota)">@NotaEstado(estudiante.Nota)</span>
+                                    </article>
+                                }
+                            </div>
+                        }
                     </section>
 
                     <footer class="save-bar">
@@ -141,11 +163,19 @@
     private bool _saving;
     private bool _hayCambios;
     private string? _error;
+    private string? _busqueda;
 
     private int CantidadCargadas => _mesa?.Estudiantes.Count(e => e.Nota is not null) ?? 0;
     private double PorcentajeCargado => _mesa?.Estudiantes.Count > 0
         ? CantidadCargadas * 100d / _mesa.Estudiantes.Count
         : 0;
+    private IEnumerable<EstudianteNotaFinalModel> EstudiantesFiltrados =>
+        _mesa is null || string.IsNullOrWhiteSpace(_busqueda)
+            ? _mesa?.Estudiantes ?? []
+            : _mesa.Estudiantes.Where(estudiante =>
+                estudiante.NombreCompleto.Contains(_busqueda, StringComparison.OrdinalIgnoreCase) ||
+                estudiante.Dni.Contains(_busqueda, StringComparison.OrdinalIgnoreCase) ||
+                NotaEstado(estudiante.Nota).Contains(_busqueda, StringComparison.OrdinalIgnoreCase));
 
     protected override Task OnParametersSetAsync() => CargarMesaAsync();
 
