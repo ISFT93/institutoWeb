@@ -5,6 +5,7 @@
 @inject CarrerasApiClient CarrerasApi
 @inject TurnosApiClient TurnosApi
 @inject AniosCarrerasApiClient AniosCarrerasApi
+@inject MesasFinalesApiClient MesasFinalesApi
 
 <PageTitle>Listado de Mesas Finales</PageTitle>
 
@@ -20,18 +21,23 @@
                 Placeholder="Buscar materia, docente, año...."
                 Adornment="Adornment.Start"
                 AdornmentIcon="@Icons.Material.Filled.Search"
-                Variant="Variant.Outlined" />
+                Variant="Variant.Outlined"
+                DebounceInterval="400"
+                @bind-Value="_texto"
+                @bind-Value:after="CargarMesasAsync" />
 
             <div class="mesas-select mesas-select-turno">
                 <span class="mesas-select-etiqueta">Turno:</span>
 
                 <MudSelect T="int?"
                     @bind-Value="_turnoId"
+                    @bind-Value:after="CargarMesasAsync"
                     Placeholder="Turno"
                     Variant="Variant.Outlined"
                     Disabled="@(_turnosLoading)"
                     Error="@(_turnosError is not null)"
                     ErrorText="@_turnosError">
+                    <MudSelectItem T="int?" Value="@((int?)null)">Todos</MudSelectItem>
                     @foreach (var turno in _turnos)
                     {
                         <MudSelectItem T="int?" Value="@turno.TurnoId">@turno.Descripcion</MudSelectItem>
@@ -65,11 +71,13 @@
                 <MudSelect T="int?"
                     Class="mesas-select-anio"
                     @bind-Value="_anioCarreraId"
+                    @bind-Value:after="CargarMesasAsync"
                     Placeholder="Año academico"
                     Variant="Variant.Outlined"
                     Disabled="@(_carreraId is null || _aniosLoading)"
                     Error="@(_aniosError is not null)"
                     ErrorText="@_aniosError">
+                    <MudSelectItem T="int?" Value="@((int?)null)">Todos</MudSelectItem>
                     @foreach (var anio in _anios)
                     {
                         <MudSelectItem T="int?" Value="@anio.AnioCarreraId">@(anio.AnioCarrera)°</MudSelectItem>
@@ -81,45 +89,65 @@
         <div class="mesas-bloque-tabla">
             <div class="mesas-tab">Carrera : @NombreCarreraSeleccionada</div>
 
-            <div class="mesas-card">
-                <section class="mesas-anio">
-                    <MudText Typo="Typo.h6" Class="mesas-anio-titulo">1° AÑO</MudText>
+            @if (_mesasLoading)
+            {
+                <MudProgressCircular Indeterminate="true" Class="ma-4" />
+            }
+            else if (_mesasError is not null)
+            {
+                <MudText Typo="Typo.body2" Color="Color.Error" Class="ma-4">@_mesasError</MudText>
+                <MudButton Variant="Variant.Outlined" Color="Color.Primary" Class="ma-4"
+                    OnClick="CargarMesasAsync">Reintentar</MudButton>
+            }
+            else if (_carreraId is null)
+            {
+                <MudText Typo="Typo.body2" Class="ma-4">
+                    Seleccioná una carrera para ver las mesas de finales.
+                </MudText>
+            }
+            else if (_mesas.Count == 0)
+            {
+                <MudText Typo="Typo.body2" Class="ma-4">
+                    No hay mesas de finales para los filtros seleccionados.
+                </MudText>
+            }
+            else
+            {
+                <div class="mesas-card">
+                    @foreach (var grupo in _mesas.GroupBy(m => m.AnioCarrera).OrderBy(g => g.Key))
+                    {
+                        <section class="mesas-anio">
+                            <MudText Typo="Typo.h6" Class="mesas-anio-titulo">@grupo.Key° AÑO</MudText>
 
-                    <div class="mesas-tabla-scroll">
-                        <MudSimpleTable Class="mesas-tabla">
-                            <thead>
-                                <tr>
-                                    <th>Asiste</th>
-                                    <th>Materia</th>
-                                    <th>Docente</th>
-                                    <th>Fecha y Hora</th>
-                                    <th>Sede</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </MudSimpleTable>
-                    </div>
-                </section>
-
-                <section class="mesas-anio">
-                    <MudText Typo="Typo.h6" Class="mesas-anio-titulo">2° AÑO</MudText>
-
-                    <div class="mesas-tabla-scroll">
-                        <MudSimpleTable Class="mesas-tabla">
-                            <thead>
-                                <tr>
-                                    <th>Asiste</th>
-                                    <th>Materia</th>
-                                    <th>Docente</th>
-                                    <th>Fecha y Hora</th>
-                                    <th>Sede</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </MudSimpleTable>
-                    </div>
-                </section>
-            </div>
+                            <div class="mesas-tabla-scroll">
+                                <MudSimpleTable Class="mesas-tabla">
+                                    <thead>
+                                        <tr>
+                                            <th>Asiste</th>
+                                            <th>Materia</th>
+                                            <th>Docente</th>
+                                            <th>Fecha y Hora</th>
+                                            <th>Sede</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var mesa in grupo)
+                                        {
+                                            <tr>
+                                                <td>@mesa.Asiste</td>
+                                                <td>@mesa.Materia</td>
+                                                <td>@mesa.Docente</td>
+                                                <td>@mesa.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                                                <td>@mesa.Sede</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </MudSimpleTable>
+                            </div>
+                        </section>
+                    }
+                </div>
+            }
 
             <div class="mesas-acciones">
                 <MudButton Class="mesas-btn-anotarse"
@@ -133,6 +161,8 @@
 </div>
 
 @code {
+    private const int AnioLectivo = 2026;
+
     private List<TurnosLookupModel> _turnos = new();
     private bool _turnosLoading = true;
     private string? _turnosError;
@@ -148,12 +178,56 @@
     private string? _aniosError;
     private int? _anioCarreraId;
 
+    private string? _texto;
+
+    private List<MesaFinalFilaModel> _mesas = new();
+    private bool _mesasLoading;
+    private string? _mesasError;
+
     private string? NombreCarreraSeleccionada =>
         _carreras.FirstOrDefault(c => c.CarreraId == _carreraId)?.Nombre;
 
     protected override async Task OnInitializedAsync()
     {
         await Task.WhenAll(CargarTurnosAsync(), CargarCarrerasAsync());
+    }
+
+    private async Task CargarMesasAsync()
+    {
+        if (_carreraId is null)
+        {
+            _mesas = new();
+            _mesasError = null;
+            _mesasLoading = false;
+            return;
+        }
+
+        _mesasLoading = true;
+        _mesasError = null;
+        try
+        {
+            var filtro = new MesasFinalesFiltroModel(
+                CarreraId: _carreraId,
+                TurnoId: _turnoId,
+                AnioCarreraId: _anioCarreraId,
+                AnioLectivo: AnioLectivo,
+                Texto: _texto);
+
+            var result = await MesasFinalesApi.GetAsync(filtro);
+            if (result.IsSuccess)
+            {
+                _mesas = result.Mesas;
+            }
+            else
+            {
+                _mesas = new();
+                _mesasError = result.Error;
+            }
+        }
+        finally
+        {
+            _mesasLoading = false;
+        }
     }
 
     private async Task CargarTurnosAsync()
@@ -213,29 +287,31 @@
         _anios = new();
         _aniosError = null;
 
-        if (carreraId is null)
-            return;
+        if (carreraId is not null)
+        {
+            _aniosLoading = true;
+            _aniosError = null;
+            try
+            {
+                var result = await AniosCarrerasApi.GetAsync(carreraId.Value);
+                if (result.IsSuccess)
+                {
+                    _anios = result.Anios;
+                    if (_anios.Count == 0)
+                        _aniosError = "La carrera seleccionada no tiene años cargados.";
+                }
+                else
+                {
+                    _anios = new();
+                    _aniosError = result.Error;
+                }
+            }
+            finally
+            {
+                _aniosLoading = false;
+            }
+        }
 
-        _aniosLoading = true;
-        _aniosError = null;
-        try
-        {
-            var result = await AniosCarrerasApi.GetAsync(carreraId.Value);
-            if (result.IsSuccess)
-            {
-                _anios = result.Anios;
-                if (_anios.Count == 0)
-                    _aniosError = "La carrera seleccionada no tiene años cargados.";
-            }
-            else
-            {
-                _anios = new();
-                _aniosError = result.Error;
-            }
-        }
-        finally
-        {
-            _aniosLoading = false;
-        }
+        await CargarMesasAsync();
     }
 }
