@@ -64,6 +64,8 @@ builder.Services.AddScoped<ITurnosRepository, TurnosRepository>();
 builder.Services.AddScoped<ITurnosService, TurnosService>();
 builder.Services.AddScoped<IAniosCarrerasRepository, AniosCarrerasRepository>();
 builder.Services.AddScoped<IAniosCarrerasService, AniosCarrerasService>();
+builder.Services.AddScoped<IMesasFinalesRepository, MesasFinalesRepository>();
+builder.Services.AddScoped<IMesasFinalesService, MesasFinalesService>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IAuthTokenService, AuthTokenService>();
 builder.Services.AddScoped<DevelopmentUserSeed>();
