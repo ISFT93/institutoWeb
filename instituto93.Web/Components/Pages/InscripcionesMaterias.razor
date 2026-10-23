@@ -1,0 +1,119 @@
+@page "/inscripciones-materias"
+
+<PageTitle>Inscripción a Materias 2027</PageTitle>
+
+<div class="inscripciones-page">
+    <div class="inscripciones-container">
+        <MudText Typo="Typo.h5" Class="insc-titulo">
+            Inscripción a Materias 2027
+        </MudText>
+
+        <div class="insc-grid">
+            @* Columna izquierda: pestaña "Carrera :" + tarjeta con scroll interno
+               y las tres secciones con sus tablas. *@
+            <div class="insc-col-izq">
+                <div class="insc-tab">
+                    <strong>Carrera :</strong> Analisis, desarrollo y programación de Aplicaciones
+                </div>
+
+                <div class="insc-card insc-card-listado">
+                    <div class="insc-card-scroll">
+                        <section class="insc-anio">
+                            <h2 class="insc-anio-titulo">1° AÑO</h2>
+
+                            <table class="insc-tabla">
+                                <thead>
+                                    <tr>
+                                        <th>Asiste</th>
+                                        <th>Materia</th>
+                                        <th>Docente</th>
+                                        <th>Sede</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @* TODO: filas de materias *@
+                                </tbody>
+                            </table>
+                        </section>
+
+                        <section class="insc-anio">
+                            <h2 class="insc-anio-titulo">2° AÑO</h2>
+
+                            <table class="insc-tabla">
+                                <thead>
+                                    <tr>
+                                        <th>Asiste</th>
+                                        <th>Materia</th>
+                                        <th>Docente</th>
+                                        <th>Sede</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @* TODO: filas de materias *@
+                                </tbody>
+                            </table>
+                        </section>
+
+                        <section class="insc-anio">
+                            <h2 class="insc-anio-titulo">3° AÑO</h2>
+
+                            <table class="insc-tabla">
+                                <thead>
+                                    <tr>
+                                        <th>Asiste</th>
+                                        <th>Materia</th>
+                                        <th>Docente</th>
+                                        <th>Sede</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @* TODO: filas de materias *@
+                                </tbody>
+                            </table>
+                        </section>
+                    </div>
+                </div>
+            </div>
+
+            @* Columna derecha: título, ilustración, texto y botón "Anotarse". *@
+            <div class="insc-col-der">
+                <div class="insc-card insc-card-seleccion">
+                    <h2 class="insc-seleccion-titulo">Materias seleccionadas</h2>
+
+                    @* Checklist de contorno (stroke currentColor, sin rellenos ni sombras):
+                       tres filas con círculo + línea; el círculo del medio lleva el punto
+                       relleno de radio seleccionado. *@
+                    <svg class="insc-seleccion-ilustracion"
+                         viewBox="0 0 160 165"
+                         xmlns="http://www.w3.org/2000/svg"
+                         aria-hidden="true"
+                         focusable="false">
+                        <rect x="3" y="3" width="154" height="159" rx="16"
+                              fill="none" stroke="currentColor" stroke-width="6" />
+
+                        <circle cx="34" cy="45" r="14" fill="none" stroke="currentColor" stroke-width="5" />
+                        <line x1="62" y1="45" x2="128" y2="45" stroke="currentColor" stroke-width="6" stroke-linecap="round" />
+
+                        <circle cx="34" cy="82.5" r="14" fill="none" stroke="currentColor" stroke-width="5" />
+                        <circle cx="34" cy="82.5" r="5" fill="currentColor" />
+                        <line x1="62" y1="82.5" x2="128" y2="82.5" stroke="currentColor" stroke-width="6" stroke-linecap="round" />
+
+                        <circle cx="34" cy="120" r="14" fill="none" stroke="currentColor" stroke-width="5" />
+                        <line x1="62" y1="120" x2="128" y2="120" stroke="currentColor" stroke-width="6" stroke-linecap="round" />
+                    </svg>
+
+                    <p class="insc-seleccion-texto">
+                        Acá encontrarás las materias que seleccionaste para inscribirte.
+                    </p>
+
+                    @* TODO: acción de Anotarse *@
+                    <MudButton Class="insc-btn-anotarse"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary">
+                        Anotarse
+                    </MudButton>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
