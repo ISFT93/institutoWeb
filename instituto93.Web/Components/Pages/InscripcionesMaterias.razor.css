@@ -4,13 +4,17 @@
     background: #F5F8FD;
 }
 
-/* Mismo criterio que /mesas-finales: márgenes laterales iguales y 40px bajo la barra sticky. */
+/* Contenedor centrado: el espacio sobrante queda igual a ambos lados. */
 .inscripciones-container {
-    max-width: 1260px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 75rem; /* ~1200px */
 
-    margin-left: 6.5%;
-    margin-right: 10%;
-    padding: 2.5rem 0 3rem;
+    margin-left: auto;
+    margin-right: auto;
+
+    /* ~40px bajo la barra sticky y ~24px laterales para no tocar bordes en pantallas chicas */
+    padding: 2.5rem 1.5rem 3rem;
 }
 
 /* Título */
