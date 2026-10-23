@@ -167,7 +167,7 @@ public sealed class MateriasDocenteRepository(Conexion conexion) : IMateriasDoce
         finally { conexion.Close(); }
     }
 
-    public async Task<bool> ActualizarEvaluacionAsync(int id,int profesorId,ActualizarEvaluacionDto r,CancellationToken ct=default)
+    public async Task<bool> ActualizarEvaluacionAsync(int id, int profesorId, ActualizarEvaluacionDto r, CancellationToken ct = default)
     {
         const string actualizarSql =
             """UPDATE e SET TipoEvaluacionId=@tipo,Nombre=@nombre,Fecha=@fecha,Cuatrimestre=@cuatri,Estado=@estado,Ponderacion=@ponderacion,FechaModificacion=SYSUTCDATETIME() FROM Evaluaciones e WHERE e.EvaluacionId=@id AND e.Version=@version AND """

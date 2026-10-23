@@ -15,10 +15,10 @@
 <main class="materias-page">
     <div class="materias-container">
         <MudButton Variant="Variant.Text"
-                   Color="Color.Primary"
-                   StartIcon="@Icons.Material.Filled.ArrowBack"
-                   Class="back-button"
-                   OnClick="BackAsync">
+                Color="Color.Primary"
+                StartIcon="@Icons.Material.Filled.ArrowBack"
+                Class="back-button"
+                OnClick="BackAsync">
             Volver a evaluaciones
         </MudButton>
 
@@ -67,13 +67,13 @@
             {
                 <div class="search-row">
                     <MudTextField T="string"
-                                  @bind-Value="_search"
-                                  Immediate="true"
-                                  Placeholder="Buscar estudiante por nombre, DNI o estado..."
-                                  Adornment="Adornment.Start"
-                                  AdornmentIcon="@Icons.Material.Filled.Search"
-                                  Variant="Variant.Outlined"
-                                  aria-label="Buscar estudiantes para cargar notas" />
+                                @bind-Value="_search"
+                                Immediate="true"
+                                Placeholder="Buscar estudiante por nombre, DNI o estado..."
+                                Adornment="Adornment.Start"
+                                AdornmentIcon="@Icons.Material.Filled.Search"
+                                Variant="Variant.Outlined"
+                                aria-label="Buscar estudiantes para cargar notas" />
                 </div>
 
                 <section class="students-section">
@@ -116,14 +116,14 @@
 
                                     <div class="grade-field">
                                         <MudNumericField T="decimal?"
-                                                         @bind-Value="student.Nota"
-                                                         Label="Nota"
-                                                         Min="@_data.NotaMinima"
-                                                         Max="@_data.NotaMaxima"
-                                                         Step="0.01M"
-                                                         Variant="Variant.Outlined"
-                                                         HideSpinButtons="true"
-                                                         Disabled="@(!CanEdit || student.Ausente)" />
+                                                        @bind-Value="student.Nota"
+                                                        Label="Nota"
+                                                        Min="@_data.NotaMinima"
+                                                        Max="@_data.NotaMaxima"
+                                                        Step="0.01M"
+                                                        Variant="Variant.Outlined"
+                                                        HideSpinButtons="true"
+                                                        Disabled="@(!CanEdit || student.Ausente)" />
                                         @if (_validationErrors.TryGetValue(student.CursadaAlumnoCarreraId, out var validationError))
                                         {
                                             <span class="field-error" role="alert">@validationError</span>
@@ -131,16 +131,16 @@
                                     </div>
 
                                     <MudCheckBox T="bool"
-                                                 Value="student.Ausente"
-                                                 ValueChanged="@(ausente => ChangeAbsence(student, ausente))"
-                                                 Label="Ausente"
-                                                 Disabled="@(!CanEdit)" />
+                                                Value="student.Ausente"
+                                                ValueChanged="@(ausente => ChangeAbsence(student, ausente))"
+                                                Label="Ausente"
+                                                Disabled="@(!CanEdit)" />
 
                                     <MudTextField @bind-Value="student.Observaciones"
-                                                  Label="Observaciones"
-                                                  Variant="Variant.Outlined"
-                                                  MaxLength="500"
-                                                  Disabled="@(!CanEdit)" />
+                                                Label="Observaciones"
+                                                Variant="Variant.Outlined"
+                                                MaxLength="500"
+                                                Disabled="@(!CanEdit)" />
                                 </article>
                             }
                         </div>
@@ -164,10 +164,10 @@
                         }
                     </div>
                     <MudButton Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               StartIcon="@Icons.Material.Filled.Save"
-                               Disabled="@(_saving || !CanEdit || !HasChanges)"
-                               OnClick="SaveAsync">
+                            Color="Color.Primary"
+                            StartIcon="@Icons.Material.Filled.Save"
+                            Disabled="@(_saving || !CanEdit || !HasChanges)"
+                            OnClick="SaveAsync">
                         @(_saving ? "Guardando…" : "Guardar notas")
                     </MudButton>
                 </footer>

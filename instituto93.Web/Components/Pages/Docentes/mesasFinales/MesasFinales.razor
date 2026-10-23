@@ -45,24 +45,24 @@
             <section class="filters-panel" aria-label="Filtros de mesas finales">
                 <div class="filter-search">
                     <MudTextField T="string"
-                                  @bind-Value="_busqueda"
-                                  @bind-Value:after="AplicarFiltros"
-                                  Immediate="true"
-                                  Placeholder="Buscar materia..."
-                                  Adornment="Adornment.Start"
-                                  AdornmentIcon="@Icons.Material.Filled.Search"
-                                  Variant="Variant.Outlined"
-                                  aria-label="Buscar mesas por materia" />
+                                @bind-Value="_busqueda"
+                                @bind-Value:after="AplicarFiltros"
+                                Immediate="true"
+                                Placeholder="Buscar materia..."
+                                Adornment="Adornment.Start"
+                                AdornmentIcon="@Icons.Material.Filled.Search"
+                                Variant="Variant.Outlined"
+                                aria-label="Buscar mesas por materia" />
                 </div>
 
                 <div class="filter-select">
                     <MudSelect T="string"
-                               @bind-Value="_turno"
-                               @bind-Value:after="AplicarFiltros"
-                               Adornment="Adornment.Start"
-                               AdornmentText="Turno:"
-                               Variant="Variant.Outlined"
-                               aria-label="Filtrar por turno">
+                            @bind-Value="_turno"
+                            @bind-Value:after="AplicarFiltros"
+                            Adornment="Adornment.Start"
+                            AdornmentText="Turno:"
+                            Variant="Variant.Outlined"
+                            aria-label="Filtrar por turno">
                         <MudSelectItem Value="@Todos">Todos</MudSelectItem>
                         @foreach (var turno in _mesas.Select(m => m.Turno).Distinct().Order())
                         {
@@ -73,12 +73,12 @@
 
                 <div class="filter-select">
                     <MudSelect T="string"
-                               @bind-Value="_estado"
-                               @bind-Value:after="AplicarFiltros"
-                               Adornment="Adornment.Start"
-                               AdornmentIcon="@Icons.Material.Filled.FilterList"
-                               Variant="Variant.Outlined"
-                               aria-label="Filtrar por estado">
+                            @bind-Value="_estado"
+                            @bind-Value:after="AplicarFiltros"
+                            Adornment="Adornment.Start"
+                            AdornmentIcon="@Icons.Material.Filled.FilterList"
+                            Variant="Variant.Outlined"
+                            aria-label="Filtrar por estado">
                         <MudSelectItem Value="@Todos">Todos los estados</MudSelectItem>
                         @foreach (var estado in _mesas.Select(m => m.Estado).Distinct().Order())
                         {
@@ -139,8 +139,8 @@
                             </div>
                             <span class="status-badge @EstadoCss(mesa.Estado)">@mesa.Estado</span>
                             <MudButton Variant="Variant.Filled" Color="Color.Primary"
-                                       EndIcon="@Icons.Material.Filled.ArrowForward"
-                                       OnClick="@(() => AbrirMesa(mesa.MesaId))">
+                                    EndIcon="@Icons.Material.Filled.ArrowForward"
+                                    OnClick="@(() => AbrirMesa(mesa.MesaId))">
                                 Abrir mesa
                             </MudButton>
                         </article>

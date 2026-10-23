@@ -2,7 +2,7 @@ using instituto93.Domain.Interfaces;
 
 namespace instituto93.Domain.Models
 {
-    public class Parametro:IParametro
+    public class Parametro : IParametro
     {
         public int ParametroId { get; set; }
         public string Nombre { get; set; }

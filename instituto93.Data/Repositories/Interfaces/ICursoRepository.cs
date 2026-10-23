@@ -5,7 +5,7 @@ using instituto93.Domain.Models;
 
 namespace instituto93.Data.Repositories
 {
-    public interface icursoRepository 
+    public interface icursoRepository
     {
         Task<IEnumerable<CursoModelo>> GetAllAsync(CancellationToken cancellationToken = default);
         Task<CursoModelo?> GetByIdAsync(int id, CancellationToken cancellationToken = default);

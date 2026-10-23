@@ -115,7 +115,7 @@ namespace instituto93.Data.Repositories
                 cmd.Parameters.AddWithValue("@Nombre", personal.Nombre ?? string.Empty);
                 cmd.Parameters.AddWithValue("@Apellido", personal.Apellido ?? string.Empty);
                 cmd.Parameters.AddWithValue("@FechaNacimiento", personal.FechaNacimiento == default ? DateTime.Now : personal.FechaNacimiento);
-                cmd.Parameters.AddWithValue("@Sexo", personal.Sexo );
+                cmd.Parameters.AddWithValue("@Sexo", personal.Sexo);
                 cmd.Parameters.AddWithValue("@Titulo", personal.Titulo ?? string.Empty);
                 cmd.Parameters.AddWithValue("@TramoPedagogico", personal.TramoPedagogico ?? string.Empty);
                 cmd.Parameters.AddWithValue("@id", personal.PersonalId);

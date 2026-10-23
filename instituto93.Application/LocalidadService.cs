@@ -3,8 +3,8 @@ using instituto93.Domain.Models;
 
 namespace instituto93.Application
 {
-    
-    public class LocalidadService:ILocalidadService
+
+    public class LocalidadService : ILocalidadService
     {
         private readonly ILocalidadRepository _repo;
         public LocalidadService(ILocalidadRepository repo)

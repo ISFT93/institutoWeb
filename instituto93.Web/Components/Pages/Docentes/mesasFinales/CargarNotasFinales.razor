@@ -11,8 +11,8 @@
 <main class="notas-finales-page">
     <div class="notas-finales-container">
         <MudButton Variant="Variant.Text" Color="Color.Primary"
-                   StartIcon="@Icons.Material.Filled.ArrowBack"
-                   Class="back-button" OnClick="Volver">
+                StartIcon="@Icons.Material.Filled.ArrowBack"
+                Class="back-button" OnClick="Volver">
             Volver a mis mesas
         </MudButton>
 
@@ -72,13 +72,13 @@
             {
                 <div class="search-row">
                     <MudTextField T="string"
-                                  @bind-Value="_busqueda"
-                                  Immediate="true"
-                                  Placeholder="Buscar estudiante por nombre, DNI o estado..."
-                                  Adornment="Adornment.Start"
-                                  AdornmentIcon="@Icons.Material.Filled.Search"
-                                  Variant="Variant.Outlined"
-                                  aria-label="Buscar estudiantes para cargar notas finales" />
+                                @bind-Value="_busqueda"
+                                Immediate="true"
+                                Placeholder="Buscar estudiante por nombre, DNI o estado..."
+                                Adornment="Adornment.Start"
+                                AdornmentIcon="@Icons.Material.Filled.Search"
+                                Variant="Variant.Outlined"
+                                aria-label="Buscar estudiantes para cargar notas finales" />
                 </div>
 
                 <EditForm Model="_mesa" OnSubmit="GuardarAsync">
@@ -118,17 +118,17 @@
                                         <div class="grade-field">
                                             <label for="@($"nota-{estudiante.MesaAlumnoId}")">Nota final</label>
                                             <MudNumericField T="decimal?"
-                                                             id="@($"nota-{estudiante.MesaAlumnoId}")"
-                                                             Value="estudiante.Nota"
-                                                             ValueChanged="@(value => CambiarNota(estudiante, value))"
-                                                             Min="_mesa.NotaMinima"
-                                                             Max="_mesa.NotaMaxima"
-                                                             Variant="Variant.Outlined"
-                                                             HideSpinButtons="true"
-                                                             Error="@_errores.ContainsKey(estudiante.MesaAlumnoId)"
-                                                             ErrorText="@ErrorDe(estudiante.MesaAlumnoId)"
-                                                             Immediate="true"
-                                                             aria-label="@($"Nota final de {estudiante.NombreCompleto}")" />
+                                                            id="@($"nota-{estudiante.MesaAlumnoId}")"
+                                                            Value="estudiante.Nota"
+                                                            ValueChanged="@(value => CambiarNota(estudiante, value))"
+                                                            Min="_mesa.NotaMinima"
+                                                            Max="_mesa.NotaMaxima"
+                                                            Variant="Variant.Outlined"
+                                                            HideSpinButtons="true"
+                                                            Error="@_errores.ContainsKey(estudiante.MesaAlumnoId)"
+                                                            ErrorText="@ErrorDe(estudiante.MesaAlumnoId)"
+                                                            Immediate="true"
+                                                            aria-label="@($"Nota final de {estudiante.NombreCompleto}")" />
                                         </div>
                                         <span class="status-badge @NotaEstadoCss(estudiante.Nota)">@NotaEstado(estudiante.Nota)</span>
                                     </article>
@@ -140,10 +140,10 @@
                     <footer class="save-bar">
                         <div><strong>¿Terminaste la carga?</strong><span>Revisá las notas antes de guardar.</span></div>
                         <MudButton ButtonType="ButtonType.Submit"
-                                   Variant="Variant.Filled"
-                                   Color="Color.Primary"
-                                   StartIcon="@Icons.Material.Filled.Save"
-                                   Disabled="@(!_hayCambios || _saving)">
+                                Variant="Variant.Filled"
+                                Color="Color.Primary"
+                                StartIcon="@Icons.Material.Filled.Save"
+                                Disabled="@(!_hayCambios || _saving)">
                             @(_saving ? "Guardando..." : "Guardar notas")
                         </MudButton>
                     </footer>

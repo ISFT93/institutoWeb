@@ -17,7 +17,7 @@ namespace instituto93.Data.Repositories
             _conexion = conexion ?? throw new ArgumentNullException(nameof(conexion));
         }
         public async Task<IEnumerable<CarrerasModelo>> GetAllAsync(CancellationToken cancellationToken = default)
-        { 
+        {
             var lista = new List<CarrerasModelo>();
             const string sql = "SELECT CarreraId, Titulo, Nombre, DescripcionCorta, JefeCatedra, AnioInicio, AnioFin, Activo, PlanEstudio, Resolucion, "
                     + "Correlatividades, ImagenDescriptiva, NumeroExpediente, CantidadHoras, Duracion, CarreraEstadoId, CarrerasCodigoBloque FROM Carreras";

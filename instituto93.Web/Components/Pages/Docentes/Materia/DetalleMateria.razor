@@ -10,10 +10,10 @@
 <main class="detalle-page">
     <div class="detalle-container">
         <MudButton Variant="Variant.Text"
-                   Color="Color.Primary"
-                   StartIcon="@Icons.Material.Filled.ArrowBack"
-                   Class="back-button"
-                   OnClick="Volver">
+                Color="Color.Primary"
+                StartIcon="@Icons.Material.Filled.ArrowBack"
+                Class="back-button"
+                OnClick="Volver">
             Volver a mis materias
         </MudButton>
 
@@ -51,13 +51,13 @@
 
             <div class="search-row">
                 <MudTextField T="string"
-                              @bind-Value="_search"
-                              Immediate="true"
-                              Placeholder="Buscar estudiante por nombre, DNI o estado..."
-                              Adornment="Adornment.Start"
-                              AdornmentIcon="@Icons.Material.Filled.Search"
-                              Variant="Variant.Outlined"
-                              aria-label="Buscar estudiantes" />
+                            @bind-Value="_search"
+                            Immediate="true"
+                            Placeholder="Buscar estudiante por nombre, DNI o estado..."
+                            Adornment="Adornment.Start"
+                            AdornmentIcon="@Icons.Material.Filled.Search"
+                            Variant="Variant.Outlined"
+                            aria-label="Buscar estudiantes" />
             </div>
 
             <section class="students">

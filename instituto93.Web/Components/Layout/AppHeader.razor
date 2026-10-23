@@ -3,18 +3,18 @@
 
 <div class="app-header-wrapper">
     <MudAppBar Class="app-header"
-               Fixed="false"
-               Color="Color.Primary"
-               Elevation="0">
+            Fixed="false"
+            Color="Color.Primary"
+            Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu"
-                       Color="Color.Inherit"
-                       Edge="Edge.Start"
-                       Size="Size.Small"
-                       aria-label="Abrir menú" />
+                    Color="Color.Inherit"
+                    Edge="Edge.Start"
+                    Size="Size.Small"
+                    aria-label="Abrir menú" />
 
         <MudAvatar Class="app-header-logo" Size="Size.Medium" Color="Color.Surface">
             <MudImage Src="/images/logo.png"
-                      Alt="Logo del Instituto Superior de Formación Docente y Técnica N°93" />
+                    Alt="Logo del Instituto Superior de Formación Docente y Técnica N°93" />
         </MudAvatar>
 
         <span class="app-header-title">
@@ -25,23 +25,23 @@
         <div class="app-header-user">
             <MudBadge Dot="true" Color="Color.Surface" Overlap="true">
                 <MudIconButton Icon="@Icons.Material.Outlined.NotificationsNone"
-                               Color="Color.Inherit"
-                               Size="Size.Small"
-                               aria-label="Notificaciones" />
+                            Color="Color.Inherit"
+                            Size="Size.Small"
+                            aria-label="Notificaciones" />
             </MudBadge>
 
             @* La cookie de sesión (HttpOnly) solo se borra desde una request HTTP: el menú
-               vive dentro de este form (display:contents, invisible para el layout) y el
-               item "Cerrar sesión" lo envía vía js/app-header.js → POST /account/logout,
-               que revoca el refresh token, borra la cookie y redirige al login. *@
+            vive dentro de este form (display:contents, invisible para el layout) y el
+            item "Cerrar sesión" lo envía vía js/app-header.js → POST /account/logout,
+            que revoca el refresh token, borra la cookie y redirige al login. *@
             <form method="post" action="/account/logout" id="app-header-logout-form" class="app-header-logout-form">
                 <AntiforgeryToken />
 
                 <MudMenu Class="app-header-user-menu"
-                         PopoverClass="app-tab-menu-popover"
-                         AnchorOrigin="Origin.BottomRight"
-                         TransformOrigin="Origin.TopRight"
-                         ActivationEvent="MouseEvent.LeftClick">
+                        PopoverClass="app-tab-menu-popover"
+                        AnchorOrigin="Origin.BottomRight"
+                        TransformOrigin="Origin.TopRight"
+                        ActivationEvent="MouseEvent.LeftClick">
                     <ActivatorContent>
                         <span class="app-header-user-block" @onclick="context.ToggleAsync">
                             <span class="app-header-user-name">@_userName</span>

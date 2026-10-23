@@ -35,22 +35,22 @@
             <section class="filters-panel" aria-label="Filtros de materias">
                 <div class="filter-search">
                     <MudTextField T="string"
-                                  @bind-Value="_search"
-                                  Immediate="true"
-                                  Placeholder="Buscar materia o curso..."
-                                  Adornment="Adornment.Start"
-                                  AdornmentIcon="@Icons.Material.Filled.Search"
-                                  Variant="Variant.Outlined"
-                                  aria-label="Buscar materias" />
+                                @bind-Value="_search"
+                                Immediate="true"
+                                Placeholder="Buscar materia o curso..."
+                                Adornment="Adornment.Start"
+                                AdornmentIcon="@Icons.Material.Filled.Search"
+                                Variant="Variant.Outlined"
+                                aria-label="Buscar materias" />
                 </div>
 
                 <div class="filter-select">
                     <MudSelect T="string"
-                               @bind-Value="_carrera"
-                               Adornment="Adornment.Start"
-                               AdornmentIcon="@Icons.Material.Filled.School"
-                               Variant="Variant.Outlined"
-                               aria-label="Filtrar por carrera">
+                            @bind-Value="_carrera"
+                            Adornment="Adornment.Start"
+                            AdornmentIcon="@Icons.Material.Filled.School"
+                            Variant="Variant.Outlined"
+                            aria-label="Filtrar por carrera">
                         <MudSelectItem Value="@Todos">Todas las carreras</MudSelectItem>
                         @foreach (var carrera in Carreras)
                         {
@@ -61,11 +61,11 @@
 
                 <div class="filter-select">
                     <MudSelect T="string"
-                               @bind-Value="_anioLectivo"
-                               Adornment="Adornment.Start"
-                               AdornmentIcon="@Icons.Material.Filled.CalendarMonth"
-                               Variant="Variant.Outlined"
-                               aria-label="Filtrar por ciclo lectivo">
+                            @bind-Value="_anioLectivo"
+                            Adornment="Adornment.Start"
+                            AdornmentIcon="@Icons.Material.Filled.CalendarMonth"
+                            Variant="Variant.Outlined"
+                            aria-label="Filtrar por ciclo lectivo">
                         <MudSelectItem Value="@Todos">Todos los ciclos</MudSelectItem>
                         @foreach (var anio in AniosLectivos)
                         {
@@ -139,9 +139,9 @@
 
     private IEnumerable<MateriaDocenteModel> Filtered => _items.Where(item =>
         (string.IsNullOrWhiteSpace(_search) ||
-         item.Materia.Contains(_search, StringComparison.OrdinalIgnoreCase) ||
-         item.Carrera.Contains(_search, StringComparison.OrdinalIgnoreCase) ||
-         item.Curso.Contains(_search, StringComparison.OrdinalIgnoreCase)) &&
+        item.Materia.Contains(_search, StringComparison.OrdinalIgnoreCase) ||
+        item.Carrera.Contains(_search, StringComparison.OrdinalIgnoreCase) ||
+        item.Curso.Contains(_search, StringComparison.OrdinalIgnoreCase)) &&
         (_carrera == Todos || item.Carrera.Equals(_carrera, StringComparison.OrdinalIgnoreCase)) &&
         (_anioLectivo == Todos || item.AnioLectivo.ToString() == _anioLectivo));
 

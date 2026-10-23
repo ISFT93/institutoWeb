@@ -45,7 +45,7 @@ namespace instituto93.Data.Repositories
                         AlumnoId = reader.GetInt32(0),
                         Apellido = reader.GetString(1),
                         Nombre = reader.GetString(2),
-                        TipoDocumento =  reader.GetString(3),
+                        TipoDocumento = reader.GetString(3),
                         NumeroDocumento = reader.GetString(4),
                         EstadoCivil = reader.GetString(5),
                         Sexo = reader.GetString(6),
@@ -149,17 +149,17 @@ namespace instituto93.Data.Repositories
                     return new AlumnoModelo
                     {
                         AlumnoId = reader.GetInt32(0),
-                        Apellido =  reader.GetString(1),
+                        Apellido = reader.GetString(1),
                         Nombre = reader.GetString(2),
                         TipoDocumento = reader.GetString(3),
-                        NumeroDocumento =  reader.GetString(4),
+                        NumeroDocumento = reader.GetString(4),
                         EstadoCivil = reader.GetString(5),
                         Sexo = reader.GetString(6),
                         FechaNacimiento = reader.GetDateTime(7),
-                        LocalidadNacimiento =  reader.GetString(8),
+                        LocalidadNacimiento = reader.GetString(8),
                         PaisNacimiento = reader.GetString(9),
                         Calle = reader.GetString(10),
-                        Numero =  reader.GetString(11),
+                        Numero = reader.GetString(11),
                         Piso = reader.GetString(12),
                         Departamento = reader.GetString(13),
                         Provincia = reader.GetString(14),
@@ -183,7 +183,7 @@ namespace instituto93.Data.Repositories
                         MayorOtorgadoPor = reader.GetString(32),
                         MayorPromedio = reader.GetDecimal(33),
                         FotocopiaTitulo = reader.GetBoolean(34),
-                        ConstanciaTituloTramite =  reader.GetBoolean(35),
+                        ConstanciaTituloTramite = reader.GetBoolean(35),
                         ConstanciaAdeudaMaterias = reader.GetBoolean(36),
                         CantidadAdeudaMaterias = reader.GetInt32(37),
                         CertificadoAptitud = reader.GetBoolean(38),
@@ -361,7 +361,7 @@ namespace instituto93.Data.Repositories
 
                 //DATOS PERSONALES
                 cmd.Parameters.AddWithValue("@Nombre", (object?)alumno.Nombre ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@Apellido", (object?)alumno.Apellido ?? DBNull.Value);                
+                cmd.Parameters.AddWithValue("@Apellido", (object?)alumno.Apellido ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@TipoDocumento", (object?)alumno.TipoDocumento ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@NumeroDocumento", (object?)alumno.NumeroDocumento ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@PaisNacimiento", (object?)alumno.PaisNacimiento ?? DBNull.Value);
@@ -377,14 +377,14 @@ namespace instituto93.Data.Repositories
                 cmd.Parameters.AddWithValue("@Departamento", (object?)alumno.Departamento ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Distrito", (object?)alumno.Distrito ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Provincia", (object?)alumno.Provincia ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@Localidad", (object?)alumno.Localidad ?? DBNull.Value);                
+                cmd.Parameters.AddWithValue("@Localidad", (object?)alumno.Localidad ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@CodigoPostal", (object?)alumno.CodigoPostal ?? DBNull.Value);
 
                 //CONTACTO
                 cmd.Parameters.AddWithValue("@Email", (object?)alumno.Email ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Celular", (object?)alumno.Celular ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Telefono", (object?)alumno.Telefono ?? DBNull.Value);
-                
+
                 //FORMACIÓN
                 cmd.Parameters.AddWithValue("@TituloSecundario", (object?)alumno.TituloSecundario ?? DBNull.Value);
                 //Titulo No

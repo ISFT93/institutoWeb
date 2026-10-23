@@ -11,10 +11,10 @@
 <main class="materias-page">
     <div class="materias-container">
         <MudButton Variant="Variant.Text"
-                   Color="Color.Primary"
-                   StartIcon="@Icons.Material.Filled.ArrowBack"
-                   Class="back-button"
-                   OnClick="Back">
+                Color="Color.Primary"
+                StartIcon="@Icons.Material.Filled.ArrowBack"
+                Class="back-button"
+                OnClick="Back">
             Volver a la materia
         </MudButton>
 
@@ -47,11 +47,11 @@
                 <MudTextField @bind-Value="_name" Label="Nombre" Variant="Variant.Outlined" Required="true" />
 
                 <MudDatePicker @bind-Date="_date"
-                               Label="Fecha"
-                               Variant="Variant.Outlined"
-                               Editable="true"
-                               DateFormat="dd/MM/yyyy"
-                               MinDate="@(_id is null ? _minDate : (DateTime?)null)" />
+                            Label="Fecha"
+                            Variant="Variant.Outlined"
+                            Editable="true"
+                            DateFormat="dd/MM/yyyy"
+                            MinDate="@(_id is null ? _minDate : (DateTime?)null)" />
 
                 <MudSelect T="byte" @bind-Value="_term" Label="Cuatrimestre" Variant="Variant.Outlined">
                     <MudSelectItem T="byte" Value="1">1°</MudSelectItem>
@@ -80,13 +80,13 @@
         {
             <div class="search-row">
                 <MudTextField T="string"
-                              @bind-Value="_search"
-                              Immediate="true"
-                              Placeholder="Buscar evaluación por nombre, tipo o estado..."
-                              Adornment="Adornment.Start"
-                              AdornmentIcon="@Icons.Material.Filled.Search"
-                              Variant="Variant.Outlined"
-                              aria-label="Buscar evaluaciones" />
+                            @bind-Value="_search"
+                            Immediate="true"
+                            Placeholder="Buscar evaluación por nombre, tipo o estado..."
+                            Adornment="Adornment.Start"
+                            AdornmentIcon="@Icons.Material.Filled.Search"
+                            Variant="Variant.Outlined"
+                            aria-label="Buscar evaluaciones" />
             </div>
         }
 
