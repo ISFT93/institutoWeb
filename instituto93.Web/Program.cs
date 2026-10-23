@@ -52,6 +52,7 @@ builder.Services.AddHttpClient<AuthApiClient>(ConfigureApiClient);
 builder.Services.AddHttpClient<AccountApiClient>(ConfigureApiClient)
     .AddHttpMessageHandler<TokenHandler>();
 builder.Services.AddHttpClient<DocenteMesasFinalesApiClient>(ConfigureApiClient);
+builder.Services.AddHttpClient<DocenteMateriasApiClient>(ConfigureApiClient);
 
 // BFF: el navegador solo recibe una cookie HttpOnly y cifrada; el access token y el refresh token
 // viajan dentro de ella y nunca llegan al JavaScript. CookieTokenRefresher los renueva.

@@ -58,6 +58,8 @@ builder.Services.AddScoped<IAlumnoService, AlumnoService>();
 builder.Services.AddScoped<IProfesorRepository, ProfesorRepository>();
 builder.Services.AddScoped<IMesasFinalesDocenteRepository, MesasFinalesDocenteRepository>();
 builder.Services.AddScoped<IMesasFinalesDocenteService, MesasFinalesDocenteService>();
+builder.Services.AddScoped<IMateriasDocenteRepository, MateriasDocenteRepository>();
+builder.Services.AddScoped<IMateriasDocenteService, MateriasDocenteService>();
 builder.Services.AddScoped<IAlumnoAccesoService, AlumnoAccesoService>();
 builder.Services.AddScoped<ICarrerasRepository, CarrerasRepository>();
 builder.Services.AddScoped<ICarrerasService, CarrerasService>();

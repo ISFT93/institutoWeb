@@ -43,34 +43,49 @@
         else
         {
             <section class="filters-panel" aria-label="Filtros de mesas finales">
-                <MudTextField T="string"
-                              @bind-Value="_busqueda"
-                              @bind-Value:after="AplicarFiltros"
-                              Immediate="true"
-                              Label="Buscar por materia"
-                              Placeholder="Ej. Programación"
-                              Adornment="Adornment.Start"
-                              AdornmentIcon="@Icons.Material.Outlined.Search"
-                              Variant="Variant.Outlined"
-                              Class="search-field" />
+                <div class="filter-search">
+                    <MudTextField T="string"
+                                  @bind-Value="_busqueda"
+                                  @bind-Value:after="AplicarFiltros"
+                                  Immediate="true"
+                                  Placeholder="Buscar materia..."
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                  Variant="Variant.Outlined"
+                                  aria-label="Buscar mesas por materia" />
+                </div>
 
-                <MudSelect T="string" @bind-Value="_turno" @bind-Value:after="AplicarFiltros"
-                           Label="Turno" Variant="Variant.Outlined">
-                    <MudSelectItem Value="@Todos">Todos</MudSelectItem>
-                    @foreach (var turno in _mesas.Select(m => m.Turno).Distinct().Order())
-                    {
-                        <MudSelectItem Value="@turno">@turno</MudSelectItem>
-                    }
-                </MudSelect>
+                <div class="filter-select">
+                    <MudSelect T="string"
+                               @bind-Value="_turno"
+                               @bind-Value:after="AplicarFiltros"
+                               Adornment="Adornment.Start"
+                               AdornmentText="Turno:"
+                               Variant="Variant.Outlined"
+                               aria-label="Filtrar por turno">
+                        <MudSelectItem Value="@Todos">Todos</MudSelectItem>
+                        @foreach (var turno in _mesas.Select(m => m.Turno).Distinct().Order())
+                        {
+                            <MudSelectItem Value="@turno">@turno</MudSelectItem>
+                        }
+                    </MudSelect>
+                </div>
 
-                <MudSelect T="string" @bind-Value="_estado" @bind-Value:after="AplicarFiltros"
-                           Label="Estado" Variant="Variant.Outlined">
-                    <MudSelectItem Value="@Todos">Todos</MudSelectItem>
-                    @foreach (var estado in _mesas.Select(m => m.Estado).Distinct().Order())
-                    {
-                        <MudSelectItem Value="@estado">@estado</MudSelectItem>
-                    }
-                </MudSelect>
+                <div class="filter-select">
+                    <MudSelect T="string"
+                               @bind-Value="_estado"
+                               @bind-Value:after="AplicarFiltros"
+                               Adornment="Adornment.Start"
+                               AdornmentIcon="@Icons.Material.Filled.FilterList"
+                               Variant="Variant.Outlined"
+                               aria-label="Filtrar por estado">
+                        <MudSelectItem Value="@Todos">Todos los estados</MudSelectItem>
+                        @foreach (var estado in _mesas.Select(m => m.Estado).Distinct().Order())
+                        {
+                            <MudSelectItem Value="@estado">@estado</MudSelectItem>
+                        }
+                    </MudSelect>
+                </div>
             </section>
 
             <section class="summary-grid" aria-label="Resumen de mesas finales">
