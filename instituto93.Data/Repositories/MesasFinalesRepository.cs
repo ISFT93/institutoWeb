@@ -19,12 +19,12 @@ namespace instituto93.Data.Repositories
             const string sql = @"
                 SELECT
                     mf.MesaFinalId,
-                    m.Nombre,
+                    ISNULL(m.Nombre, ''),
                     ac.AnioCarrera,
-                    voc.Nombre + ' ' + voc.Apellido,
-                    pre.Nombre + ' ' + pre.Apellido,
+                    ISNULL(voc.Nombre + ' ' + voc.Apellido, ''),
+                    ISNULL(pre.Nombre + ' ' + pre.Apellido, ''),
                     mf.Fecha,
-                    s.Descripcion
+                    ISNULL(s.Descripcion, '')
                 FROM MesasFinales mf
                 INNER JOIN Materias m       ON m.MateriaId = mf.MateriaId
                 INNER JOIN AniosCarreras ac ON ac.AnioCarreraId = m.AnioCarreraId
@@ -35,11 +35,12 @@ namespace instituto93.Data.Repositories
                   AND (@TurnoId IS NULL OR mf.TurnoId = @TurnoId)
                   AND (@AnioCarreraId IS NULL OR ac.AnioCarreraId = @AnioCarreraId)
                   AND (@AnioLectivo IS NULL OR mf.CicloLectivoId = @AnioLectivo)
+                  AND mf.Fecha IS NOT NULL
                   AND (@Texto IS NULL
                        OR m.Nombre LIKE @Texto
-                       OR voc.Nombre + ' ' + voc.Apellido LIKE @Texto
-                       OR pre.Nombre + ' ' + pre.Apellido LIKE @Texto
-                       OR s.Descripcion LIKE @Texto)
+                       OR ISNULL(voc.Nombre + ' ' + voc.Apellido, '') LIKE @Texto
+                       OR ISNULL(pre.Nombre + ' ' + pre.Apellido, '') LIKE @Texto
+                       OR ISNULL(s.Descripcion, '') LIKE @Texto)
                 ORDER BY ac.AnioCarrera, mf.Fecha;
             ";
 
@@ -64,7 +65,7 @@ namespace instituto93.Data.Repositories
                         reader.GetInt32(2),
                         reader.GetString(3),
                         reader.GetString(4),
-                        reader.GetDateTime(5),
+                        reader.IsDBNull(5) ? null : reader.GetDateTime(5),
                         reader.GetString(6)));
                 }
             }

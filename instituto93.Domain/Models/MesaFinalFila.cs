@@ -7,6 +7,6 @@ namespace instituto93.Domain.Models
         int AnioCarrera,
         string Asiste,
         string Docente,
-        DateTime Fecha,
+        DateTime? Fecha,
         string Sede);
 }

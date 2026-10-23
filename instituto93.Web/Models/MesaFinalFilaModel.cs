@@ -6,5 +6,5 @@ public sealed record MesaFinalFilaModel(
     int AnioCarrera,
     string Asiste,
     string Docente,
-    DateTime Fecha,
+    DateTime? Fecha,
     string Sede);
