@@ -219,7 +219,45 @@
     text-transform: none;
 }
 
+@media (max-width: 1024px) {
+    .mesas-finales-container {
+        margin-left: 5%;
+        margin-right: 5%;
+    }
+
+    .mesas-filtros {
+        flex-wrap: wrap;
+    }
+
+    .mesas-finales-page ::deep .mesas-buscador {
+        flex: 1 1 100%;
+    }
+
+    .mesas-select {
+        flex: 1 1 calc(33% - 1rem);
+    }
+}
+
 @media (max-width: 768px) {
+    .mesas-tab {
+        width: 100%;
+        box-sizing: border-box;
+
+        font-size: 1rem;
+    }
+
+    .mesas-card {
+        min-height: 0;
+    }
+
+    .mesas-acciones {
+        justify-content: stretch;
+    }
+
+    .mesas-finales-page ::deep .mesas-btn-anotarse {
+        width: 100%;
+    }
+
     .mesas-card {
         padding: 1.25rem 1rem;
     }

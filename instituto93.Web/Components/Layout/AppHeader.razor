@@ -6,21 +6,25 @@
             Fixed="false"
             Color="Color.Primary"
             Elevation="0">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+        <MudIconButton Class="app-header-menu-btn"
+                    Icon="@Icons.Material.Filled.Menu"
                     Color="Color.Inherit"
                     Edge="Edge.Start"
                     Size="Size.Small"
+                    OnClick="AbrirMenu"
                     aria-label="Abrir menú" />
 
-        <MudAvatar Class="app-header-logo" Size="Size.Medium" Color="Color.Surface">
-            <MudImage Src="/images/logo.png"
-                    Alt="Logo del Instituto Superior de Formación Docente y Técnica N°93" />
-        </MudAvatar>
+        <a href="/" class="app-header-home" aria-label="Ir al inicio">
+            <MudAvatar Class="app-header-logo" Size="Size.Medium" Color="Color.Surface">
+                <MudImage Src="/images/logo.png"
+                        Alt="Logo del Instituto Superior de Formación Docente y Técnica N°93" />
+            </MudAvatar>
 
-        <span class="app-header-title">
-            Instituto Superior de Formación Docente y<br />
-            Tecnica N°93
-        </span>
+            <span class="app-header-title">
+                Instituto Superior de Formación Docente y<br />
+                Tecnica N°93
+            </span>
+        </a>
 
         <div class="app-header-user">
             <MudBadge Dot="true" Color="Color.Surface" Overlap="true">
@@ -62,9 +66,65 @@
             </form>
         </div>
     </MudAppBar>
+
+    @if (_menuAbierto)
+    {
+        <div class="app-mobile-overlay" @onclick="CerrarMenu"></div>
+    }
+
+    <aside class="app-mobile-menu @(_menuAbierto ? "abierto" : null)" aria-label="Menú principal">
+        <div class="app-mobile-menu-cabecera">
+            <span>Menú</span>
+            <MudIconButton Icon="@Icons.Material.Filled.Close"
+                        Color="Color.Inherit"
+                        Size="Size.Small"
+                        OnClick="CerrarMenu"
+                        aria-label="Cerrar menú" />
+        </div>
+
+        <MudNavMenu Class="app-mobile-nav" Color="Color.Primary">
+            <MudNavLink Href="/" Match="NavLinkMatch.All"
+                        Icon="@Icons.Material.Filled.Home"
+                        OnClick="CerrarMenu">Inicio</MudNavLink>
+
+            <MudNavGroup Title="Instituto">
+                <MudNavLink OnClick="CerrarMenu">Nuestras Carreras</MudNavLink>
+                <MudNavLink OnClick="CerrarMenu">Perfil del Egresado</MudNavLink>
+                <MudNavLink OnClick="CerrarMenu">Datos Institucionales</MudNavLink>
+            </MudNavGroup>
+
+            <MudNavGroup Title="Calendario">
+                <MudNavLink Href="https://isfdyt93-bue.infd.edu.ar/sitio/wp-content/uploads/2026/06/Calendario-2026-ISFT93_v2.pdf"
+                            Target="_blank"
+                            OnClick="CerrarMenu">Calendario Academico 2026</MudNavLink>
+            </MudNavGroup>
+
+            <MudNavGroup Title="Alumnos">
+                <MudNavLink OnClick="CerrarMenu">Formularios</MudNavLink>
+                <MudNavLink OnClick="CerrarMenu">Becas PROGRESAR</MudNavLink>
+                <MudNavLink OnClick="CerrarMenu">Horarios Ciclo Lectivo 2026</MudNavLink>
+            </MudNavGroup>
+
+            <AuthorizeView Roles="Docente" Context="auth">
+                <MudNavGroup Title="Docentes">
+                    <MudNavLink Href="/docentes/materias" OnClick="CerrarMenu">Mis materias</MudNavLink>
+                    <MudNavLink Href="/docentes/mesas-finales" OnClick="CerrarMenu">Mesas finales</MudNavLink>
+                    <MudNavLink Href="/docentes/normativa" OnClick="CerrarMenu">Normativa</MudNavLink>
+                    <MudNavLink Href="/docentes/formularios" OnClick="CerrarMenu">Formularios</MudNavLink>
+                    <MudNavLink Href="/docentes/calendario" OnClick="CerrarMenu">Calendario</MudNavLink>
+                </MudNavGroup>
+            </AuthorizeView>
+        </MudNavMenu>
+    </aside>
 </div>
 
 @code {
+    private bool _menuAbierto;
+
+    private void AbrirMenu() => _menuAbierto = true;
+
+    private void CerrarMenu() => _menuAbierto = false;
+
     [Inject]
     private IJSRuntime Js { get; set; } = default!;
 
