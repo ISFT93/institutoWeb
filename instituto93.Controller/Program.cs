@@ -30,6 +30,7 @@ builder.Services
             IssuerSigningKey = new SymmetricSecurityKey(jwtSettings.SigningKey),
             ValidAlgorithms = [SecurityAlgorithms.HmacSha256],
             NameClaimType = JwtRegisteredClaimNames.Name,
+            RoleClaimType = AuthTokenService.RolClaim,
             ClockSkew = TimeSpan.FromSeconds(30)
         };
     });
@@ -55,6 +56,10 @@ builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IAlumnoRepository, AlumnoRepository>();
 builder.Services.AddScoped<IAlumnoService, AlumnoService>();
 builder.Services.AddScoped<IProfesorRepository, ProfesorRepository>();
+builder.Services.AddScoped<IMesasFinalesDocenteRepository, MesasFinalesDocenteRepository>();
+builder.Services.AddScoped<IMesasFinalesDocenteService, MesasFinalesDocenteService>();
+builder.Services.AddScoped<IMateriasDocenteRepository, MateriasDocenteRepository>();
+builder.Services.AddScoped<IMateriasDocenteService, MateriasDocenteService>();
 builder.Services.AddScoped<IAlumnoAccesoService, AlumnoAccesoService>();
 builder.Services.AddScoped<ICarrerasRepository, CarrerasRepository>();
 builder.Services.AddScoped<ICarrerasService, CarrerasService>();

@@ -1,0 +1,289 @@
+@page "/docentes/mesas-finales/{MesaId:int}/notas"
+@attribute [Authorize(Roles = "Docente")]
+@inject DocenteMesasFinalesApiClient MesasApi
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@using instituto93.Web.Models
+@using instituto93.Web.Services
+
+<PageTitle>Cargar notas finales</PageTitle>
+
+<main class="notas-finales-page">
+    <div class="notas-finales-container">
+        <MudButton Variant="Variant.Text" Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.ArrowBack"
+                   Class="back-button" OnClick="Volver">
+            Volver a mis mesas
+        </MudButton>
+
+        @if (_loading)
+        {
+            <section class="state-panel" aria-live="polite">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                <div><strong>Cargando estudiantes</strong><span>Estamos preparando la mesa seleccionada.</span></div>
+            </section>
+        }
+        else if (_error is not null)
+        {
+            <section class="state-panel state-panel-error" role="alert">
+                <MudIcon Icon="@Icons.Material.Outlined.ErrorOutline" />
+                <div><strong>No pudimos cargar la mesa</strong><span>@_error</span></div>
+                <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="CargarMesaAsync">Reintentar</MudButton>
+            </section>
+        }
+        else if (_mesa is not null)
+        {
+            <header class="page-heading">
+                <span class="page-eyebrow">Carga de notas finales</span>
+                <h1>@_mesa.Materia</h1>
+                <p>@_mesa.Carrera</p>
+            </header>
+
+            <section class="mesa-summary" aria-label="Información de la mesa">
+                <div class="summary-item">
+                    <MudIcon Icon="@Icons.Material.Outlined.CalendarMonth" />
+                    <div><span>Fecha y turno</span><strong>@_mesa.FechaHora.ToString("dd/MM/yyyy") · @_mesa.Turno</strong></div>
+                </div>
+                @if (!string.IsNullOrWhiteSpace(_mesa.Aula))
+                {
+                    <div class="summary-item">
+                        <MudIcon Icon="@Icons.Material.Outlined.LocationOn" />
+                        <div><span>Aula o ubicación</span><strong>@_mesa.Aula</strong></div>
+                    </div>
+                }
+                <div class="summary-item">
+                    <MudIcon Icon="@Icons.Material.Outlined.Groups" />
+                    <div><span>Estudiantes</span><strong>@_mesa.Estudiantes.Count inscriptos</strong></div>
+                </div>
+                <div class="summary-progress">
+                    <div><span>Progreso de carga</span><strong>@CantidadCargadas de @_mesa.Estudiantes.Count</strong></div>
+                    <MudProgressLinear Value="@PorcentajeCargado" Color="Color.Primary" Rounded="true" />
+                </div>
+            </section>
+
+            @if (_mesa.Estudiantes.Count == 0)
+            {
+                <section class="state-panel empty-panel">
+                    <MudIcon Icon="@Icons.Material.Outlined.PersonOff" />
+                    <div><strong>Esta mesa no tiene estudiantes</strong><span>No hay inscriptos disponibles para cargar notas.</span></div>
+                </section>
+            }
+            else
+            {
+                <div class="search-row">
+                    <MudTextField T="string"
+                                  @bind-Value="_busqueda"
+                                  Immediate="true"
+                                  Placeholder="Buscar estudiante por nombre, DNI o estado..."
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                  Variant="Variant.Outlined"
+                                  aria-label="Buscar estudiantes para cargar notas finales" />
+                </div>
+
+                <EditForm Model="_mesa" OnSubmit="GuardarAsync">
+                    <DataAnnotationsValidator />
+
+                    <section class="students-section">
+                        <div class="section-heading">
+                            <div><h2>Estudiantes inscriptos</h2><p>Cargá una nota del @_mesa.NotaMinima al @_mesa.NotaMaxima para cada estudiante.</p></div>
+                            <span class="changes-indicator @(_hayCambios ? "has-changes" : null)">
+                                @(_hayCambios ? "Cambios sin guardar" : "Sin cambios")
+                            </span>
+                        </div>
+
+                        @if (!EstudiantesFiltrados.Any())
+                        {
+                            <div class="filter-empty" role="status">
+                                <MudIcon Icon="@Icons.Material.Outlined.SearchOff" />
+                                <strong>No encontramos estudiantes</strong>
+                                <span>Probá con otro nombre, DNI o estado.</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="students-list">
+                                <div class="students-list-header" aria-hidden="true">
+                                    <span>Estudiante</span><span>DNI</span><span>Nota final</span><span>Estado</span>
+                                </div>
+
+                                @foreach (var estudiante in EstudiantesFiltrados)
+                                {
+                                    <article class="student-row">
+                                        <div class="student-name">
+                                            <span class="student-avatar" aria-hidden="true">@Iniciales(estudiante.NombreCompleto)</span>
+                                            <div><strong>@estudiante.NombreCompleto</strong><span class="mobile-dni">DNI @estudiante.Dni</span></div>
+                                        </div>
+                                        <span class="desktop-dni">@estudiante.Dni</span>
+                                        <div class="grade-field">
+                                            <label for="@($"nota-{estudiante.MesaAlumnoId}")">Nota final</label>
+                                            <MudNumericField T="decimal?"
+                                                             id="@($"nota-{estudiante.MesaAlumnoId}")"
+                                                             Value="estudiante.Nota"
+                                                             ValueChanged="@(value => CambiarNota(estudiante, value))"
+                                                             Min="_mesa.NotaMinima"
+                                                             Max="_mesa.NotaMaxima"
+                                                             Variant="Variant.Outlined"
+                                                             HideSpinButtons="true"
+                                                             Error="@_errores.ContainsKey(estudiante.MesaAlumnoId)"
+                                                             ErrorText="@ErrorDe(estudiante.MesaAlumnoId)"
+                                                             Immediate="true"
+                                                             aria-label="@($"Nota final de {estudiante.NombreCompleto}")" />
+                                        </div>
+                                        <span class="status-badge @NotaEstadoCss(estudiante.Nota)">@NotaEstado(estudiante.Nota)</span>
+                                    </article>
+                                }
+                            </div>
+                        }
+                    </section>
+
+                    <footer class="save-bar">
+                        <div><strong>¿Terminaste la carga?</strong><span>Revisá las notas antes de guardar.</span></div>
+                        <MudButton ButtonType="ButtonType.Submit"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.Save"
+                                   Disabled="@(!_hayCambios || _saving)">
+                            @(_saving ? "Guardando..." : "Guardar notas")
+                        </MudButton>
+                    </footer>
+                </EditForm>
+            }
+        }
+    </div>
+</main>
+
+@code {
+    [Parameter] public int MesaId { get; set; }
+
+    private readonly Dictionary<int, decimal?> _notasOriginales = [];
+    private readonly Dictionary<int, string> _errores = [];
+    private MesaFinalDetalleModel? _mesa;
+    private bool _loading = true;
+    private bool _saving;
+    private bool _hayCambios;
+    private string? _error;
+    private string? _busqueda;
+
+    private int CantidadCargadas => _mesa?.Estudiantes.Count(e => e.Nota is not null) ?? 0;
+    private double PorcentajeCargado => _mesa?.Estudiantes.Count > 0
+        ? CantidadCargadas * 100d / _mesa.Estudiantes.Count
+        : 0;
+    private IEnumerable<EstudianteNotaFinalModel> EstudiantesFiltrados =>
+        _mesa is null || string.IsNullOrWhiteSpace(_busqueda)
+            ? _mesa?.Estudiantes ?? []
+            : _mesa.Estudiantes.Where(estudiante =>
+                estudiante.NombreCompleto.Contains(_busqueda, StringComparison.OrdinalIgnoreCase) ||
+                estudiante.Dni.Contains(_busqueda, StringComparison.OrdinalIgnoreCase) ||
+                NotaEstado(estudiante.Nota).Contains(_busqueda, StringComparison.OrdinalIgnoreCase));
+
+    protected override Task OnParametersSetAsync() => CargarMesaAsync();
+
+    private async Task CargarMesaAsync()
+    {
+        _loading = true;
+        _error = null;
+        MesaFinalDetalleResult result;
+        try
+        {
+            result = await MesasApi.GetMesaAsync(MesaId);
+        }
+        finally
+        {
+            _loading = false;
+        }
+
+        if (!result.IsSuccess || result.Mesa is null)
+        {
+            _error = result.Error;
+            return;
+        }
+
+        _mesa = result.Mesa;
+        _notasOriginales.Clear();
+        foreach (var estudiante in _mesa.Estudiantes)
+            _notasOriginales[estudiante.MesaAlumnoId] = estudiante.Nota;
+        _errores.Clear();
+        _hayCambios = false;
+    }
+
+    private void CambiarNota(EstudianteNotaFinalModel estudiante, decimal? value)
+    {
+        estudiante.Nota = value;
+        ValidarNota(estudiante);
+        _hayCambios = _mesa?.Estudiantes.Any(e =>
+            !_notasOriginales.TryGetValue(e.MesaAlumnoId, out var original) || original != e.Nota) == true;
+    }
+
+    private bool ValidarNota(EstudianteNotaFinalModel estudiante)
+    {
+        _errores.Remove(estudiante.MesaAlumnoId);
+        if (estudiante.Nota is null)
+            return true;
+
+        if (_mesa is not null && estudiante.Nota >= _mesa.NotaMinima && estudiante.Nota <= _mesa.NotaMaxima)
+            return true;
+
+        _errores[estudiante.MesaAlumnoId] = _mesa is null
+            ? "La nota ingresada no es válida."
+            : $"La nota debe estar entre {_mesa.NotaMinima:0.##} y {_mesa.NotaMaxima:0.##}.";
+        return false;
+    }
+
+    private async Task GuardarAsync()
+    {
+        if (_mesa is null || !_hayCambios || _saving)
+            return;
+
+        var validas = _mesa.Estudiantes.All(ValidarNota);
+        if (!validas)
+        {
+            Snackbar.Add("Revisá las notas marcadas antes de guardar.", Severity.Error);
+            return;
+        }
+
+        var modificadas = _mesa.Estudiantes
+            .Where(e => _notasOriginales.GetValueOrDefault(e.MesaAlumnoId) != e.Nota)
+            .Select(e => new GuardarNotaFinalModel(e.MesaAlumnoId, e.Nota, e.UltimaModificacion))
+            .ToList();
+
+        if (modificadas.Count == 0)
+            return;
+
+        _saving = true;
+        GuardarNotasResult result;
+        try
+        {
+            result = await MesasApi.GuardarNotasAsync(MesaId, new GuardarNotasFinalesRequest(modificadas));
+        }
+        finally
+        {
+            _saving = false;
+        }
+
+        if (!result.IsSuccess)
+        {
+            Snackbar.Add(result.Error ?? "No se pudieron guardar las notas.", Severity.Error);
+            return;
+        }
+
+        await CargarMesaAsync();
+        Snackbar.Add("Las notas se guardaron correctamente.", Severity.Success);
+    }
+
+    private void Volver() => Navigation.NavigateTo("/docentes/mesas-finales");
+    private string? ErrorDe(int alumnoId) => _errores.GetValueOrDefault(alumnoId);
+
+    private static string Iniciales(string nombre) => string.Concat(nombre
+        .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+        .Take(2)
+        .Select(parte => char.ToUpperInvariant(parte[0])));
+
+    private string NotaEstado(decimal? nota) => nota is null
+        ? "Sin cargar"
+        : _mesa is not null && nota >= _mesa.NotaAprobacion ? "Aprobado/a" : "Desaprobado/a";
+
+    private string NotaEstadoCss(decimal? nota) => nota is null
+        ? "status-empty"
+        : _mesa is not null && nota >= _mesa.NotaAprobacion ? "status-approved" : "status-failed";
+}

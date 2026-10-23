@@ -1,0 +1,224 @@
+.materias-page {
+    min-height: calc(100vh - 124px);
+    background: var(--color-background);
+}
+
+.materias-container {
+    width: min(1180px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: var(--space-6) 0 var(--space-12);
+}
+
+.materias-container header {
+    margin-bottom: var(--space-6);
+}
+
+.materias-container header span {
+    display: block;
+    margin-bottom: var(--space-1);
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.materias-container h1 {
+    margin: 0;
+    color: var(--color-text);
+    font-size: var(--font-size-3xl);
+    line-height: var(--line-height-tight);
+}
+
+.materias-container header p {
+    max-width: 680px;
+    margin: var(--space-2) 0 0;
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-base);
+}
+
+.cards {
+    display: grid;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+}
+
+.filters-panel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: var(--space-4);
+}
+
+.filter-search {
+    flex: 1 1 100%;
+    min-width: 0;
+}
+
+.filter-select {
+    flex: 1 1 calc(50% - var(--space-2));
+    min-width: 0;
+}
+
+.filter-search ::deep .mud-input.mud-input-outlined,
+.filter-select ::deep .mud-input.mud-input-outlined {
+    height: 45px;
+    border-radius: .75rem;
+}
+
+.filter-search ::deep .mud-input.mud-input-outlined {
+    background: #fafafa;
+}
+
+.filter-select ::deep .mud-input.mud-input-outlined {
+    background: #eeeff1;
+}
+
+.filter-search ::deep .mud-input-outlined-border,
+.filter-select ::deep .mud-input-outlined-border {
+    border-radius: .75rem;
+}
+
+.filter-search ::deep .mud-input-root-outlined,
+.filter-select ::deep .mud-input-root-outlined {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.filter-search ::deep .mud-input-root,
+.filter-search ::deep .mud-input-adornment-icon,
+.filter-select ::deep .mud-input-root,
+.filter-select ::deep .mud-input-adornment-start,
+.filter-select ::deep .mud-input-adornment-icon {
+    color: #555;
+    font-weight: var(--font-weight-regular);
+}
+
+.filter-search ::deep input::placeholder {
+    color: #555;
+    font-weight: var(--font-weight-regular);
+    opacity: 1;
+}
+
+.filter-select ::deep .mud-input-adornment-start {
+    margin-right: var(--space-2);
+    white-space: nowrap;
+}
+
+.card {
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(35, 65, 98, .06);
+}
+
+.card h2 {
+    margin: var(--space-1) 0;
+    color: var(--color-text);
+    font-size: var(--font-size-lg);
+}
+
+.card p,
+.card small,
+.metrics {
+    color: var(--color-text-secondary);
+}
+
+.card p {
+    margin: 0;
+}
+
+.metrics {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    font-size: var(--font-size-sm);
+}
+
+.card ::deep .mud-button-root {
+    width: 100%;
+    min-height: 44px;
+    text-transform: none;
+}
+
+.state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-6);
+    padding: var(--space-8) var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    text-align: center;
+}
+
+.state div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.state p {
+    margin: 0;
+    color: var(--color-text-secondary);
+}
+
+.state.error {
+    color: var(--color-error);
+    border-color: color-mix(in srgb, var(--color-error) 35%, white);
+}
+
+@media (min-width: 700px) {
+    .materias-container {
+        width: min(1180px, calc(100% - 4rem));
+        padding-top: var(--space-8);
+    }
+
+    .filters-panel {
+        flex-wrap: nowrap;
+    }
+
+    .filter-search {
+        flex: 1 1 525px;
+        min-width: 170px;
+    }
+
+    .filter-select {
+        flex: 0 1 230px;
+        min-width: 150px;
+    }
+}
+
+@media (min-width: 800px) {
+    .cards {
+        gap: 0;
+        overflow: hidden;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 12px;
+    }
+
+    .card {
+        grid-template-columns: minmax(260px, 1fr) auto auto;
+        align-items: center;
+        gap: var(--space-6);
+        padding: var(--space-4) var(--space-6);
+        border: 0;
+        border-top: 1px solid var(--color-border);
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .card:first-child {
+        border-top: 0;
+    }
+
+    .card ::deep .mud-button-root {
+        width: auto;
+    }
+}
