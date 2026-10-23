@@ -3,6 +3,8 @@
 -- un token ya rotado se revoca la familia completa.
 -- Script idempotente. Requiere dbo.Usuarios (02-CreateUsuariosTable.sql).
 
+USE instituto_db;
+
 IF OBJECT_ID(N'dbo.Usuarios', N'U') IS NULL
     THROW 50000, 'La tabla dbo.Usuarios debe existir antes de crear dbo.RefreshTokens.', 1;
 GO

@@ -1,6 +1,8 @@
 -- Evaluaciones parciales pertenecientes a una cursada concreta.
 -- Script idempotente. Requiere dbo.Cursadas y 05-CreateTiposEvaluacionTable.sql.
 
+USE instituto_db;
+
 IF OBJECT_ID(N'dbo.Cursadas', N'U') IS NULL
     THROW 50000, 'La tabla dbo.Cursadas debe existir antes de crear dbo.Evaluaciones.', 1;
 GO

@@ -2,6 +2,8 @@
 -- Cada inscripción de cursada puede aparecer una sola vez dentro de una mesa.
 -- Script idempotente. Requiere dbo.MesasFinales y dbo.CursadaAlumnoCarreras.
 
+USE instituto_db;
+
 IF OBJECT_ID(N'dbo.MesasFinales', N'U') IS NULL
     THROW 50000, 'La tabla dbo.MesasFinales debe existir antes de crear dbo.MesaAlumno.', 1;
 GO

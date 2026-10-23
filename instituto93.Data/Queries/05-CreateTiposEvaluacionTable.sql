@@ -2,6 +2,8 @@
 -- Se mantiene separado de dbo.TipoExamen, utilizado por el dominio de exámenes/mesas finales.
 -- Script idempotente.
 
+USE instituto_db;
+
 IF OBJECT_ID(N'dbo.TiposEvaluacion', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.TiposEvaluacion

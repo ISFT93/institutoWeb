@@ -3,6 +3,8 @@
 -- con un alumno inscripto en otra cursada.
 -- Script idempotente. Requiere 06-CreateEvaluacionesTable.sql y dbo.CursadaAlumnoCarreras.
 
+USE instituto_db;
+
 IF OBJECT_ID(N'dbo.Evaluaciones', N'U') IS NULL
     THROW 50000, 'La tabla dbo.Evaluaciones debe existir antes de crear dbo.NotasAlumno (06-CreateEvaluacionesTable.sql).', 1;
 GO
