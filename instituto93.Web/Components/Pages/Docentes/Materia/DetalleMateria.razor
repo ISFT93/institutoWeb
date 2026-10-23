@@ -4,13 +4,117 @@
 @inject NavigationManager Navigation
 @using instituto93.Web.Models
 @using instituto93.Web.Services
+
 <PageTitle>Detalle de materia</PageTitle>
-<main class="detalle-page"><div class="detalle-container"><MudButton Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowBack" Class="back-button" OnClick="Volver">Volver a mis materias</MudButton>
-@if(_loading){<section class="state" aria-live="polite"><MudProgressCircular Color="Color.Primary" Indeterminate="true"/><div><strong>Cargando materia</strong><span>Estamos preparando la información de la cursada.</span></div></section>}else if(_error is not null){<section class="state error" role="alert"><MudIcon Icon="@Icons.Material.Outlined.ErrorOutline"/><div><strong>No pudimos cargar la materia</strong><span>@_error</span></div><MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="LoadAsync">Reintentar</MudButton></section>}else if(_data is not null){
-<header><span>@_data.Carrera</span><h1>@_data.Materia</h1><p>@_data.Curso · Ciclo lectivo @_data.AnioLectivo</p></header>
-<section class="summary"><div><b>@_data.Estudiantes.Count</b><span>Estudiantes</span></div><div><b>@(_data.CargaHoraria?.ToString()??"—")</b><span>Carga horaria</span></div></section>
-<MudButton Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="VerEvaluaciones">Gestionar evaluaciones</MudButton>
-<div class="search-row"><MudTextField T="string" @bind-Value="_search" Immediate="true" Placeholder="Buscar estudiante por nombre, DNI o estado..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" Variant="Variant.Outlined" aria-label="Buscar estudiantes"/></div>
-<section class="students"><h2>Estudiantes</h2>@foreach(var s in FilteredStudents){<article><div><b>@s.NombreCompleto</b><span>DNI @s.Dni</span></div><span>@s.Estado</span><span>@(s.PorcentajeAsistencia is null?"Sin asistencia":$"{s.PorcentajeAsistencia:0.##}%")</span></article>}@if(!FilteredStudents.Any()){<p>@(_data.Estudiantes.Count==0?"No hay estudiantes inscriptos.":"No hay estudiantes que coincidan con la búsqueda.")</p>}</section>}
-</div></main>
-@code{[Parameter]public int CursadaId{get;set;} bool _loading=true;string? _error;string? _search;MateriaDocenteDetalleModel? _data;IEnumerable<EstudianteMateriaModel> FilteredStudents=>_data is null?[]:string.IsNullOrWhiteSpace(_search)?_data.Estudiantes:_data.Estudiantes.Where(s=>s.NombreCompleto.Contains(_search,StringComparison.OrdinalIgnoreCase)||s.Dni.Contains(_search,StringComparison.OrdinalIgnoreCase)||s.Estado.Contains(_search,StringComparison.OrdinalIgnoreCase));protected override Task OnParametersSetAsync()=>LoadAsync();async Task LoadAsync(){_loading=true;_error=null;try{var r=await Api.GetAsync(CursadaId);_data=r.Data;_error=r.Error;}finally{_loading=false;}} void Volver()=>Navigation.NavigateTo("/docentes/materias");void VerEvaluaciones()=>Navigation.NavigateTo($"/docentes/materias/{CursadaId}/evaluaciones");}
+
+<main class="detalle-page">
+    <div class="detalle-container">
+        <MudButton Variant="Variant.Text"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.ArrowBack"
+                   Class="back-button"
+                   OnClick="Volver">
+            Volver a mis materias
+        </MudButton>
+
+        @if (_loading)
+        {
+            <section class="state" aria-live="polite">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                <div><strong>Cargando materia</strong><span>Estamos preparando la información de la cursada.</span></div>
+            </section>
+        }
+        else if (_error is not null)
+        {
+            <section class="state error" role="alert">
+                <MudIcon Icon="@Icons.Material.Outlined.ErrorOutline" />
+                <div><strong>No pudimos cargar la materia</strong><span>@_error</span></div>
+                <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="LoadAsync">Reintentar</MudButton>
+            </section>
+        }
+        else if (_data is not null)
+        {
+            <header>
+                <span>@_data.Carrera</span>
+                <h1>@_data.Materia</h1>
+                <p>@_data.Curso · Ciclo lectivo @_data.AnioLectivo</p>
+            </header>
+
+            <section class="summary">
+                <div><b>@_data.Estudiantes.Count</b><span>Estudiantes</span></div>
+                <div><b>@(_data.CargaHoraria?.ToString() ?? "—")</b><span>Carga horaria</span></div>
+            </section>
+
+            <MudButton Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="VerEvaluaciones">
+                Gestionar evaluaciones
+            </MudButton>
+
+            <div class="search-row">
+                <MudTextField T="string"
+                              @bind-Value="_search"
+                              Immediate="true"
+                              Placeholder="Buscar estudiante por nombre, DNI o estado..."
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              Variant="Variant.Outlined"
+                              aria-label="Buscar estudiantes" />
+            </div>
+
+            <section class="students">
+                <h2>Estudiantes</h2>
+                @foreach (var s in FilteredStudents)
+                {
+                    <article>
+                        <div><b>@s.NombreCompleto</b><span>DNI @s.Dni</span></div>
+                        <span>@s.Estado</span>
+                        <span>@(s.PorcentajeAsistencia is null ? "Sin asistencia" : $"{s.PorcentajeAsistencia:0.##}%")</span>
+                    </article>
+                }
+                @if (!FilteredStudents.Any())
+                {
+                    <p>@(_data.Estudiantes.Count == 0 ? "No hay estudiantes inscriptos." : "No hay estudiantes que coincidan con la búsqueda.")</p>
+                }
+            </section>
+        }
+    </div>
+</main>
+
+@code {
+    [Parameter]
+    public int CursadaId { get; set; }
+
+    private bool _loading = true;
+    private string? _error;
+    private string? _search;
+    private MateriaDocenteDetalleModel? _data;
+
+    private IEnumerable<EstudianteMateriaModel> FilteredStudents =>
+        _data is null ? []
+        : string.IsNullOrWhiteSpace(_search) ? _data.Estudiantes
+        : _data.Estudiantes.Where(s =>
+            s.NombreCompleto.Contains(_search, StringComparison.OrdinalIgnoreCase) ||
+            s.Dni.Contains(_search, StringComparison.OrdinalIgnoreCase) ||
+            s.Estado.Contains(_search, StringComparison.OrdinalIgnoreCase));
+
+    protected override Task OnParametersSetAsync() => LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        _error = null;
+        try
+        {
+            var r = await Api.GetAsync(CursadaId);
+            _data = r.Data;
+            _error = r.Error;
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private void Volver() => Navigation.NavigateTo("/docentes/materias");
+
+    private void VerEvaluaciones() => Navigation.NavigateTo($"/docentes/materias/{CursadaId}/evaluaciones");
+}
