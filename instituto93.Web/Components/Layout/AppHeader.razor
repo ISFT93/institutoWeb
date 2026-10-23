@@ -87,26 +87,26 @@
                         Icon="@Icons.Material.Filled.Home"
                         OnClick="CerrarMenu">Inicio</MudNavLink>
 
-            <MudNavGroup Title="Instituto">
+            <MudNavGroup Title="Instituto" Icon="@Icons.Material.Filled.AccountBalance">
                 <MudNavLink OnClick="CerrarMenu">Nuestras Carreras</MudNavLink>
                 <MudNavLink OnClick="CerrarMenu">Perfil del Egresado</MudNavLink>
                 <MudNavLink OnClick="CerrarMenu">Datos Institucionales</MudNavLink>
             </MudNavGroup>
 
-            <MudNavGroup Title="Calendario">
+            <MudNavGroup Title="Calendario" Icon="@Icons.Material.Filled.CalendarMonth">
                 <MudNavLink Href="https://isfdyt93-bue.infd.edu.ar/sitio/wp-content/uploads/2026/06/Calendario-2026-ISFT93_v2.pdf"
                             Target="_blank"
                             OnClick="CerrarMenu">Calendario Academico 2026</MudNavLink>
             </MudNavGroup>
 
-            <MudNavGroup Title="Alumnos">
+            <MudNavGroup Title="Alumnos" Icon="@Icons.Material.Filled.School">
                 <MudNavLink OnClick="CerrarMenu">Formularios</MudNavLink>
                 <MudNavLink OnClick="CerrarMenu">Becas PROGRESAR</MudNavLink>
                 <MudNavLink OnClick="CerrarMenu">Horarios Ciclo Lectivo 2026</MudNavLink>
             </MudNavGroup>
 
             <AuthorizeView Roles="Docente" Context="auth">
-                <MudNavGroup Title="Docentes">
+                <MudNavGroup Title="Docentes" Icon="@Icons.Material.Filled.Badge">
                     <MudNavLink Href="/docentes/materias" OnClick="CerrarMenu">Mis materias</MudNavLink>
                     <MudNavLink Href="/docentes/mesas-finales" OnClick="CerrarMenu">Mesas finales</MudNavLink>
                     <MudNavLink Href="/docentes/normativa" OnClick="CerrarMenu">Normativa</MudNavLink>
