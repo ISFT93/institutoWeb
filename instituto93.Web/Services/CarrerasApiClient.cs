@@ -1,12 +1,21 @@
 using System.Net.Http.Json;
 using System.Text.Json;
+using instituto93.Web.Mocks;
 using instituto93.Web.Models;
 
 namespace instituto93.Web.Services;
 
-public sealed class CarrerasApiClient(HttpClient httpClient)
+public sealed class CarrerasApiClient(HttpClient httpClient, MockDataStore? mocks = null)
 {
     public async Task<CarrerasResult> GetAsync(CancellationToken cancellationToken = default)
+    {
+        var result = await GetFromApiAsync(cancellationToken);
+        return mocks is not null && result.Carreras.Count == 0
+            ? CarrerasResult.Success(mocks.Carreras())
+            : result;
+    }
+
+    private async Task<CarrerasResult> GetFromApiAsync(CancellationToken cancellationToken)
     {
         try
         {

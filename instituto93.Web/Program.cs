@@ -13,6 +13,11 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddMudServices();
 
+// Mocks en memoria (carpeta Mocks) solo en Development; nunca escriben en la base de datos.
+if (builder.Environment.IsDevelopment())
+    builder.Services.AddSingleton<instituto93.Web.Mocks.MockDataStore>();
+builder.Services.AddScoped<OfertaAcademicaService>();
+
 // Las cookies de autenticación (que contienen los tokens) se cifran con Data Protection.
 // Las claves tienen que sobrevivir a los reinicios: en contenedores, apuntar KeysPath a un volumen.
 var dataProtection = builder.Services.AddDataProtection().SetApplicationName("instituto93.Web");

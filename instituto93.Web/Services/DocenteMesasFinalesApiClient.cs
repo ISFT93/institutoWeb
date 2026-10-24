@@ -2,17 +2,27 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using instituto93.Web.Models;
 using instituto93.Web.Auth;
+using instituto93.Web.Mocks;
 
 namespace instituto93.Web.Services;
 
 public sealed class DocenteMesasFinalesApiClient(
     HttpClient httpClient,
-    AccessTokenProvider accessTokenProvider)
+    AccessTokenProvider accessTokenProvider,
+    MockDataStore? mocks = null)
     : AuthorizedApiClient(httpClient, accessTokenProvider)
 {
     private const string BasePath = "api/mesas-finales/docente";
 
     public async Task<MesasFinalesResult> GetMesasAsync(CancellationToken cancellationToken = default)
+    {
+        var result = await GetMesasFromApiAsync(cancellationToken);
+        return mocks is not null && result.Mesas.Count == 0
+            ? MesasFinalesResult.Success(mocks.MesasDocente())
+            : result;
+    }
+
+    private async Task<MesasFinalesResult> GetMesasFromApiAsync(CancellationToken cancellationToken)
     {
         try
         {
@@ -45,6 +55,9 @@ public sealed class DocenteMesasFinalesApiClient(
 
     public async Task<MesaFinalDetalleResult> GetMesaAsync(int mesaId, CancellationToken cancellationToken = default)
     {
+        if (mocks?.TieneMesa(mesaId) == true && mocks.MesaDocente(mesaId) is { } mock)
+            return MesaFinalDetalleResult.Success(mock);
+
         try
         {
             using var response = await SendAuthorizedAsync(
@@ -81,6 +94,12 @@ public sealed class DocenteMesasFinalesApiClient(
         GuardarNotasFinalesRequest request,
         CancellationToken cancellationToken = default)
     {
+        if (mocks?.TieneMesa(mesaId) == true)
+        {
+            mocks.GuardarNotasFinales(mesaId, request);
+            return GuardarNotasResult.Success();
+        }
+
         try
         {
             using var response = await SendAuthorizedAsync(

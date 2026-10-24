@@ -1,4 +1,7 @@
 @page "/inscripciones-materias"
+@inject OfertaAcademicaService Oferta
+@using instituto93.Web.Models
+@using instituto93.Web.Services
 
 <PageTitle>Inscripción a Materias 2027</PageTitle>
 
@@ -13,70 +16,47 @@
             y las tres secciones con sus tablas. *@
             <div class="insc-col-izq">
                 <div class="insc-tab">
-                    <strong>Carrera :</strong> Analisis, desarrollo y programación de Aplicaciones
+                    <strong>Carrera :</strong> @(_materias.FirstOrDefault()?.Carrera ?? "Analisis, desarrollo y programación de Aplicaciones")
                 </div>
 
                 <div class="insc-card insc-card-listado">
                     <div class="insc-card-scroll">
-                        <section class="insc-anio">
-                            <h2 class="insc-anio-titulo">1° AÑO</h2>
+                        @foreach (var anio in Anios)
+                        {
+                            <section class="insc-anio">
+                                <h2 class="insc-anio-titulo">@anio° AÑO</h2>
 
-                            <div class="insc-tabla-scroll">
-                                <MudSimpleTable Class="insc-tabla">
-                                    <thead>
-                                        <tr>
-                                            <th>Asiste</th>
-                                            <th>Materia</th>
-                                            <th>Docente</th>
-                                            <th>Sede</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @* TODO: filas de materias *@
-                                    </tbody>
-                                </MudSimpleTable>
-                            </div>
-                        </section>
-
-                        <section class="insc-anio">
-                            <h2 class="insc-anio-titulo">2° AÑO</h2>
-
-                            <div class="insc-tabla-scroll">
-                                <MudSimpleTable Class="insc-tabla">
-                                    <thead>
-                                        <tr>
-                                            <th>Asiste</th>
-                                            <th>Materia</th>
-                                            <th>Docente</th>
-                                            <th>Sede</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @* TODO: filas de materias *@
-                                    </tbody>
-                                </MudSimpleTable>
-                            </div>
-                        </section>
-
-                        <section class="insc-anio">
-                            <h2 class="insc-anio-titulo">3° AÑO</h2>
-
-                            <div class="insc-tabla-scroll">
-                                <MudSimpleTable Class="insc-tabla">
-                                    <thead>
-                                        <tr>
-                                            <th>Asiste</th>
-                                            <th>Materia</th>
-                                            <th>Docente</th>
-                                            <th>Sede</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @* TODO: filas de materias *@
-                                    </tbody>
-                                </MudSimpleTable>
-                            </div>
-                        </section>
+                                <div class="insc-tabla-scroll">
+                                    <MudSimpleTable Class="insc-tabla">
+                                        <thead>
+                                            <tr>
+                                                <th>Asiste</th>
+                                                <th>Materia</th>
+                                                <th>Docente</th>
+                                                <th>Sede</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var materia in _materias.Where(m => m.Anio == anio))
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <MudCheckBox T="bool"
+                                                                    Value="@_seleccionadas.Contains(materia.MateriaId)"
+                                                                    ValueChanged="@(marcada => Seleccionar(materia.MateriaId, marcada))"
+                                                                    Size="Size.Small"
+                                                                    aria-label="@($"Asistir a {materia.Materia}")" />
+                                                    </td>
+                                                    <td>@materia.Materia</td>
+                                                    <td>@materia.Docente</td>
+                                                    <td>@materia.Sede</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </MudSimpleTable>
+                                </div>
+                            </section>
+                        }
                     </div>
                 </div>
             </div>
@@ -108,9 +88,21 @@
                         <line x1="62" y1="120" x2="128" y2="120" stroke="currentColor" stroke-width="6" stroke-linecap="round" />
                     </svg>
 
-                    <p class="insc-seleccion-texto">
-                        Acá encontrarás las materias que seleccionaste para inscribirte.
-                    </p>
+                    @if (_seleccionadas.Count == 0)
+                    {
+                        <p class="insc-seleccion-texto">
+                            Acá encontrarás las materias que seleccionaste para inscribirte.
+                        </p>
+                    }
+                    else
+                    {
+                        <ul class="insc-seleccion-texto">
+                            @foreach (var materia in _materias.Where(m => _seleccionadas.Contains(m.MateriaId)))
+                            {
+                                <li>@materia.Materia</li>
+                            }
+                        </ul>
+                    }
 
                     @* TODO: acción de Anotarse *@
                     <MudButton Class="insc-btn-anotarse"
@@ -123,3 +115,20 @@
         </div>
     </div>
 </div>
+
+@code {
+    private List<MateriaInscripcionModel> _materias = [];
+    private readonly HashSet<int> _seleccionadas = [];
+
+    private IEnumerable<int> Anios => _materias.Select(m => m.Anio).Distinct().Order();
+
+    protected override async Task OnInitializedAsync() => _materias = await Oferta.GetMateriasAsync();
+
+    private void Seleccionar(int materiaId, bool marcada)
+    {
+        if (marcada)
+            _seleccionadas.Add(materiaId);
+        else
+            _seleccionadas.Remove(materiaId);
+    }
+}
