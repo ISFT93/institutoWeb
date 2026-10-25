@@ -45,7 +45,10 @@ public sealed class MesasFinalesDocenteService(IMesasFinalesDocenteRepository re
         if (notas.GroupBy(nota => nota.MesaAlumnoId).Any(grupo => grupo.Count() > 1))
             throw new ArgumentException("No se puede enviar más de una nota para la misma inscripción.", nameof(notas));
 
-        if (notas.Any(nota => !NotaFinalRules.EsValida(nota.Nota)))
+        if (notas.Any(nota => nota.Ausente && nota.Nota is not null))
+            throw new ArgumentException("Un alumno ausente no puede tener una nota.", nameof(notas));
+
+        if (notas.Any(nota => !nota.Ausente && !NotaFinalRules.EsValida(nota.Nota)))
             throw new ArgumentException(
                 $"Las notas deben estar entre {NotaFinalRules.Minima:0.##} y {NotaFinalRules.Maxima:0.##}.",
                 nameof(notas));

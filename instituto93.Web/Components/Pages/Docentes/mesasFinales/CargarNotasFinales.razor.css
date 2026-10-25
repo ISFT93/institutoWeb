@@ -32,6 +32,9 @@
 .filter-empty span { color: var(--color-text-secondary); }
 .filter-empty ::deep .mud-icon-root { color: var(--color-primary-light); font-size: 2.5rem; }
 .student-row { display: grid; gap: var(--space-4); padding: var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; }
+.student-data { display: flex; min-width: 0; flex-direction: column; gap: .25rem; }
+.student-data strong { color: var(--color-text); }
+.student-data > span:not(.status-badge) { color: var(--color-text-secondary); font-size: var(--font-size-sm); }
 .student-name { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
 .student-avatar { display: grid; flex: 0 0 42px; width: 42px; height: 42px; place-items: center; background: #e4ebf5; border-radius: 50%; color: var(--color-primary); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); }
 .student-name div { display: flex; min-width: 0; flex-direction: column; }
@@ -40,10 +43,11 @@
 .desktop-dni { display: none; color: var(--color-text-secondary); }
 .grade-field label { display: block; margin-bottom: var(--space-2); color: var(--color-text-secondary); font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); }
 .grade-field ::deep .mud-input-control { max-width: 160px; }
-.status-badge { justify-self: start; padding: .4rem .75rem; border-radius: 999px; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); }
+.status-badge { align-self: flex-start; justify-self: start; width: fit-content; padding: .4rem .75rem; border-radius: 999px; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); }
 .status-empty { background: #edf0f4; color: #506073; }
 .status-approved { background: #e2f3e5; color: #246b2b; }
 .status-failed { background: #fde8e8; color: #a32929; }
+.status-absent { background: #fff3cd; color: #8a5a00; }
 .save-bar { position: fixed; right: 0; bottom: 0; left: 0; z-index: 1000; display: flex; align-items: center; justify-content: flex-end; padding: var(--space-3) var(--space-4); background: var(--color-surface); border-top: 1px solid var(--color-border); box-shadow: 0 -4px 16px rgba(35,65,98,.1); }
 .save-bar div { display: none; }
 .save-bar ::deep .mud-button-root { width: 100%; min-height: 46px; text-transform: none; }
@@ -66,7 +70,7 @@
 }
 @media (min-width: 900px) {
     .students-list { gap: 0; overflow: hidden; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; }
-    .students-list-header, .student-row { display: grid; grid-template-columns: minmax(260px, 1.5fr) minmax(130px, .7fr) minmax(140px, .7fr) minmax(130px, .6fr); align-items: center; gap: var(--space-6); }
+    .students-list-header, .student-row { display: grid; grid-template-columns: minmax(300px, 1.5fr) minmax(150px, .7fr) minmax(140px, .7fr); align-items: center; gap: var(--space-6); }
     .students-list-header { padding: var(--space-3) var(--space-6); background: #edf1f6; color: var(--color-text-secondary); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); }
     .student-row { padding: var(--space-4) var(--space-6); border: 0; border-top: 1px solid var(--color-border); border-radius: 0; }
     .student-row:first-of-type { border-top: 0; }
@@ -74,3 +78,5 @@
     .desktop-dni { display: block; }
     .grade-field label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
+
+.status-absent { background: #fff3cd; color: #8a5a00; }
