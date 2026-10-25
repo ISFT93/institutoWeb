@@ -29,13 +29,11 @@ public sealed record EstudianteNotaFinalDto(
     string NombreCompleto,
     string Dni,
     decimal? Nota,
-    bool Ausente,
     DateTime UltimaModificacion);
 
 public sealed record GuardarNotaFinalDto(
     int MesaAlumnoId,
     decimal? Nota,
-    bool Ausente,
     DateTime UltimaModificacion);
 
 public sealed record GuardarNotasFinalesDto(List<GuardarNotaFinalDto>? Notas);

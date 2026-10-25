@@ -31,14 +31,12 @@ public sealed class EstudianteNotaFinalModel
     public string Dni { get; init; } = string.Empty;
 
     public decimal? Nota { get; set; }
-    public bool Ausente { get; set; }
     public DateTime UltimaModificacion { get; init; }
 }
 
 public sealed record GuardarNotaFinalModel(
     int MesaAlumnoId,
     decimal? Nota,
-    bool Ausente,
     DateTime UltimaModificacion);
 
 public sealed record GuardarNotasFinalesRequest(List<GuardarNotaFinalModel> Notas);

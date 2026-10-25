@@ -89,8 +89,7 @@ public sealed class MesasFinalesDocenteRepository(Conexion conexion) : IMesasFin
                    a.AlumnoId,
                    LTRIM(RTRIM(CONCAT(a.Apellido, N', ', a.Nombre))),
                    a.NumeroDocumento,
-                   COALESCE(ma.Nota, ma.NotaDefinitiva),
-                   ma.Ausente,
+                   ma.NotaDefinitiva,
                    ma.Fecha
             FROM MesaAlumno ma
             INNER JOIN CursadaAlumnoCarreras cac
@@ -143,8 +142,7 @@ public sealed class MesasFinalesDocenteRepository(Conexion conexion) : IMesasFin
                         reader.GetString(2),
                         reader.GetString(3),
                         reader.IsDBNull(4) ? null : reader.GetDecimal(4),
-                        reader.GetBoolean(5),
-                        reader.GetDateTime(6)));
+                        reader.GetDateTime(5)));
                 }
             }
 
@@ -171,12 +169,8 @@ public sealed class MesasFinalesDocenteRepository(Conexion conexion) : IMesasFin
 
         const string actualizarSql = """
             UPDATE ma
-            SET ma.Nota = CASE WHEN @ausente = 1 THEN NULL ELSE @nota END,
-                ma.NotaLetra = CASE WHEN @ausente = 1 THEN N'Ausente' ELSE @notaLetra END,
-                ma.NotaDefinitiva = CASE WHEN @ausente = 1 THEN NULL ELSE @nota END,
-                ma.Ausente = @ausente,
+            SET ma.NotaDefinitiva = @nota,
                 ma.Estado = CASE
-                    WHEN @ausente = 1 THEN @estadoAusente
                     WHEN @nota IS NULL THEN @estadoPendiente
                     WHEN @nota >= @notaAprobacion THEN @estadoAprobado
                     ELSE @estadoDesaprobado
@@ -213,13 +207,10 @@ public sealed class MesasFinalesDocenteRepository(Conexion conexion) : IMesasFin
                 command.Parameters.Add("@mesaId", SqlDbType.Int).Value = mesaId;
                 command.Parameters.Add("@mesaAlumnoId", SqlDbType.Int).Value = nota.MesaAlumnoId;
                 command.Parameters.Add("@ultimaModificacion", SqlDbType.DateTime2).Value = nota.UltimaModificacion;
-                command.Parameters.Add("@ausente", SqlDbType.Bit).Value = nota.Ausente;
                 command.Parameters.Add("@notaAprobacion", SqlDbType.Decimal).Value = NotaFinalRules.Aprobacion;
                 command.Parameters.Add("@estadoPendiente", SqlDbType.NVarChar, 30).Value = NotaFinalRules.EstadoPendiente;
                 command.Parameters.Add("@estadoAprobado", SqlDbType.NVarChar, 30).Value = NotaFinalRules.EstadoAprobado;
                 command.Parameters.Add("@estadoDesaprobado", SqlDbType.NVarChar, 30).Value = NotaFinalRules.EstadoDesaprobado;
-                command.Parameters.Add("@estadoAusente", SqlDbType.NVarChar, 30).Value = NotaFinalRules.EstadoAusente;
-                command.Parameters.Add("@notaLetra", SqlDbType.NVarChar, 50).Value = (object?)NotaFinalRules.EnLetras(nota.Nota) ?? DBNull.Value;
                 var notaParameter = command.Parameters.Add("@nota", SqlDbType.Decimal);
                 notaParameter.Precision = 5;
                 notaParameter.Scale = 2;
