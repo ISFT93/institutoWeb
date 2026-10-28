@@ -6,5 +6,6 @@ namespace instituto93.Domain.Models
         int? TurnoId,
         int? AnioCarreraId,
         int? AnioLectivo,
-        string? Texto);
+        string? Texto,
+        int? AlumnoId);
 }

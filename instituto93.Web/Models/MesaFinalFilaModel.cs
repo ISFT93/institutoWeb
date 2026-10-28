@@ -7,4 +7,5 @@ public sealed record MesaFinalFilaModel(
     string Asiste,
     string Docente,
     DateTime? Fecha,
-    string Sede);
+    string Sede,
+    bool EstaInscripto);

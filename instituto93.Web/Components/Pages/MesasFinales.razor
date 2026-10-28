@@ -6,6 +6,7 @@
 @inject TurnosApiClient TurnosApi
 @inject AniosCarrerasApiClient AniosCarrerasApi
 @inject MesasFinalesApiClient MesasFinalesApi
+@inject ISnackbar Snackbar
 
 <PageTitle>Listado de Mesas Finales</PageTitle>
 
@@ -134,7 +135,12 @@
                                         @foreach (var mesa in grupo)
                                         {
                                             <tr>
-                                                <td>@mesa.Asiste</td>
+                                                <td>
+                                                    <MudCheckBox T="bool"
+                                                                 Value="@(_seleccionadas.Contains(mesa.MesaFinalId) || mesa.EstaInscripto)"
+                                                                 Disabled="@(mesa.EstaInscripto || _inscribiendo)"
+                                                                 ValueChanged="@(v => ToggleMesa(mesa.MesaFinalId, v))" />
+                                                </td>
                                                 <td>@mesa.Materia</td>
                                                 <td>@mesa.Docente</td>
                                                 <td>@mesa.Fecha?.ToString("dd/MM/yyyy HH:mm")</td>
@@ -152,7 +158,9 @@
             <div class="mesas-acciones">
                 <MudButton Class="mesas-btn-anotarse"
                     Variant="Variant.Filled"
-                    Color="Color.Primary">
+                    Color="Color.Primary"
+                    Disabled="@(_inscribiendo || _seleccionadas.Count == 0)"
+                    OnClick="AnotarseAsync">
                     Anotarse
                 </MudButton>
             </div>
@@ -183,6 +191,9 @@
     private List<MesaFinalFilaModel> _mesas = new();
     private bool _mesasLoading;
     private string? _mesasError;
+
+    private HashSet<int> _seleccionadas = new();
+    private bool _inscribiendo;
 
     private string? NombreCarreraSeleccionada =>
         _carreras.FirstOrDefault(c => c.CarreraId == _carreraId)?.Nombre;
@@ -217,6 +228,7 @@
             if (result.IsSuccess)
             {
                 _mesas = result.Mesas;
+                _seleccionadas.Clear();
             }
             else
             {
@@ -313,5 +325,46 @@
         }
 
         await CargarMesasAsync();
+    }
+
+    private void ToggleMesa(int mesaFinalId, bool value)
+    {
+        if (value)
+            _seleccionadas.Add(mesaFinalId);
+        else
+            _seleccionadas.Remove(mesaFinalId);
+    }
+
+    private async Task AnotarseAsync()
+    {
+        if (_carreraId is null || _seleccionadas.Count == 0) return;
+
+        _inscribiendo = true;
+        try
+        {
+            var ids = _seleccionadas.Where(id => _mesas.Any(m => m.MesaFinalId == id && !m.EstaInscripto)).ToList();
+            if (ids.Count == 0)
+            {
+                _seleccionadas.Clear();
+                return;
+            }
+
+            var result = await MesasFinalesApi.InscribirAsync(ids);
+            if (result.IsSuccess)
+            {
+                Snackbar.Add("Inscripción realizada correctamente", Severity.Success);
+                await CargarMesasAsync();
+                _seleccionadas.Clear();
+            }
+            else
+            {
+                _mesasError = result.Error;
+                Snackbar.Add(result.Error ?? "No se pudo completar la inscripción.", Severity.Error);
+            }
+        }
+        finally
+        {
+            _inscribiendo = false;
+        }
     }
 }

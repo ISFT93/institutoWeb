@@ -37,6 +37,29 @@ public sealed class MesasFinalesApiClient(HttpClient httpClient)
         }
     }
 
+    public async Task<InscripcionResult> InscribirAsync(List<int> mesaFinalIds, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            using var response = await httpClient.PostAsJsonAsync("MesasFinales/inscribir", mesaFinalIds, cancellationToken);
+
+            if (response.IsSuccessStatusCode)
+                return InscripcionResult.Success();
+
+            return InscripcionResult.Failure(
+                await ReadErrorAsync(response, "No se pudo completar la inscripción.", cancellationToken));
+        }
+        catch (HttpRequestException ex)
+        {
+            return InscripcionResult.Failure(
+                "No se pudo conectar con instituto93.Controller. Verificá que la API esté iniciada. " + ex.Message);
+        }
+        catch (TaskCanceledException)
+        {
+            return InscripcionResult.Failure("La inscripción demoró demasiado y se canceló.");
+        }
+    }
+
     private static string BuildQuery(string path, MesasFinalesFiltroModel filtro)
     {
         var parametros = new List<string>();
@@ -92,4 +115,11 @@ public sealed record MesasFinalesResult(bool IsSuccess, List<MesaFinalFilaModel>
     public static MesasFinalesResult Success(List<MesaFinalFilaModel> mesas) => new(true, mesas, null);
 
     public static MesasFinalesResult Failure(string error) => new(false, [], error);
+}
+
+public sealed record InscripcionResult(bool IsSuccess, string? Error)
+{
+    public static InscripcionResult Success() => new(true, null);
+
+    public static InscripcionResult Failure(string error) => new(false, error);
 }

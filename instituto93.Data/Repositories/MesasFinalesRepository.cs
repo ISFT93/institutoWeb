@@ -24,13 +24,15 @@ namespace instituto93.Data.Repositories
                     ISNULL(voc.Nombre + ' ' + voc.Apellido, ''),
                     ISNULL(pre.Nombre + ' ' + pre.Apellido, ''),
                     mf.Fecha,
-                    ISNULL(s.Descripcion, '')
+                    ISNULL(s.Descripcion, ''),
+                    CASE WHEN ma.MesaAlumnoId IS NOT NULL THEN 1 ELSE 0 END
                 FROM MesasFinales mf
                 INNER JOIN Materias m       ON m.MateriaId = mf.MateriaId
                 INNER JOIN AniosCarreras ac ON ac.AnioCarreraId = m.AnioCarreraId
                 INNER JOIN Personal voc     ON voc.PersonalId = mf.VocalId
                 INNER JOIN Personal pre     ON pre.PersonalId = mf.PresidenteId
                 INNER JOIN Sedes s          ON s.SedeId = mf.SedeId
+                LEFT JOIN MesaAlumno ma     ON ma.MesaFinalId = mf.MesaFinalId AND ma.AlumnoId = @AlumnoId
                 WHERE (@CarreraId IS NULL OR mf.CarreraId = @CarreraId)
                   AND (@TurnoId IS NULL OR mf.TurnoId = @TurnoId)
                   AND (@AnioCarreraId IS NULL OR ac.AnioCarreraId = @AnioCarreraId)
@@ -53,6 +55,7 @@ namespace instituto93.Data.Repositories
                 cmd.Parameters.Add("@TurnoId", SqlDbType.Int).Value = (object?)filtro.TurnoId ?? DBNull.Value;
                 cmd.Parameters.Add("@AnioCarreraId", SqlDbType.Int).Value = (object?)filtro.AnioCarreraId ?? DBNull.Value;
                 cmd.Parameters.Add("@AnioLectivo", SqlDbType.Int).Value = (object?)filtro.AnioLectivo ?? DBNull.Value;
+                cmd.Parameters.Add("@AlumnoId", SqlDbType.Int).Value = (object?)filtro.AlumnoId ?? DBNull.Value;
                 cmd.Parameters.Add("@Texto", SqlDbType.VarChar, 200).Value =
                     string.IsNullOrWhiteSpace(filtro.Texto) ? DBNull.Value : $"%{filtro.Texto.Trim()}%";
 
@@ -66,7 +69,8 @@ namespace instituto93.Data.Repositories
                         reader.GetString(3),
                         reader.GetString(4),
                         reader.IsDBNull(5) ? null : reader.GetDateTime(5),
-                        reader.GetString(6)));
+                        reader.GetString(6),
+                        reader.GetInt32(7) == 1));
                 }
             }
             finally
