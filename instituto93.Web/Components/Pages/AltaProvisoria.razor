@@ -1,0 +1,349 @@
+﻿@page "/altaprovisoria"
+
+@inject AltaPApiClient AltaPApi
+@inject CarrerasApiClient CarrerasApi
+@using instituto93.Web.Models;
+@using instituto93.Web.Components.Shared
+@using instituto93.Web.Services
+
+<PageTitle>Altaprovisoria</PageTitle>
+
+<main class="altaprovisoria-page">
+
+    <Navbar />
+
+    <section class="altaprovisoria-body">
+
+        <header class="altaprovisoria-intro">
+            <h1>Alta provisoria de alumnos</h1>
+            <p>
+                Completá tus datos para comenzar el trámite de alta provisoria.
+                Los campos marcados con <strong>*</strong> son obligatorios.
+            </p>
+        </header>
+
+    
+        <EditForm Model="_model"
+                  OnValidSubmit="HandleSubmit"
+                  OnInvalidSubmit="HandleInvalidSubmit">
+            <DataAnnotationsValidator />
+            @* <ValidationSummary /> *@
+
+            <article class="form-section">
+                <h2>Carrera de interés</h2>
+                <div class="form-grid">
+                    <MudSelect T="int?"
+                               Label="Carrera *"
+                               @bind-Value="_model.CarreraId"
+                               For="@(() => _model.CarreraId)"
+                               Variant="Variant.Outlined"
+                               Disabled="@(_carrerasLoading || _carrerasError is not null)"
+                               Error="_carrerasError is not null"
+                               ErrorText="@_carrerasError"
+                               FullWidth>
+                        @foreach (var carrera in _carreras)
+                        {
+                            <MudSelectItem T="int?" Value="@carrera.CarreraId">@carrera.Nombre</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    @if (_carrerasLoading)
+                    {
+                        <div class="carreras-estado">
+                            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Small" />
+                            <span>Cargando carreras...</span>
+                        </div>
+                    }
+
+                    @if (_carrerasError is not null)
+                    {
+                        <div class="carreras-estado">
+                            <MudIcon Icon="@Icons.Material.Filled.WarningAmber" Color="Color.Warning" />
+                            <span>No se pudieron cargar las carreras desde la base de datos.</span>
+                            <MudButton Variant="Variant.Outlined"
+                                       Color="Color.Primary"
+                                       Size="Size.Small"
+                                       OnClick="CargarCarrerasAsync">
+                                Reintentar
+                            </MudButton>
+                        </div>
+                    }
+                </div>
+            </article>
+
+            <article class="form-section">
+                <h2>Datos personales</h2>
+                <div class="form-grid">
+
+                    <MudTextField Label="Nombre *"
+                                  @bind-Value="_model.Nombre"
+                                  For="@(() => _model.Nombre)"
+                                  Variant="Variant.Outlined"
+                                  MaxLength="50"
+                                  FullWidth />
+
+                    <MudTextField Label="Apellido *"
+                                  @bind-Value="_model.Apellido"
+                                  For="@(() => _model.Apellido)"
+                                  Variant="Variant.Outlined"
+                                  MaxLength="50"
+                                  FullWidth />
+
+                    <MudSelect Label="Tipo de documento *"
+                               @bind-Value="_model.TipoDocumento"
+                               For="@(() => _model.TipoDocumento)"
+                               Variant="Variant.Outlined"
+                               MaxLength="10"
+                               FullWidth>
+                        @foreach (var tipo in _tiposDocumento)
+                        {
+                            <MudSelectItem Value="@tipo">@tipo</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    <MudNumericField Label="Número de documento *"
+                                     @bind-Value="_model.NumeroDocumento"
+                                     For="@(() => _model.NumeroDocumento)"
+                                     Variant="Variant.Outlined"
+                                     MaxLength="8"
+                                     FullWidth
+                                     HideSpinButtons />
+
+
+
+                    <MudDatePicker Label="Fecha de nacimiento *"
+                                   @bind-Date="_model.FechaNacimiento"
+                                   For="@(() => _model.FechaNacimiento)"
+                                   Variant="Variant.Outlined"
+                                   DateFormat="dd/MM/yyyy" />
+
+                    <MudSelect Label="Sexo *"
+                               @bind-Value="_model.Sexo"
+                               For="@(() => _model.Sexo)"
+                               Variant="Variant.Outlined"
+                               FullWidth>
+
+                        @foreach (var sexo in _sexos)
+                        {
+                            <MudSelectItem Value="@sexo.Codigo">
+                                @sexo.Descripcion
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+
+                </div>
+            </article>
+
+            <article class="form-section">
+                <h2>Domicilio</h2>
+                <div class="form-grid">
+                    <MudTextField Label="Calle *"
+                                  @bind-Value="_model.Calle"
+                                  For="@(() => _model.Calle)"
+                                  Variant="Variant.Outlined"
+                                  MaxLength="255"
+                                  FullWidth />
+
+                    <MudTextField Label="Localidad *"
+                                  @bind-Value="_model.Localidad"
+                                  For="@(() => _model.Localidad)"
+                                  Variant="Variant.Outlined"
+                                  MaxLength="50"
+                                  FullWidth />
+
+                </div>
+            </article>
+
+            <article class="form-section">
+                <h2>Contacto</h2>
+                <div class="form-grid">
+                    <MudTextField Label="Correo electrónico *"
+                                  @bind-Value="_model.Email"
+                                  For="@(() => _model.Email)"
+                                  Variant="Variant.Outlined"
+                                  MaxLength="255"
+                                  FullWidth />
+
+
+                    <MudNumericField Label="Teléfono fijo *"
+                                     @bind-Value="_model.Telefono"
+                                     For="@(() => _model.Telefono)"
+                                     Variant="Variant.Outlined"
+                                     MaxLength="30"
+                                     FullWidth
+                                     HideSpinButtons />
+
+                    
+                </div>
+            </article>
+
+
+
+            
+
+                         
+            @if (!string.IsNullOrWhiteSpace(_submitSuccess))
+            {
+                <MudAlert Severity="Severity.Success"
+                          Variant="Variant.Outlined"
+                          Class="mb-3">
+
+                    @_submitSuccess
+
+                </MudAlert>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(_submitError))
+            {
+                <MudAlert Severity="Severity.Error"
+                          Variant="Variant.Outlined"
+                          Class="mb-3">
+
+                    @_submitError
+
+                </MudAlert>
+            }
+
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       Disabled="_sending"
+                       FullWidth>
+
+                @(
+                _sending
+                ? "Guardando..."
+                : "Enviar preinscripción"
+                )
+
+            </MudButton>
+
+        </EditForm>
+
+    </section>
+
+</main>
+
+@code {
+
+    private bool _sending = false;
+
+    private string? _submitSuccess;
+
+    private string? _submitError;
+
+    private AltaPModel _model = new AltaPModel();
+
+    private List<CarrerasLookupModel> _carreras = new();
+
+    private bool _carrerasLoading = true;
+
+    private string? _carrerasError;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarCarrerasAsync();
+    }
+
+    private async Task CargarCarrerasAsync()
+    {
+        _carrerasLoading = true;
+        _carrerasError = null;
+
+        try
+        {
+            var result = await CarrerasApi.GetAsync();
+
+            if (result.IsSuccess)
+            {
+                _carreras = result.Carreras;
+
+                if (_carreras.Count == 0)
+                    _carrerasError = "No hay carreras cargadas en la base de datos.";
+            }
+            else
+            {
+                _carreras = new();
+                _carrerasError = result.Error;
+            }
+        }
+        finally
+        {
+            _carrerasLoading = false;
+        }
+    }
+
+    private readonly string[] _tiposDocumento = { "DNI", "LE", "LC" };
+
+    private readonly (string Codigo, string Descripcion)[] _sexos =
+    {
+        ("F", "Femenino"),
+        ("M", "Masculino"),
+        ("S", "Sin Especificar"),
+        ("O", "Otro")
+    };
+
+    private const long _maxFileSizeBytes = 5 * 1024 * 1024;
+
+    private void HandleInvalidSubmit(EditContext editContext)
+    {
+        _submitSuccess = null;
+
+        _submitError =
+            "No se pudo realizar el alta porque hay campos obligatorios o datos inválidos. Revisá el formulario.";
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (_sending)
+            return;
+
+        _sending = true;
+
+        _submitSuccess = null;
+        _submitError = null;
+
+        try
+        {
+            var result =
+                await AltaPApi.CreateAsync(
+                    _model);
+
+            if (!result.IsSuccess)
+            {
+                _submitError = result.Error;
+
+                return;
+            }
+
+            _submitSuccess =
+                result.AlumnoId is { } alumnoId
+                    ? $"Alta realizada correctamente. AlumnoId: {alumnoId}"
+                    : "Alta realizada correctamente.";
+
+            _model =
+                new AltaPModel();
+        }
+        catch (HttpRequestException ex)
+        {
+            _submitError =
+                "No se pudo conectar con instituto93.Controller. " +
+                "Verificá que la API esté iniciada. " +
+                ex.Message;
+        }
+        catch (Exception ex)
+        {
+            _submitError =
+                "Se produjo un error al realizar el alta: " +
+                ex.Message;
+        }
+        finally
+        {
+            _sending = false;
+        }
+    }
+
+
+
+}

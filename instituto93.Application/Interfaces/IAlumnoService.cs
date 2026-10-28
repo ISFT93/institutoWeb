@@ -18,5 +18,7 @@ namespace instituto93.Application
         Task<int> CreatePreinscripcionAsync(
             PreinscripcionDto preinscripcion,
             CancellationToken cancellationToken = default);
+
+        Task<int> CreateAltaPAsync(AltaPDto altaP, CancellationToken cancellationToken = default);
     }
 }

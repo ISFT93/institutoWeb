@@ -127,6 +127,49 @@ namespace instituto93.Controller.Controllers
                     });
             }
         }
+
+        [HttpPost("Alta provisoria")]
+        public async Task<ActionResult> CreateAltaP([FromBody] AltaPDto altaP, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var nuevoId =
+                    await _service
+                        .CreateAltaPAsync(
+                            altaP,
+                            cancellationToken);
+
+                return CreatedAtAction(
+                    nameof(GetById),
+
+                    new
+                    {
+                        id = nuevoId
+                    },
+
+                    new
+                    {
+                        alumnoId = nuevoId,
+
+                        message =
+                            "Alta provisoria realizada correctamente."
+                    });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(
+                    500,
+
+                    new
+                    {
+                        message =
+                            "No se pudo realizar el alta provisoria.",
+
+                        detail =
+                            ex.Message
+                    });
+            }
+        }
     }
 }
 

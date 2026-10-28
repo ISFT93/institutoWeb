@@ -200,6 +200,55 @@ namespace instituto93.Application
 
             return alumnoId;
         }
+
+        public async Task<int> CreateAltaPAsync(AltaPDto altaP, CancellationToken cancellationToken = default)
+        {
+            if (altaP == null)
+                throw new ArgumentNullException(nameof(altaP));
+
+            if (!altaP.FechaNacimiento.HasValue)
+                throw new ArgumentException(
+                    "La fecha de nacimiento es obligatoria.");
+
+            var alumno = new AlumnoModelo
+            {
+                Apellido = altaP.Apellido,
+                Nombre = altaP.Nombre,
+                TipoDocumento = altaP.TipoDocumento,
+                NumeroDocumento = altaP.NumeroDocumento,
+                Sexo = altaP.Sexo,
+                FechaNacimiento = altaP.FechaNacimiento.Value,
+                Calle = altaP.Calle,
+                Localidad = altaP.Localidad,
+                Telefono = altaP.Telefono,
+                Email = altaP.Email,
+                Activo = true,
+            };
+
+            var alumnoId = await _repo.CreateAsync(alumno, cancellationToken);
+
+            // Insercion en AlumnoCarreras para vincular el alumno con la carrera
+            try
+            {
+                await _alumnosCarreras.CreateAsync(
+                    new AlumnosCarreras
+                    {
+                        AlumnoId = alumnoId,
+                        CarreraId = altaP.CarreraId!.Value,
+                        FechaAlta = DateTime.Today,
+                        Activo = true
+                    },
+                    cancellationToken);
+            }
+            catch
+            {
+                //Borra registro en caso de fallar, para no dejar registros huerfanos
+                //simulando un transaccion
+                await _repo.DeleteAsync(alumnoId, cancellationToken);
+                throw;
+            }
+            return alumnoId;
+        }
     }
 
 
