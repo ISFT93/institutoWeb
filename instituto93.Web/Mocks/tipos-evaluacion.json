@@ -1,0 +1,22 @@
+[
+  {
+    "tipoEvaluacionId": 1,
+    "codigo": "PARCIAL",
+    "descripcion": "Parcial"
+  },
+  {
+    "tipoEvaluacionId": 2,
+    "codigo": "TP",
+    "descripcion": "Trabajo práctico"
+  },
+  {
+    "tipoEvaluacionId": 3,
+    "codigo": "RECUP",
+    "descripcion": "Recuperatorio"
+  },
+  {
+    "tipoEvaluacionId": 4,
+    "codigo": "INTEG",
+    "descripcion": "Integrador"
+  }
+]

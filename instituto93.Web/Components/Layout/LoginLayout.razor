@@ -2,7 +2,7 @@
 @inject NavigationManager Navigation
 
 @* Si HttpContext es null, el componente se está renderizando de forma interactiva (por ejemplo,
-   se navegó a /login desde otra página): se recarga completa para que se renderice con SSR estático. *@
+se navegó a /login desde otra página): se recarga completa para que se renderice con SSR estático. *@
 @if (HttpContext is not null)
 {
     @Body

@@ -184,11 +184,11 @@ namespace instituto93.Data.Repositories
         private static Parametro MapFromReader(System.Data.Common.DbDataReader reader) => new()
         {
             ParametroId = reader.GetInt32(0),
-            Nombre      = reader.GetString(1),
+            Nombre = reader.GetString(1),
             Descripcion = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
-            Valor       = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
-            TipoId      = reader.GetInt16(4),
-            Activo      = reader.GetBoolean(5),
+            Valor = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
+            TipoId = reader.GetInt16(4),
+            Activo = reader.GetBoolean(5),
         };
     }
 }

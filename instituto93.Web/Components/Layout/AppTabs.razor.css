@@ -49,7 +49,7 @@
     font-size: 1.55rem;
 }
 
-/* --- Menús desplegables (Instituto / Calendario / Trámites) ---------- */
+/* --- Menús desplegables (Instituto / Calendario / Alumnos) ---------- */
 
 /* El MudMenu debe ocupar la altura completa de la barra para que el
    activador se vea igual que los demás ítems (mismo centro vertical). */
@@ -83,4 +83,63 @@
 .app-tabs ::deep .app-tab-menu .mud-menu-activator:focus-within .app-tab {
     outline: 2px solid rgba(255, 255, 255, 0.6);
     outline-offset: -2px;
+}
+
+/* --- Responsive ------------------------------------------------------ */
+
+/* "safe center": si no entra, alinea al inicio y permite scroll horizontal
+   sin recortar el primer ítem. */
+.app-tabs-inner {
+    justify-content: safe center;
+}
+
+.app-tabs {
+    scrollbar-width: none;
+}
+
+.app-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+@media (max-width: 1100px) {
+    .app-tabs-inner {
+        gap: 3rem;
+    }
+
+    .app-tabs ::deep .app-tab {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-tabs {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .app-tabs {
+        height: 44px;
+    }
+
+    .app-tabs-inner {
+        justify-content: flex-start;
+        gap: 1.5rem;
+
+        padding: 0 1rem;
+    }
+
+    .app-tabs ::deep .app-tab {
+        gap: 6px;
+
+        font-size: 1rem;
+    }
+
+    .app-tabs ::deep .app-tab-icon {
+        font-size: 1.35rem;
+    }
+
+    .app-tabs ::deep .app-tab-chevron {
+        font-size: 1.2rem;
+    }
 }

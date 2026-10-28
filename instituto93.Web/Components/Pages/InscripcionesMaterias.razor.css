@@ -4,17 +4,13 @@
     background: #F5F8FD;
 }
 
-/* Contenedor centrado: el espacio sobrante queda igual a ambos lados. */
+/* Mismo contenedor que /mesas-finales */
 .inscripciones-container {
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 75rem; /* ~1200px */
+    max-width: 1260px;
 
-    margin-left: auto;
-    margin-right: auto;
-
-    /* ~40px bajo la barra sticky y ~24px laterales para no tocar bordes en pantallas chicas */
-    padding: 2.5rem 1.5rem 3rem;
+    margin-left: 6.5%;
+    margin-right: 10%;
+    padding: 2.5rem 0 3rem;
 }
 
 /* Título */
@@ -23,7 +19,7 @@
     margin: 0;
 
     color: #333333;
-    font-size: 1.5rem; /* ~24px */
+    font-size: 2.125rem;
     font-weight: 600;
 }
 
@@ -118,42 +114,32 @@
 .insc-anio-titulo {
     margin: 0 0 0.75rem; /* ~12px hasta su tabla */
 
-    color: #333333;
-    font-size: 1.25rem;
-    font-weight: 600;
+    color: var(--color-text);
+    font-size: 1.05rem;
+    font-weight: 700;
 }
 
-.insc-tabla {
-    box-sizing: border-box;
-    /* ~91% del ancho total de la tarjeta (el contenedor es el área con padding de ~20px) */
-    width: 96%;
+/* Mismo estilo de tabla que /mesas-finales */
 
-    table-layout: fixed;
-
-    margin-bottom: 3.75rem; /* ~60px: cuerpo vacío donde irán las filas */
+.insc-tabla-scroll {
+    overflow-x: auto;
 }
 
-.insc-tabla thead th {
-    height: 1.6875rem; /* ~27px + 2px de borde = ~29px */
+.insc-card ::deep .insc-tabla {
+    width: 100%;
 
-    padding: 0 0.5rem;
+    border-radius: 0.5rem;
+}
 
-    background-color: #F0F0F0;
-    border-bottom: 2px solid #D0D0D0;
+.insc-card ::deep .insc-tabla thead th {
+    padding: 0.75rem 1rem;
 
-    color: #333333;
-    font-size: 0.95rem;
+    background-color: #EDF1F6;
+    color: var(--color-text);
+    font-size: 0.875rem;
     font-weight: 600;
-    text-align: center;
+    text-align: left;
     white-space: nowrap;
-}
-
-.insc-tabla thead th:first-child {
-    border-top-left-radius: 6px;
-}
-
-.insc-tabla thead th:last-child {
-    border-top-right-radius: 6px;
 }
 
 .insc-card-seleccion {
@@ -214,6 +200,42 @@
 }
 
 /* Pantallas angostas: una sola columna, la izquierda primero. */
+@media (max-width: 1024px) {
+    .inscripciones-container {
+        margin-left: 5%;
+        margin-right: 5%;
+    }
+}
+
+@media (max-width: 768px) {
+    .inscripciones-page ::deep .insc-titulo {
+        font-size: 1.75rem;
+    }
+
+    .insc-tab {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .insc-card-listado {
+        height: 24rem;
+    }
+
+    .insc-card-scroll {
+        padding: 1rem;
+    }
+
+    .insc-card-seleccion {
+        min-height: 0;
+
+        padding-bottom: 2rem;
+    }
+
+    .insc-card-seleccion ::deep .insc-btn-anotarse {
+        max-width: 100%;
+    }
+}
+
 @media (max-width: 900px) {
     .insc-grid {
         grid-template-columns: minmax(0, 1fr);

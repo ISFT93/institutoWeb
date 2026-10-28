@@ -1,4 +1,7 @@
 @page "/mesas-finales"
+@inject OfertaAcademicaService Oferta
+@using instituto93.Web.Models
+@using instituto93.Web.Services
 
 <PageTitle>Listado de Mesas Finales</PageTitle>
 
@@ -11,6 +14,8 @@
         <div class="mesas-filtros">
             <MudTextField T="string"
                 Class="mesas-buscador"
+                @bind-Value="_busqueda"
+                Immediate="true"
                 Placeholder="Buscar materia, docente, año...."
                 Adornment="Adornment.Start"
                 AdornmentIcon="@Icons.Material.Filled.Search"
@@ -20,8 +25,15 @@
                 <span class="mesas-select-etiqueta">Turno:</span>
 
                 <MudSelect T="string"
+                    @bind-Value="_turno"
+                    Clearable="true"
                     Placeholder="Nov/Dic"
-                    Variant="Variant.Outlined" />
+                    Variant="Variant.Outlined">
+                    @foreach (var turno in _mesas.Select(m => m.Turno).Distinct().Order())
+                    {
+                        <MudSelectItem Value="@turno">@turno</MudSelectItem>
+                    }
+                </MudSelect>
             </div>
 
             <div class="mesas-select">
@@ -29,8 +41,15 @@
                     Icon="@Icons.Material.Filled.School" />
 
                 <MudSelect T="string"
+                    @bind-Value="_carrera"
+                    Clearable="true"
                     Placeholder="Carrera"
-                    Variant="Variant.Outlined" />
+                    Variant="Variant.Outlined">
+                    @foreach (var carrera in _mesas.Select(m => m.Carrera).Distinct().Order())
+                    {
+                        <MudSelectItem Value="@carrera">@carrera</MudSelectItem>
+                    }
+                </MudSelect>
             </div>
 
             <div class="mesas-select">
@@ -40,6 +59,7 @@
                 <MudSelect T="string"
                     Class="mesas-select-anio"
                     @bind-Value="_anioAcademico"
+                    Clearable="true"
                     Placeholder="Año academico"
                     Variant="Variant.Outlined">
                     <MudSelectItem Value="@("1°")">1°</MudSelectItem>
@@ -50,46 +70,47 @@
         </div>
 
         <div class="mesas-bloque-tabla">
-            <div class="mesas-tab">Carrera :</div>
+            <div class="mesas-tab">Carrera : @_mesas.FirstOrDefault()?.Carrera</div>
 
             <div class="mesas-card">
-                <section class="mesas-anio">
-                    <MudText Typo="Typo.h6" Class="mesas-anio-titulo">1° AÑO</MudText>
+                @foreach (var anio in Anios)
+                {
+                    <section class="mesas-anio">
+                        <MudText Typo="Typo.h6" Class="mesas-anio-titulo">@anio° AÑO</MudText>
 
-                    <div class="mesas-tabla-scroll">
-                        <MudSimpleTable Class="mesas-tabla">
-                            <thead>
-                                <tr>
-                                    <th>Asiste</th>
-                                    <th>Materia</th>
-                                    <th>Docente</th>
-                                    <th>Fecha y Hora</th>
-                                    <th>Sede</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </MudSimpleTable>
-                    </div>
-                </section>
-
-                <section class="mesas-anio">
-                    <MudText Typo="Typo.h6" Class="mesas-anio-titulo">2° AÑO</MudText>
-
-                    <div class="mesas-tabla-scroll">
-                        <MudSimpleTable Class="mesas-tabla">
-                            <thead>
-                                <tr>
-                                    <th>Asiste</th>
-                                    <th>Materia</th>
-                                    <th>Docente</th>
-                                    <th>Fecha y Hora</th>
-                                    <th>Sede</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </MudSimpleTable>
-                    </div>
-                </section>
+                        <div class="mesas-tabla-scroll">
+                            <MudSimpleTable Class="mesas-tabla">
+                                <thead>
+                                    <tr>
+                                        <th>Asiste</th>
+                                        <th>Materia</th>
+                                        <th>Docente</th>
+                                        <th>Fecha y Hora</th>
+                                        <th>Sede</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var mesa in Filtradas.Where(m => m.Anio == anio))
+                                    {
+                                        <tr>
+                                            <td>
+                                                <MudCheckBox T="bool"
+                                                            Value="@_seleccionadas.Contains(mesa.MesaId)"
+                                                            ValueChanged="@(marcada => Seleccionar(mesa.MesaId, marcada))"
+                                                            Size="Size.Small"
+                                                            aria-label="@($"Asistir a la mesa de {mesa.Materia}")" />
+                                            </td>
+                                            <td>@mesa.Materia</td>
+                                            <td>@mesa.Docente</td>
+                                            <td>@mesa.FechaHora.ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td>@mesa.Sede</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </MudSimpleTable>
+                        </div>
+                    </section>
+                }
             </div>
 
             <div class="mesas-acciones">
@@ -104,5 +125,31 @@
 </div>
 
 @code {
+    private List<MesaFinalInscripcionModel> _mesas = [];
+    private readonly HashSet<int> _seleccionadas = [];
     private string? _anioAcademico;
+    private string? _busqueda;
+    private string? _turno;
+    private string? _carrera;
+
+    private IEnumerable<int> Anios => Filtradas.Select(m => m.Anio).Distinct().Order();
+
+    private IEnumerable<MesaFinalInscripcionModel> Filtradas => _mesas.Where(m =>
+        (string.IsNullOrWhiteSpace(_busqueda) ||
+            m.Materia.Contains(_busqueda, StringComparison.OrdinalIgnoreCase) ||
+            m.Docente.Contains(_busqueda, StringComparison.OrdinalIgnoreCase) ||
+            $"{m.Anio}°".Contains(_busqueda, StringComparison.OrdinalIgnoreCase)) &&
+        (string.IsNullOrEmpty(_turno) || m.Turno == _turno) &&
+        (string.IsNullOrEmpty(_carrera) || m.Carrera == _carrera) &&
+        (string.IsNullOrEmpty(_anioAcademico) || $"{m.Anio}°" == _anioAcademico));
+
+    protected override async Task OnInitializedAsync() => _mesas = await Oferta.GetMesasAsync();
+
+    private void Seleccionar(int mesaId, bool marcada)
+    {
+        if (marcada)
+            _seleccionadas.Add(mesaId);
+        else
+            _seleccionadas.Remove(mesaId);
+    }
 }

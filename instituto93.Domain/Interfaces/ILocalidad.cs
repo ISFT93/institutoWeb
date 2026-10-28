@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace instituto93.Domain.Interfaces
 {
-    public interface ILocalidad 
+    public interface ILocalidad
     {
         int Id { get; set; }
         string Nombre { get; set; }

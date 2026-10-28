@@ -13,6 +13,11 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddMudServices();
 
+// Mocks en memoria (carpeta Mocks) solo en Development; nunca escriben en la base de datos.
+if (builder.Environment.IsDevelopment())
+    builder.Services.AddSingleton<instituto93.Web.Mocks.MockDataStore>();
+builder.Services.AddScoped<OfertaAcademicaService>();
+
 // Las cookies de autenticación (que contienen los tokens) se cifran con Data Protection.
 // Las claves tienen que sobrevivir a los reinicios: en contenedores, apuntar KeysPath a un volumen.
 var dataProtection = builder.Services.AddDataProtection().SetApplicationName("instituto93.Web");
@@ -46,10 +51,13 @@ void ConfigureApiClient(HttpClient client) => client.BaseAddress = new Uri($"{ap
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<TokenHandler>();
+builder.Services.AddScoped<AccessTokenProvider>();
 
 builder.Services.AddHttpClient<AuthApiClient>(ConfigureApiClient);
 builder.Services.AddHttpClient<AccountApiClient>(ConfigureApiClient)
     .AddHttpMessageHandler<TokenHandler>();
+builder.Services.AddHttpClient<DocenteMesasFinalesApiClient>(ConfigureApiClient);
+builder.Services.AddHttpClient<DocenteMateriasApiClient>(ConfigureApiClient);
 
 // BFF: el navegador solo recibe una cookie HttpOnly y cifrada; el access token y el refresh token
 // viajan dentro de ella y nunca llegan al JavaScript. CookieTokenRefresher los renueva.

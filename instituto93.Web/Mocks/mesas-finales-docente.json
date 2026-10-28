@@ -1,0 +1,210 @@
+[
+  {
+    "mesaId": 9201,
+    "materia": "Programación I",
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "fechaHora": "2026-11-23T09:00:00",
+    "turno": "Nov/Dic",
+    "estado": "Abierta",
+    "aula": "Aula 12",
+    "notaMinima": 1,
+    "notaMaxima": 10,
+    "notaAprobacion": 4,
+    "estudiantes": [
+      {
+        "mesaAlumnoId": 920101,
+        "alumnoId": 9001,
+        "nombreCompleto": "Agustina Benítez",
+        "dni": "44123456",
+        "nota": null,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      },
+      {
+        "mesaAlumnoId": 920102,
+        "alumnoId": 9002,
+        "nombreCompleto": "Bruno Cabrera",
+        "dni": "43987654",
+        "nota": null,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      },
+      {
+        "mesaAlumnoId": 920103,
+        "alumnoId": 9003,
+        "nombreCompleto": "Camila Domínguez",
+        "dni": "44561237",
+        "nota": null,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      },
+      {
+        "mesaAlumnoId": 920104,
+        "alumnoId": 9004,
+        "nombreCompleto": "Dante Escobar",
+        "dni": "42876123",
+        "nota": null,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      },
+      {
+        "mesaAlumnoId": 920105,
+        "alumnoId": 9005,
+        "nombreCompleto": "Florencia Giménez",
+        "dni": "44098765",
+        "nota": null,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      },
+      {
+        "mesaAlumnoId": 920106,
+        "alumnoId": 9006,
+        "nombreCompleto": "Gonzalo Herrera",
+        "dni": "43456781",
+        "nota": null,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      }
+    ]
+  },
+  {
+    "mesaId": 9202,
+    "materia": "Base de Datos",
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "fechaHora": "2026-11-25T18:30:00",
+    "turno": "Nov/Dic",
+    "estado": "Abierta",
+    "aula": "Laboratorio 2",
+    "notaMinima": 1,
+    "notaMaxima": 10,
+    "notaAprobacion": 4,
+    "estudiantes": [
+      {
+        "mesaAlumnoId": 920201,
+        "alumnoId": 9004,
+        "nombreCompleto": "Dante Escobar",
+        "dni": "42876123",
+        "nota": 7,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      },
+      {
+        "mesaAlumnoId": 920202,
+        "alumnoId": 9005,
+        "nombreCompleto": "Florencia Giménez",
+        "dni": "44098765",
+        "nota": 4,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      },
+      {
+        "mesaAlumnoId": 920203,
+        "alumnoId": 9006,
+        "nombreCompleto": "Gonzalo Herrera",
+        "dni": "43456781",
+        "nota": null,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      },
+      {
+        "mesaAlumnoId": 920204,
+        "alumnoId": 9007,
+        "nombreCompleto": "Irina Juárez",
+        "dni": "44321098",
+        "nota": null,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      },
+      {
+        "mesaAlumnoId": 920205,
+        "alumnoId": 9008,
+        "nombreCompleto": "Joaquín Luna",
+        "dni": "42765432",
+        "nota": null,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      }
+    ]
+  },
+  {
+    "mesaId": 9203,
+    "materia": "Estadística",
+    "carrera": "Ciencia de Datos e Inteligencia Artificial",
+    "fechaHora": "2026-12-02T14:00:00",
+    "turno": "Nov/Dic",
+    "estado": "Abierta",
+    "aula": null,
+    "notaMinima": 1,
+    "notaMaxima": 10,
+    "notaAprobacion": 4,
+    "estudiantes": [
+      {
+        "mesaAlumnoId": 920301,
+        "alumnoId": 9007,
+        "nombreCompleto": "Irina Juárez",
+        "dni": "44321098",
+        "nota": null,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      },
+      {
+        "mesaAlumnoId": 920302,
+        "alumnoId": 9008,
+        "nombreCompleto": "Joaquín Luna",
+        "dni": "42765432",
+        "nota": null,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      },
+      {
+        "mesaAlumnoId": 920303,
+        "alumnoId": 9009,
+        "nombreCompleto": "Lucía Medina",
+        "dni": "44213579",
+        "nota": null,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      },
+      {
+        "mesaAlumnoId": 920304,
+        "alumnoId": 9010,
+        "nombreCompleto": "Mateo Navarro",
+        "dni": "43654321",
+        "nota": null,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      }
+    ]
+  },
+  {
+    "mesaId": 9204,
+    "materia": "Ingeniería de Software",
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "fechaHora": "2026-08-04T19:00:00",
+    "turno": "Jul/Ago",
+    "estado": "Completa",
+    "aula": "Aula 5",
+    "notaMinima": 1,
+    "notaMaxima": 10,
+    "notaAprobacion": 4,
+    "estudiantes": [
+      {
+        "mesaAlumnoId": 920401,
+        "alumnoId": 9003,
+        "nombreCompleto": "Camila Domínguez",
+        "dni": "44561237",
+        "nota": 8,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      },
+      {
+        "mesaAlumnoId": 920402,
+        "alumnoId": 9004,
+        "nombreCompleto": "Dante Escobar",
+        "dni": "42876123",
+        "nota": 6,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      },
+      {
+        "mesaAlumnoId": 920403,
+        "alumnoId": 9005,
+        "nombreCompleto": "Florencia Giménez",
+        "dni": "44098765",
+        "nota": 9,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      },
+      {
+        "mesaAlumnoId": 920404,
+        "alumnoId": 9006,
+        "nombreCompleto": "Gonzalo Herrera",
+        "dni": "43456781",
+        "nota": 2,
+        "ultimaModificacion": "2026-10-01T10:00:00Z"
+      }
+    ]
+  }
+]

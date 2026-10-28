@@ -54,7 +54,7 @@ namespace instituto93.Controller.Controllers
             try
             {
                 var create = await _service.CreateInscripcionMateriaAsync(alumnoCarreraId, cursadaId, anioCicloLectivo, estado,
-            horasCursada, ultimoPresentismo, porcentajeAsistencia, cursada, activo,cancellationToken);
+            horasCursada, ultimoPresentismo, porcentajeAsistencia, cursada, activo, cancellationToken);
                 return Ok(create);
             }
             catch (System.Exception ex)
@@ -68,7 +68,7 @@ namespace instituto93.Controller.Controllers
         {
             try
             {
-                var update = await _service.UpdateInscripcionMateriaAsync(id, inscripcionMateria,cancellationToken);
+                var update = await _service.UpdateInscripcionMateriaAsync(id, inscripcionMateria, cancellationToken);
                 return Ok(update);
             }
             catch (System.Exception ex)

@@ -1,0 +1,357 @@
+@page "/docentes/materias/evaluaciones/{EvaluacionId:int}/notas"
+@attribute [Authorize(Roles = "Docente")]
+@inject DocenteMateriasApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+@inject ISnackbar Snackbar
+@using instituto93.Web.Models
+@using instituto93.Web.Services
+@using Microsoft.AspNetCore.Components.Routing
+
+<PageTitle>Carga de notas</PageTitle>
+
+<NavigationLock ConfirmExternalNavigation="@HasChanges" OnBeforeInternalNavigation="ConfirmInternalNavigation" />
+
+<main class="materias-page">
+    <div class="materias-container">
+        <MudButton Variant="Variant.Text"
+                Color="Color.Primary"
+                StartIcon="@Icons.Material.Filled.ArrowBack"
+                Class="back-button"
+                OnClick="BackAsync">
+            Volver a evaluaciones
+        </MudButton>
+
+        @if (_loading)
+        {
+            <section class="state" aria-live="polite">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                <div><strong>Cargando evaluación</strong><span>Estamos preparando la lista de estudiantes.</span></div>
+            </section>
+        }
+        else if (_error is not null)
+        {
+            <section class="state error" role="alert">
+                <MudIcon Icon="@Icons.Material.Outlined.ErrorOutline" />
+                <div><strong>No pudimos cargar la evaluación</strong><span>@_error</span></div>
+                <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="LoadAsync">Reintentar</MudButton>
+            </section>
+        }
+        else if (_data is not null)
+        {
+            <header class="page-header">
+                <div>
+                    <span class="eyebrow">@_data.Tipo</span>
+                    <h1>@_data.Nombre</h1>
+                    <p>@_data.Fecha.ToString("dd/MM/yyyy") · @_data.Cuatrimestre° cuatrimestre</p>
+                </div>
+                <span class="evaluation-state @_data.Estado.ToLowerInvariant()">@_data.Estado</span>
+            </header>
+
+            <section class="progress-card" aria-label="Progreso de carga">
+                <div>
+                    <strong>@CompletedCount de @_data.Estudiantes.Count calificaciones cargadas</strong>
+                    <span>@Progress.ToString("0")% completo</span>
+                </div>
+                <MudProgressLinear Value="@Progress" />
+            </section>
+
+            @if (_data.Estudiantes.Count == 0)
+            {
+                <section class="state">
+                    <MudIcon Icon="@Icons.Material.Outlined.PersonOff" />
+                    <div><strong>No hay estudiantes inscriptos</strong><span>Esta cursada todavía no tiene estudiantes disponibles para calificar.</span></div>
+                </section>
+            }
+            else
+            {
+                <div class="search-row">
+                    <MudTextField T="string"
+                                @bind-Value="_search"
+                                Immediate="true"
+                                Placeholder="Buscar estudiante por nombre, DNI o estado..."
+                                Adornment="Adornment.Start"
+                                AdornmentIcon="@Icons.Material.Filled.Search"
+                                Variant="Variant.Outlined"
+                                aria-label="Buscar estudiantes para cargar notas" />
+                </div>
+
+                <section class="students-section">
+                    <div class="section-heading">
+                        <div>
+                            <h2>Estudiantes inscriptos</h2>
+                            <p>Cargá una nota del @_data.NotaMinima al @_data.NotaMaxima o marcá al estudiante como ausente.</p>
+                        </div>
+                        <span class="changes-indicator @(HasChanges ? "has-changes" : null)">
+                            @(HasChanges ? "Cambios sin guardar" : "Sin cambios")
+                        </span>
+                    </div>
+
+                    @if (!FilteredStudents.Any())
+                    {
+                        <div class="filter-empty" role="status">
+                            <MudIcon Icon="@Icons.Material.Outlined.SearchOff" />
+                            <strong>No encontramos estudiantes</strong>
+                            <span>Probá con otro nombre, DNI o estado.</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="student-list" aria-label="Notas de estudiantes">
+                            <div class="student-list-header" aria-hidden="true">
+                                <span>Estudiante y estado</span>
+                                <span>Nota</span>
+                                <span>Asistencia</span>
+                                <span>Observaciones</span>
+                            </div>
+
+                            @foreach (var student in FilteredStudents)
+                            {
+                                <article class="student-card">
+                                    <div class="student-data">
+                                        <strong>@student.NombreCompleto</strong>
+                                        <span>DNI @student.Dni</span>
+                                        <span class="grade-state @StateClass(student)">@State(student)</span>
+                                    </div>
+
+                                    <div class="grade-field">
+                                        <MudNumericField T="decimal?"
+                                                        @bind-Value="student.Nota"
+                                                        Label="Nota"
+                                                        Min="@_data.NotaMinima"
+                                                        Max="@_data.NotaMaxima"
+                                                        Step="0.01M"
+                                                        Variant="Variant.Outlined"
+                                                        HideSpinButtons="true"
+                                                        Disabled="@(!CanEdit || student.Ausente)" />
+                                        @if (_validationErrors.TryGetValue(student.CursadaAlumnoCarreraId, out var validationError))
+                                        {
+                                            <span class="field-error" role="alert">@validationError</span>
+                                        }
+                                    </div>
+
+                                    <MudCheckBox T="bool"
+                                                Value="student.Ausente"
+                                                ValueChanged="@(ausente => ChangeAbsence(student, ausente))"
+                                                Label="Ausente"
+                                                Disabled="@(!CanEdit)" />
+
+                                    <MudTextField @bind-Value="student.Observaciones"
+                                                Label="Observaciones"
+                                                Variant="Variant.Outlined"
+                                                MaxLength="500"
+                                                Disabled="@(!CanEdit)" />
+                                </article>
+                            }
+                        </div>
+                    }
+                </section>
+
+                <footer class="save-bar">
+                    <div>
+                        <strong>¿Terminaste la carga?</strong>
+                        @if (_data.Estado == "Cerrada")
+                        {
+                            <span>La evaluación está cerrada. Las notas están disponibles solo para consulta.</span>
+                        }
+                        else if (_data.Estado == "Borrador")
+                        {
+                            <span>Activá la evaluación para comenzar la carga de notas.</span>
+                        }
+                        else
+                        {
+                            <span>@(HasChanges ? "Revisá los cambios antes de guardar." : "No hay cambios pendientes.")</span>
+                        }
+                    </div>
+                    <MudButton Variant="Variant.Filled"
+                            Color="Color.Primary"
+                            StartIcon="@Icons.Material.Filled.Save"
+                            Disabled="@(_saving || !CanEdit || !HasChanges)"
+                            OnClick="SaveAsync">
+                        @(_saving ? "Guardando…" : "Guardar notas")
+                    </MudButton>
+                </footer>
+            }
+        }
+    </div>
+</main>
+
+@code {
+    [Parameter]
+    public int EvaluacionId { get; set; }
+
+    private readonly Dictionary<int, NotaSnapshot> _original = [];
+    private readonly Dictionary<int, string> _validationErrors = [];
+    private EvaluacionNotasModel? _data;
+    private bool _loading = true;
+    private bool _saving;
+    private string? _error;
+    private string? _search;
+
+    private int CompletedCount => _data?.Estudiantes.Count(IsCompleted) ?? 0;
+    private double Progress => _data is null || _data.Estudiantes.Count == 0
+        ? 0
+        : 100d * CompletedCount / _data.Estudiantes.Count;
+    private bool CanEdit => _data?.Estado == "Activa";
+    private bool HasChanges => _data?.Estudiantes.Any(HasStudentChanged) == true;
+    private IEnumerable<NotaAlumnoModel> FilteredStudents => _data is null || string.IsNullOrWhiteSpace(_search)
+        ? _data?.Estudiantes ?? []
+        : _data.Estudiantes.Where(student =>
+            student.NombreCompleto.Contains(_search, StringComparison.OrdinalIgnoreCase) ||
+            student.Dni.Contains(_search, StringComparison.OrdinalIgnoreCase) ||
+            State(student).Contains(_search, StringComparison.OrdinalIgnoreCase));
+
+    protected override Task OnParametersSetAsync() => LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        _error = null;
+        _validationErrors.Clear();
+
+        try
+        {
+            _data = await Api.GetNotasAsync(EvaluacionId);
+            if (_data is null)
+            {
+                _error = "No se encontró la evaluación.";
+                return;
+            }
+
+            CaptureOriginalValues();
+        }
+        catch
+        {
+            _data = null;
+            _error = "No se pudo cargar la evaluación.";
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task SaveAsync()
+    {
+        if (_data is null || _saving || !CanEdit)
+            return;
+
+        var changedStudents = _data.Estudiantes.Where(HasStudentChanged).ToList();
+        if (changedStudents.Count == 0)
+        {
+            Snackbar.Add("No hay cambios para guardar.", Severity.Info);
+            return;
+        }
+
+        if (!Validate(changedStudents))
+            return;
+
+        _saving = true;
+        try
+        {
+            var notes = changedStudents.Select(student => new GuardarNotaAlumnoRequest(
+                student.CursadaAlumnoCarreraId,
+                student.Ausente ? null : student.Nota,
+                student.Ausente,
+                NormalizeObservations(student.Observaciones),
+                student.Version)).ToList();
+
+            await Api.GuardarAsync(EvaluacionId, new GuardarNotasEvaluacionRequest(notes));
+            Snackbar.Add("Notas guardadas", Severity.Success);
+            await LoadAsync();
+        }
+        catch
+        {
+            Snackbar.Add("No se pudieron guardar las notas. Recargá la evaluación e intentá nuevamente.", Severity.Error);
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+
+    private bool Validate(IEnumerable<NotaAlumnoModel> students)
+    {
+        _validationErrors.Clear();
+        if (_data is null)
+            return false;
+
+        foreach (var student in students)
+        {
+            if (!student.Ausente && student.Nota is not null &&
+                (student.Nota < _data.NotaMinima || student.Nota > _data.NotaMaxima))
+            {
+                _validationErrors[student.CursadaAlumnoCarreraId] =
+                    $"La nota debe estar entre {_data.NotaMinima:0.##} y {_data.NotaMaxima:0.##}.";
+            }
+        }
+
+        return _validationErrors.Count == 0;
+    }
+
+    private void ChangeAbsence(NotaAlumnoModel student, bool absent)
+    {
+        student.Ausente = absent;
+        if (!absent)
+            return;
+
+        student.Nota = null;
+        _validationErrors.Remove(student.CursadaAlumnoCarreraId);
+    }
+
+    private void CaptureOriginalValues()
+    {
+        _original.Clear();
+        if (_data is null)
+            return;
+
+        foreach (var student in _data.Estudiantes)
+        {
+            _original[student.CursadaAlumnoCarreraId] = new(
+                student.Nota,
+                student.Ausente,
+                NormalizeObservations(student.Observaciones));
+        }
+    }
+
+    private bool HasStudentChanged(NotaAlumnoModel student) =>
+        !_original.TryGetValue(student.CursadaAlumnoCarreraId, out var original) ||
+        original.Nota != student.Nota ||
+        original.Ausente != student.Ausente ||
+        original.Observaciones != NormalizeObservations(student.Observaciones);
+
+    private static string? NormalizeObservations(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+    private static bool IsCompleted(NotaAlumnoModel student) => student.Nota is not null || student.Ausente;
+
+    private string State(NotaAlumnoModel student) => student.Ausente
+        ? "Ausente"
+        : student.Nota is null
+            ? "Sin cargar"
+            : student.Nota >= _data!.NotaAprobacion ? "Aprobado/a" : "Desaprobado/a";
+
+    private string StateClass(NotaAlumnoModel student) => State(student) switch
+    {
+        "Aprobado/a" => "approved",
+        "Desaprobado/a" => "failed",
+        "Ausente" => "absent",
+        _ => "pending"
+    };
+
+    private async Task BackAsync()
+    {
+        if (_data is not null)
+            Navigation.NavigateTo($"/docentes/materias/{_data.CursadaId}/evaluaciones");
+        else
+            await JS.InvokeVoidAsync("history.back");
+    }
+
+    private async Task ConfirmInternalNavigation(LocationChangingContext context)
+    {
+        if (HasChanges && !await JS.InvokeAsync<bool>("confirm", "Hay cambios sin guardar. ¿Querés salir igualmente?"))
+            context.PreventNavigation();
+    }
+
+    private sealed record NotaSnapshot(decimal? Nota, bool Ausente, string? Observaciones);
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "mesaId": 9401,
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "anio": 1,
+    "materia": "Programación I",
+    "docente": "Mariana Sosa",
+    "fechaHora": "2026-11-23T09:00:00",
+    "sede": "Sede Central",
+    "turno": "Nov/Dic"
+  },
+  {
+    "mesaId": 9402,
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "anio": 1,
+    "materia": "Matemática Aplicada",
+    "docente": "Ricardo Paz",
+    "fechaHora": "2026-11-24T18:30:00",
+    "sede": "Sede Central",
+    "turno": "Nov/Dic"
+  },
+  {
+    "mesaId": 9403,
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "anio": 1,
+    "materia": "Sistemas Operativos",
+    "docente": "Lucas Ferreyra",
+    "fechaHora": "2026-11-30T14:00:00",
+    "sede": "Sede Anexo",
+    "turno": "Nov/Dic"
+  },
+  {
+    "mesaId": 9404,
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "anio": 2,
+    "materia": "Base de Datos",
+    "docente": "Martín Acosta",
+    "fechaHora": "2026-11-25T18:30:00",
+    "sede": "Sede Central",
+    "turno": "Nov/Dic"
+  },
+  {
+    "mesaId": 9405,
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "anio": 2,
+    "materia": "Análisis de Sistemas",
+    "docente": "Elena Roldán",
+    "fechaHora": "2026-12-01T19:00:00",
+    "sede": "Sede Anexo",
+    "turno": "Nov/Dic"
+  },
+  {
+    "mesaId": 9406,
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "anio": 2,
+    "materia": "Redes de Datos",
+    "docente": "Lucas Ferreyra",
+    "fechaHora": "2026-12-03T09:00:00",
+    "sede": "Sede Central",
+    "turno": "Nov/Dic"
+  }
+]

@@ -4,7 +4,7 @@ namespace instituto93.Domain.Models
 {
     public class Cursada
     {
-        
+
         public int CursadaId { get; set; }
         public int CursoMateriaId { get; set; }
         public required string AnioLectivo { get; set; }

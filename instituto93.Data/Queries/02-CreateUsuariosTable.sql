@@ -4,6 +4,8 @@
 -- Requiere dbo.Roles (01-CreateRolesTable.sql). Si Usuarios ya existía sin RolId, ejecutar luego
 -- 04-MigrateUsuariosRoles.sql.
 
+USE instituto_db;
+
 SET QUOTED_IDENTIFIER ON; -- requerido por los índices filtrados (sqlcmd lo deja en OFF por defecto)
 GO
 
