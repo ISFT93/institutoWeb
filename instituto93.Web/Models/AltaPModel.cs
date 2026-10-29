@@ -45,5 +45,7 @@ namespace instituto93.Web.Models
         [Required(ErrorMessage = "El teléfono es obligatorio.")]
         [MaxLength(30, ErrorMessage = "El teléfono no puede superar los 30 caracteres.")]
         public string? Telefono { get; set; }
+
+        public string Contraseña { get; set; } = string.Empty;
     }
 }

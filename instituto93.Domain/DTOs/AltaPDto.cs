@@ -37,5 +37,7 @@ namespace instituto93.Domain.DTOs
         [Required]
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
+
+        public string Contraseña { get; set; } = string.Empty;
     }
 }
