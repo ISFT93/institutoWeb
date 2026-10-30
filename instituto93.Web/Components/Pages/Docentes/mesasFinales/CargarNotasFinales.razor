@@ -116,9 +116,9 @@
                                             <span class="status-badge @NotaEstadoCss(estudiante)">@NotaEstado(estudiante)</span>
                                         </div>
                                         <div class="grade-field">
-                                            <label for="@($"nota-{estudiante.MesaAlumnoId}")">Nota</label>
                                             <MudNumericField T="decimal?"
                                                             id="@($"nota-{estudiante.MesaAlumnoId}")"
+                                                            Label="Nota"
                                                             Value="estudiante.Nota"
                                                             ValueChanged="@(value => CambiarNota(estudiante, value))"
                                                             Min="_mesa.NotaMinima"
@@ -132,9 +132,10 @@
                                                             aria-label="@($"Nota final de {estudiante.NombreCompleto}")" />
                                         </div>
                                         <MudCheckBox T="bool"
+                                                         Class="attendance-checkbox"
                                                          Value="estudiante.Ausente"
                                                          ValueChanged="@(value => CambiarAusencia(estudiante, value))"
-                                                         Color="Color.Warning"
+                                                         Color="Color.Default"
                                                          Label="Ausente"
                                                          aria-label="@($"Marcar ausente a {estudiante.NombreCompleto}")" />
                                     </article>

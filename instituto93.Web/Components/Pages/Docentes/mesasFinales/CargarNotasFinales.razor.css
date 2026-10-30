@@ -41,13 +41,12 @@
 .student-name strong { overflow: hidden; color: var(--color-text); text-overflow: ellipsis; }
 .mobile-dni { color: var(--color-text-secondary); font-size: var(--font-size-sm); }
 .desktop-dni { display: none; color: var(--color-text-secondary); }
-.grade-field label { display: block; margin-bottom: var(--space-2); color: var(--color-text-secondary); font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); }
+.grade-field > label { display: block; margin-bottom: var(--space-2); color: var(--color-text-secondary); font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); }
 .grade-field ::deep .mud-input-control { max-width: 160px; }
 .status-badge { align-self: flex-start; justify-self: start; width: fit-content; padding: .4rem .75rem; border-radius: 999px; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); }
 .status-empty { background: #edf0f4; color: #506073; }
 .status-approved { background: #e2f3e5; color: #246b2b; }
 .status-failed { background: #fde8e8; color: #a32929; }
-.status-absent { background: #fff3cd; color: #8a5a00; }
 .save-bar { position: fixed; right: 0; bottom: 0; left: 0; z-index: 1000; display: flex; align-items: center; justify-content: flex-end; padding: var(--space-3) var(--space-4); background: var(--color-surface); border-top: 1px solid var(--color-border); box-shadow: 0 -4px 16px rgba(35,65,98,.1); }
 .save-bar div { display: none; }
 .save-bar ::deep .mud-button-root { width: 100%; min-height: 46px; text-transform: none; }
@@ -76,7 +75,10 @@
     .student-row:first-of-type { border-top: 0; }
     .mobile-dni { display: none; }
     .desktop-dni { display: block; }
-    .grade-field label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .grade-field > label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
 
-.status-absent { background: #fff3cd; color: #8a5a00; }
+.status-absent { background: #edf0f4; color: #506073; }
+.attendance-checkbox ::deep .mud-checkbox-true,
+.attendance-checkbox ::deep .mud-icon-root { color: #707070 !important; }
+.attendance-checkbox ::deep .mud-checkbox-false { color: #b8bec5 !important; }
