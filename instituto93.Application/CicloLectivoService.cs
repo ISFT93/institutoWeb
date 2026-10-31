@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using instituto93.Data.Repositories;
 using instituto93.Data.Repositories.Interfaces;
 using instituto93.Domain.Models;
+using instituto93.Domain.DTOs;
 using System.Linq;
 namespace instituto93.Application
 {
@@ -43,6 +44,12 @@ namespace instituto93.Application
         public async Task<bool> DeleteAsync(int anioLectivo, CancellationToken cancellationToken = default)
         {
             return await _repo.DeleteAsync(anioLectivo, cancellationToken);
+        }
+
+        public async Task<EstadoPreinscripcionDto> GetEstadoPreinscripcionAsync(CancellationToken cancellationToken = default)
+        {
+            return await _repo.GetPlazoPreinscripcionAbiertoAsync(cancellationToken)
+                   ?? new EstadoPreinscripcionDto { Abierta = false };
         }
     }
 }

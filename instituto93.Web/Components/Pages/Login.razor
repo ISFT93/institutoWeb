@@ -6,6 +6,7 @@
 @using instituto93.Web.Models
 @using instituto93.Web.Services
 @inject AuthApiClient AuthApiClient
+@inject PreinscripcionApiClient PreinscripcionApi
 
 <PageTitle>Iniciar Sesión</PageTitle>
 
@@ -66,17 +67,18 @@
                     <button type="submit" class="btn btn-primary">Continuar</button>
                 </EditForm>
 
-                
+                @* Divisor "o" + preinscripción, solo dentro del plazo. Va después del EditForm (no dentro):
+                el enlace navega, nunca envía el formulario del D.N.I ni dispara su validación. *@
+                @if (_preinscripcionAbierta)
+                {
+                    <div class="login-divider" aria-hidden="true">
+                        <span class="login-divider-line"></span>
+                        <span class="login-divider-text">o</span>
+                        <span class="login-divider-line"></span>
+                    </div>
 
-                @* Divisor "o" + preinscripción. Va después del EditForm (no dentro): el enlace
-                navega, nunca envía el formulario del D.N.I ni dispara su validación. *@
-                <div class="login-divider" aria-hidden="true">
-                    <span class="login-divider-line"></span>
-                    <span class="login-divider-text">o</span>
-                    <span class="login-divider-line"></span>
-                </div>
-
-                <a class="btn btn-secondary" href="/preinscripcion">Quiero preinscribirme</a>
+                    <a class="btn btn-secondary" href="/preinscripcion">Quiero preinscribirme</a>
+                }
             }
             else if (_step == LoginStep.Login)
             {
@@ -194,6 +196,7 @@
     private LoginModel LoginInput = new();
     private CreatePasswordModel CreatePasswordInput = new();
     private string? _errorMessage;
+    private bool _preinscripcionAbierta;
 
     private string LoginHref => Navigation.GetUriWithQueryParameters(
         "login",
@@ -215,7 +218,7 @@
         _ => "Tu cuenta quedó configurada."
     };
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         if (HttpContext.User.Identity?.IsAuthenticated == true)
         {
@@ -236,6 +239,11 @@
         {
             CreatePasswordInput = PostedCreatePassword;
             _step = LoginStep.CreatePassword;
+        }
+
+        if (_step == LoginStep.Dni)
+        {
+            _preinscripcionAbierta = (await PreinscripcionApi.GetEstadoAsync()).Abierta;
         }
     }
 

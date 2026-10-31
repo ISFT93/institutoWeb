@@ -53,6 +53,8 @@ builder.Services.AddScoped<IParametroRepository, ParametroRepository>();
 builder.Services.AddScoped<IParametroService, ParametroService>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<ICicloLectivoRepository, CicloLectivoRepository>();
+builder.Services.AddScoped<ICicloLectivoService, CicloLectivoService>();
 builder.Services.AddScoped<IAlumnoRepository, AlumnoRepository>();
 builder.Services.AddScoped<IAlumnoService, AlumnoService>();
 builder.Services.AddScoped<IProfesorRepository, ProfesorRepository>();

@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using instituto93.Domain.Models;
+using instituto93.Domain.DTOs;
 
 namespace instituto93.Application
 {
@@ -12,5 +13,6 @@ namespace instituto93.Application
         Task<int> CreateAsync(CicloLectivoModelo cicloLectivo, CancellationToken cancellationToken = default);
         Task<bool> UpdateAsync(CicloLectivoModelo cicloLectivo, CancellationToken cancellationToken = default);
         Task<bool> DeleteAsync(int anioLectivo, CancellationToken cancellationToken = default);
+        Task<EstadoPreinscripcionDto> GetEstadoPreinscripcionAsync(CancellationToken cancellationToken = default);
     }
 }

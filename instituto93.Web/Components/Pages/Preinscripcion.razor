@@ -25,7 +25,19 @@
             </p>
         </header>
 
-    
+        @if (!_estado.Abierta)
+        {
+            <article class="form-section">
+                <h2>Preinscripción fuera de plazo</h2>
+                <p>
+                    La preinscripción no está habilitada en este momento.
+                    Volvé a intentarlo cuando se abra el próximo período.
+                </p>
+                <a class="btn btn-secondary" href="/login">Volver al inicio</a>
+            </article>
+        }
+        else
+        {
         <EditForm Model="_model"
                 OnValidSubmit="HandleSubmit"
                 OnInvalidSubmit="HandleInvalidSubmit">
@@ -671,6 +683,7 @@
             </MudButton>
 
         </EditForm>
+        }
 
     </section>
 
@@ -692,8 +705,15 @@
 
     private string? _carrerasError;
 
+    private EstadoPreinscripcion _estado = EstadoPreinscripcion.Cerrada;
+
     protected override async Task OnInitializedAsync()
     {
+        _estado = await PreinscripcionApi.GetEstadoAsync();
+
+        if (!_estado.Abierta)
+            return;
+
         await CargarCarrerasAsync();
     }
 

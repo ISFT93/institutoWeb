@@ -13,11 +13,14 @@ namespace instituto93.Controller.Controllers
     public class AlumnoController : ControllerBase
     {
         private readonly IAlumnoService _service;
+        private readonly ICicloLectivoService _ciclos;
 
         public AlumnoController(
-            IAlumnoService service)
+            IAlumnoService service,
+            ICicloLectivoService ciclos)
         {
             _service = service;
+            _ciclos = ciclos;
         }
 
         [HttpGet]
@@ -90,6 +93,20 @@ namespace instituto93.Controller.Controllers
         {
             try
             {
+                var estado =
+                    await _ciclos
+                        .GetEstadoPreinscripcionAsync(
+                            cancellationToken);
+
+                if (!estado.Abierta)
+                    return StatusCode(
+                        403,
+                        new
+                        {
+                            message =
+                                "La preinscripción está fuera de plazo."
+                        });
+
                 var nuevoId =
                     await _service
                         .CreatePreinscripcionAsync(
