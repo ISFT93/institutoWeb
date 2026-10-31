@@ -12,11 +12,13 @@ namespace instituto93.Application
     {
         private readonly IAlumnoRepository _repo;
         private readonly IAlumnosCarrerasRepository _alumnosCarreras;
+        private readonly IUsuarioRepository _usuario;
 
-        public AlumnoService(IAlumnoRepository repo, IAlumnosCarrerasRepository alumnosCarreras)
+        public AlumnoService(IAlumnoRepository repo, IAlumnosCarrerasRepository alumnosCarreras, IUsuarioRepository usuario)
         {
             _repo = repo ?? throw new System.ArgumentNullException(nameof(repo));
             _alumnosCarreras = alumnosCarreras ?? throw new System.ArgumentNullException(nameof(alumnosCarreras));
+            _usuario = usuario ?? throw new System.ArgumentNullException(nameof(usuario));
         }
 
         public async Task<List<AlumnoModelo>> GetAlumnosModelos(
@@ -247,6 +249,19 @@ namespace instituto93.Application
                 await _repo.DeleteAsync(alumnoId, cancellationToken);
                 throw;
             }
+
+            //Creación de usuario
+            Rol rol = new Rol { Id = 1, Nombre = "Alumno" };
+            await _usuario.AddAsync(
+                new Usuario
+                {
+                    RolId=1,
+                    AlumnoId = alumnoId,
+                    Password = altaP.Password,
+                    Activo = true,
+                    Rol=rol
+                }, cancellationToken);
+
             return alumnoId;
         }
     }

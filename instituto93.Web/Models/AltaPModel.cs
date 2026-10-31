@@ -46,6 +46,11 @@ namespace instituto93.Web.Models
         [MaxLength(30, ErrorMessage = "El teléfono no puede superar los 30 caracteres.")]
         public string? Telefono { get; set; }
 
-        public string Contraseña { get; set; } = string.Empty;
+        [Required(ErrorMessage= "La contraseña es obligatoria.")]
+        public string Password { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Confirmar la contraseña es obligatorio.")]
+        [Compare(nameof(Password), ErrorMessage ="Las contraseñas no coinciden.")]
+        public string ConfirmarPassword { get; set; } = string.Empty;
     }
 }

@@ -38,6 +38,11 @@ namespace instituto93.Domain.DTOs
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
-        public string Contraseña { get; set; } = string.Empty;
+        [Required]
+        public string Password { get; set; } = string.Empty;
+
+        [Required]
+        [Compare(nameof(Password), ErrorMessage = "Las contraseñas no coinciden.")]
+        public string ConfirmarPassword { get; set; } = string.Empty;
     }
 }

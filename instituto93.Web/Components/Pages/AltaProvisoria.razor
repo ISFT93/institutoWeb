@@ -1,5 +1,6 @@
 ﻿@page "/altaprovisoria"
-
+@layout EmptyLayout
+@attribute [AllowAnonymous]
 @inject AltaPApiClient AltaPApi
 @inject CarrerasApiClient CarrerasApi
 @using instituto93.Web.Models;
@@ -177,6 +178,28 @@
                 </div>
             </article>
 
+            <article class="form-section">
+                <h2>Contraseña</h2>
+                <div class="form-grid">
+                    <MudTextField Label="Contraseña *"
+                                  @bind-Value="_model.Password"
+                                  For="@(() => _model.Password)"
+                                  Variant="Variant.Outlined"
+                                  InputType="InputType.Password"
+                                  MaxLength="512"
+                                  FullWidth />
+
+                    <MudTextField Label="Confirmar Constraseña *"
+                                  @bind-Value="_model.ConfirmarPassword"
+                                  For="@(() => _model.ConfirmarPassword)"
+                                  Variant="Variant.Outlined"
+                                  InputType="InputType.Password"
+                                  MaxLength="512"
+                                  FullWidth />
+
+                </div>
+            </article>
+
 
 
             
@@ -214,7 +237,7 @@
                 @(
                 _sending
                 ? "Guardando..."
-                : "Enviar preinscripción"
+                : "Realizar alta"
                 )
 
             </MudButton>

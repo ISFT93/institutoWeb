@@ -33,7 +33,9 @@ public sealed class AltaPApiClient(HttpClient httpClient)
             Calle = model.Calle,
             Localidad = model.Localidad,
             Telefono = model.Telefono,
-            Email = model.Email
+            Email = model.Email,
+            Password=model.Password,
+            ConfirmarPassword=model.ConfirmarPassword
         };
 
     /* La API puede devolver { message, detail } o, en Development, el HTML/text de la pagina de excepcion.
@@ -96,6 +98,10 @@ public sealed class AltaPApiClient(HttpClient httpClient)
         public string? Telefono { get; set; }
 
         public string Email { get; set; } = string.Empty;
+
+        public string Password { get; set; } = string.Empty;
+
+        public string ConfirmarPassword { get; set; } = string.Empty;
     }
 }
 
