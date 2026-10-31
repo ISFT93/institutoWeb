@@ -88,6 +88,11 @@ public sealed class MockDataStore
     public void CrearEvaluacion(int cursadaId, CrearEvaluacionRequest request)
     {
         lock (_gate)
+        {
+            if (EsNotaFinal(request.TipoEvaluacionId) &&
+                _evaluaciones.Any(e => e.CursadaId == cursadaId && EsNotaFinal(e.TipoEvaluacionId)))
+                throw new InvalidOperationException("Esta materia ya tiene una evaluación de tipo Nota final.");
+
             _evaluaciones.Add(new EvaluacionMock
             {
                 EvaluacionId = _nextEvaluacionId++,
@@ -98,6 +103,7 @@ public sealed class MockDataStore
                 Cuatrimestre = request.Cuatrimestre,
                 Estado = "Borrador",
             });
+        }
     }
 
     public void ActualizarEvaluacion(int evaluacionId, ActualizarEvaluacionRequest request)
@@ -105,6 +111,19 @@ public sealed class MockDataStore
         lock (_gate)
         {
             var e = _evaluaciones.First(x => x.EvaluacionId == evaluacionId);
+            if (EsNotaFinal(e.TipoEvaluacionId) && e.Estado == "Cerrada")
+                throw new InvalidOperationException("La Nota final cerrada no se puede modificar ni reabrir.");
+            if (EsNotaFinal(e.TipoEvaluacionId) && !EsNotaFinal(request.TipoEvaluacionId))
+                throw new InvalidOperationException("No se puede cambiar el tipo de una Nota final.");
+            if (EsNotaFinal(request.TipoEvaluacionId) && request.Estado == "Cerrada" &&
+                MateriaDocente(e.CursadaId)!.Estudiantes.Any(s => !e.Notas.Any(n => n.CursadaAlumnoCarreraId == s.CursadaAlumnoCarreraId && (n.Nota is not null || n.Ausente))))
+                throw new InvalidOperationException("Todos los alumnos deben tener nota o estar ausentes antes de cerrar.");
+            if (EsNotaFinal(request.TipoEvaluacionId) &&
+                _evaluaciones.Any(other => other.EvaluacionId != evaluacionId &&
+                                           other.CursadaId == e.CursadaId &&
+                                           EsNotaFinal(other.TipoEvaluacionId)))
+                throw new InvalidOperationException("Esta materia ya tiene una evaluación de tipo Nota final.");
+
             e.TipoEvaluacionId = request.TipoEvaluacionId;
             e.Nombre = request.Nombre;
             e.Fecha = request.Fecha;
@@ -171,7 +190,7 @@ public sealed class MockDataStore
         lock (_gate)
             return _mesasDocente
                 .Select(m => new MesaFinalDocenteModel(
-                    m.MesaId, m.Materia, m.Carrera, m.FechaHora, m.Turno, m.Estado, m.Estudiantes.Count, m.Aula))
+                    m.MesaId, m.Materia, m.Carrera, m.FechaHora, m.Turno, m.Estado, m.FinalEstadoId, m.Estudiantes.Count, m.Aula))
                 .ToList();
     }
 
@@ -192,6 +211,7 @@ public sealed class MockDataStore
                         NombreCompleto = e.NombreCompleto,
                         Dni = e.Dni,
                         Nota = e.Nota,
+                        Ausente = e.Ausente,
                         UltimaModificacion = e.UltimaModificacion,
                     }).ToList(),
                 };
@@ -205,12 +225,26 @@ public sealed class MockDataStore
             var mesa = _mesasDocente.First(x => x.MesaId == mesaId);
             foreach (var n in request.Notas)
                 if (mesa.Estudiantes.FirstOrDefault(e => e.MesaAlumnoId == n.MesaAlumnoId) is { } estudiante)
+                {
                     estudiante.Nota = n.Nota;
+                    estudiante.Ausente = n.Ausente;
+                }
+
+            if (request.CerrarMesa)
+            {
+                var indice = _mesasDocente.FindIndex(x => x.MesaId == mesaId);
+                if (indice >= 0)
+                    _mesasDocente[indice] = mesa with { Estado = "Cerrada", FinalEstadoId = 2 };
+            }
         }
     }
 
     private string DescripcionTipo(int tipoId) =>
         _tipos.FirstOrDefault(t => t.TipoEvaluacionId == tipoId)?.Descripcion ?? "Evaluación";
+
+    private bool EsNotaFinal(int tipoId) =>
+        _tipos.Any(t => t.TipoEvaluacionId == tipoId &&
+                        t.Codigo.Equals("NOTA_FINAL", StringComparison.OrdinalIgnoreCase));
 
     private sealed class EvaluacionMock
     {

@@ -18,5 +18,10 @@
     "tipoEvaluacionId": 4,
     "codigo": "INTEG",
     "descripcion": "Integrador"
+  },
+  {
+    "tipoEvaluacionId": 5,
+    "codigo": "NOTA_FINAL",
+    "descripcion": "Nota final"
   }
 ]

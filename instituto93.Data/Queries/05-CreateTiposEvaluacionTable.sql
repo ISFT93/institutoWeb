@@ -26,7 +26,8 @@ USING
         (N'PARCIAL', N'Parcial'),
         (N'RECUPERATORIO', N'Recuperatorio'),
         (N'TRABAJO_PRACTICO', N'Trabajo práctico'),
-        (N'INTEGRADOR', N'Integrador')
+        (N'INTEGRADOR', N'Integrador'),
+        (N'NOTA_FINAL', N'Nota final')
 ) AS origen (Codigo, Descripcion)
 ON destino.Codigo = origen.Codigo
 WHEN MATCHED THEN

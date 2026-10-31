@@ -55,6 +55,10 @@ public sealed class MateriasDocenteController(IMateriasDocenteService service) :
         {
             return BadRequest(new { message = e.Message });
         }
+        catch (InvalidOperationException e)
+        {
+            return Conflict(new { message = e.Message });
+        }
     }
 
     [HttpGet("evaluaciones/{evaluacionId:int}")]
@@ -75,9 +79,17 @@ public sealed class MateriasDocenteController(IMateriasDocenteService service) :
                 ? NoContent()
                 : Conflict(new { message = "La evaluación fue modificada. Recargá la página." });
         }
+        catch (Microsoft.Data.SqlClient.SqlException e) when (e.Number is 51001 or 51002)
+        {
+            return Conflict(new { message = e.Message });
+        }
         catch (ArgumentException e)
         {
             return BadRequest(new { message = e.Message });
+        }
+        catch (InvalidOperationException e)
+        {
+            return Conflict(new { message = e.Message });
         }
     }
 

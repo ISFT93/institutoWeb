@@ -7,6 +7,7 @@ public sealed record MesaFinalDocenteDto(
     DateTime FechaHora,
     string Turno,
     string Estado,
+    int FinalEstadoId,
     int CantidadEstudiantes,
     string? Aula);
 
@@ -17,6 +18,7 @@ public sealed record MesaFinalDetalleDto(
     DateTime FechaHora,
     string Turno,
     string Estado,
+    int FinalEstadoId,
     string? Aula,
     decimal NotaMinima,
     decimal NotaMaxima,
@@ -38,4 +40,4 @@ public sealed record GuardarNotaFinalDto(
     bool Ausente,
     DateTime UltimaModificacion);
 
-public sealed record GuardarNotasFinalesDto(List<GuardarNotaFinalDto>? Notas);
+public sealed record GuardarNotasFinalesDto(List<GuardarNotaFinalDto>? Notas, bool CerrarMesa = false);

@@ -49,11 +49,27 @@
             </header>
 
             <section class="progress-card" aria-label="Progreso de carga">
-                <div>
-                    <strong>@CompletedCount de @_data.Estudiantes.Count calificaciones cargadas</strong>
-                    <span>@Progress.ToString("0")% completo</span>
+                <div class="evaluation-results" aria-label="Resultados de la evaluación">
+                    <div class="evaluation-result result-approved">
+                        <MudIcon Icon="@Icons.Material.Outlined.CheckCircle" />
+                        <div><span>Aprobados</span><strong>@ApprovedCount</strong></div>
+                    </div>
+                    <div class="evaluation-result result-failed">
+                        <MudIcon Icon="@Icons.Material.Outlined.Cancel" />
+                        <div><span>Desaprobados</span><strong>@FailedCount</strong></div>
+                    </div>
+                    <div class="evaluation-result result-absent">
+                        <MudIcon Icon="@Icons.Material.Outlined.PersonOff" />
+                        <div><span>Ausentes</span><strong>@AbsentCount</strong></div>
+                    </div>
                 </div>
-                <MudProgressLinear Value="@Progress" />
+                <div class="summary-progress">
+                    <div>
+                        <span>Progreso de carga</span>
+                        <strong>@CompletedCount de @_data.Estudiantes.Count</strong>
+                    </div>
+                    <MudProgressLinear Value="@Progress" />
+                </div>
             </section>
 
             @if (_data.Estudiantes.Count == 0)
@@ -189,6 +205,13 @@
     private string? _search;
 
     private int CompletedCount => _data?.Estudiantes.Count(IsCompleted) ?? 0;
+    private int ApprovedCount => _data is null
+        ? 0
+        : _data.Estudiantes.Count(student => !student.Ausente && student.Nota is not null && student.Nota >= _data.NotaAprobacion);
+    private int FailedCount => _data is null
+        ? 0
+        : _data.Estudiantes.Count(student => !student.Ausente && student.Nota is not null && student.Nota < _data.NotaAprobacion);
+    private int AbsentCount => _data?.Estudiantes.Count(student => student.Ausente) ?? 0;
     private double Progress => _data is null || _data.Estudiantes.Count == 0
         ? 0
         : 100d * CompletedCount / _data.Estudiantes.Count;

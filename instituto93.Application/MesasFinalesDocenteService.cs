@@ -30,6 +30,7 @@ public sealed class MesasFinalesDocenteService(IMesasFinalesDocenteRepository re
         int mesaId,
         int profesorId,
         IReadOnlyCollection<GuardarNotaFinalDto> notas,
+        bool cerrarMesa,
         CancellationToken cancellationToken = default)
     {
         ValidarMesaId(mesaId);
@@ -45,6 +46,9 @@ public sealed class MesasFinalesDocenteService(IMesasFinalesDocenteRepository re
         if (notas.GroupBy(nota => nota.MesaAlumnoId).Any(grupo => grupo.Count() > 1))
             throw new ArgumentException("No se puede enviar más de una nota para la misma inscripción.", nameof(notas));
 
+        if (cerrarMesa && notas.Any(nota => !nota.Ausente && nota.Nota is null))
+            throw new ArgumentException("No se puede cerrar la mesa: todos los alumnos deben tener una nota o estar ausentes.", nameof(notas));
+
         if (notas.Any(nota => nota.Ausente && nota.Nota is not null))
             throw new ArgumentException("Un alumno ausente no puede tener una nota.", nameof(notas));
 
@@ -53,7 +57,7 @@ public sealed class MesasFinalesDocenteService(IMesasFinalesDocenteRepository re
                 $"Las notas deben estar entre {NotaFinalRules.Minima:0.##} y {NotaFinalRules.Maxima:0.##}.",
                 nameof(notas));
 
-        return repository.GuardarNotasAsync(mesaId, profesorId, notas, cancellationToken);
+        return repository.GuardarNotasAsync(mesaId, profesorId, notas, cerrarMesa, cancellationToken);
     }
 
     private static void ValidarMesaId(int mesaId)

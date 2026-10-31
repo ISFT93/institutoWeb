@@ -7,6 +7,7 @@ public sealed record MesaFinalDocenteModel(
     DateTime FechaHora,
     string Turno,
     string Estado,
+    int FinalEstadoId,
     int CantidadEstudiantes,
     string? Aula);
 
@@ -17,6 +18,7 @@ public sealed record MesaFinalDetalleModel(
     DateTime FechaHora,
     string Turno,
     string Estado,
+    int FinalEstadoId,
     string? Aula,
     decimal NotaMinima,
     decimal NotaMaxima,
@@ -41,4 +43,4 @@ public sealed record GuardarNotaFinalModel(
     bool Ausente,
     DateTime UltimaModificacion);
 
-public sealed record GuardarNotasFinalesRequest(List<GuardarNotaFinalModel> Notas);
+public sealed record GuardarNotasFinalesRequest(List<GuardarNotaFinalModel> Notas, bool CerrarMesa = false);

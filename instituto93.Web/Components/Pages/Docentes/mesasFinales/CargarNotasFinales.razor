@@ -3,6 +3,7 @@
 @inject DocenteMesasFinalesApiClient MesasApi
 @inject NavigationManager Navigation
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
 @using instituto93.Web.Models
 @using instituto93.Web.Services
 
@@ -55,6 +56,18 @@
                     <MudIcon Icon="@Icons.Material.Outlined.Groups" />
                     <div><span>Estudiantes</span><strong>@_mesa.Estudiantes.Count inscriptos</strong></div>
                 </div>
+                <div class="summary-item summary-result summary-approved">
+                    <MudIcon Icon="@Icons.Material.Outlined.CheckCircle" />
+                    <div><span>Aprobados</span><strong>@CantidadAprobados</strong></div>
+                </div>
+                <div class="summary-item summary-result summary-failed">
+                    <MudIcon Icon="@Icons.Material.Outlined.Cancel" />
+                    <div><span>Desaprobados</span><strong>@CantidadDesaprobados</strong></div>
+                </div>
+                <div class="summary-item summary-result summary-absent">
+                    <MudIcon Icon="@Icons.Material.Outlined.PersonOff" />
+                    <div><span>Ausentes</span><strong>@CantidadAusentes</strong></div>
+                </div>
                 <div class="summary-progress">
                     <div><span>Progreso de carga</span><strong>@CantidadCargadas de @_mesa.Estudiantes.Count</strong></div>
                     <MudProgressLinear Value="@PorcentajeCargado" Color="Color.Primary" Rounded="true" />
@@ -102,9 +115,9 @@
                         }
                         else
                         {
-                            <div class="students-list">
+                            <div class="students-list @(MesaCerrada ? "students-list-closed" : null)">
                                 <div class="students-list-header" aria-hidden="true">
-                                    <span>Estudiante y estado</span><span>Nota</span><span>Asistencia</span>
+                                    <span>Estudiante y estado</span><span>Nota</span>@if (!MesaCerrada) { <span>Asistencia</span> }
                                 </div>
 
                                 @foreach (var estudiante in EstudiantesFiltrados)
@@ -115,10 +128,20 @@
                                             <span>DNI @estudiante.Dni</span>
                                             <span class="status-badge @NotaEstadoCss(estudiante)">@NotaEstado(estudiante)</span>
                                         </div>
+                                        @if (MesaCerrada)
+                                        {
+                                            <div class="grade-field grade-field-readonly" aria-label="@($"Nota final de {estudiante.NombreCompleto}")">
+                                                @(estudiante.Ausente ? "Ausente" : estudiante.Nota?.ToString("0.00") ?? "Sin cargar")
+                                            </div>
+                                        }
+                                        else
+                                        {
                                         <div class="grade-field">
                                             <MudNumericField T="decimal?"
                                                             id="@($"nota-{estudiante.MesaAlumnoId}")"
                                                             Label="Nota"
+                                                            Format="0.00"
+                                                            Step="0.01M"
                                                             Value="estudiante.Nota"
                                                             ValueChanged="@(value => CambiarNota(estudiante, value))"
                                                             Min="_mesa.NotaMinima"
@@ -128,7 +151,6 @@
                                                             Error="@_errores.ContainsKey(estudiante.MesaAlumnoId)"
                                                             ErrorText="@ErrorDe(estudiante.MesaAlumnoId)"
                                                             Immediate="true"
-                                                            Disabled="@estudiante.Ausente"
                                                             aria-label="@($"Nota final de {estudiante.NombreCompleto}")" />
                                         </div>
                                         <MudCheckBox T="bool"
@@ -138,22 +160,34 @@
                                                          Color="Color.Default"
                                                          Label="Ausente"
                                                          aria-label="@($"Marcar ausente a {estudiante.NombreCompleto}")" />
+                                        }
                                     </article>
                                 }
                             </div>
                         }
                     </section>
 
+                    @if (!MesaCerrada)
+                    {
                     <footer class="save-bar">
                         <div><strong>¿Terminaste la carga?</strong><span>Revisá las notas antes de guardar.</span></div>
                         <MudButton ButtonType="ButtonType.Submit"
                                 Variant="Variant.Filled"
                                 Color="Color.Primary"
                                 StartIcon="@Icons.Material.Filled.Save"
-                                Disabled="@(!_hayCambios || _saving)">
+                                Disabled="@(!PuedeGuardar || _saving)">
                             @(_saving ? "Guardando..." : "Guardar notas")
                         </MudButton>
                     </footer>
+                    }
+                    else
+                    {
+                        <div class="closed-notice">
+                            <MudIcon Icon="@Icons.Material.Filled.Lock" />
+                            <strong>Final cerrada</strong>
+                            <span>Las notas finales ya fueron guardadas y no se pueden modificar.</span>
+                        </div>
+                    }
                 </EditForm>
             }
         }
@@ -173,7 +207,14 @@
     private string? _error;
     private string? _busqueda;
 
+    private bool MesaCerrada => _mesa?.FinalEstadoId == 2 || _mesa?.Estado.Contains("cerr", StringComparison.OrdinalIgnoreCase) == true;
+    private bool TodosCompletos => _mesa?.Estudiantes.All(e => e.Ausente || e.Nota is not null) == true;
+    private bool PuedeGuardar => !MesaCerrada && TodosCompletos;
+
     private int CantidadCargadas => _mesa?.Estudiantes.Count(e => e.Nota is not null || e.Ausente) ?? 0;
+    private int CantidadAprobados => _mesa is null ? 0 : _mesa.Estudiantes.Count(e => !e.Ausente && e.Nota >= _mesa.NotaAprobacion);
+    private int CantidadDesaprobados => _mesa is null ? 0 : _mesa.Estudiantes.Count(e => !e.Ausente && e.Nota is not null && e.Nota < _mesa.NotaAprobacion);
+    private int CantidadAusentes => _mesa?.Estudiantes.Count(e => e.Ausente) ?? 0;
     private double PorcentajeCargado => _mesa?.Estudiantes.Count > 0
         ? CantidadCargadas * 100d / _mesa.Estudiantes.Count
         : 0;
@@ -259,7 +300,7 @@
 
     private async Task GuardarAsync()
     {
-        if (_mesa is null || !_hayCambios || _saving)
+        if (_mesa is null || !PuedeGuardar || _saving)
             return;
 
         var validas = _mesa.Estudiantes.All(ValidarNota);
@@ -269,19 +310,22 @@
             return;
         }
 
+        var dialog = await DialogService.ShowAsync<ConfirmarCierreMesaDialog>(
+            string.Empty,
+            new DialogOptions { NoHeader = true, CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true });
+        var dialogResult = await dialog.Result;
+        if (dialogResult is null || dialogResult.Canceled)
+            return;
+
         var modificadas = _mesa.Estudiantes
-            .Where(HayCambios)
             .Select(e => new GuardarNotaFinalModel(e.MesaAlumnoId, e.Nota, e.Ausente, e.UltimaModificacion))
             .ToList();
-
-        if (modificadas.Count == 0)
-            return;
 
         _saving = true;
         GuardarNotasResult result;
         try
         {
-            result = await MesasApi.GuardarNotasAsync(MesaId, new GuardarNotasFinalesRequest(modificadas));
+            result = await MesasApi.GuardarNotasAsync(MesaId, new GuardarNotasFinalesRequest(modificadas, true));
         }
         finally
         {
@@ -295,7 +339,7 @@
         }
 
         await CargarMesaAsync();
-        Snackbar.Add("Las notas se guardaron correctamente.", Severity.Success);
+        Snackbar.Add("Las notas se guardaron y la mesa fue cerrada correctamente.", Severity.Success);
     }
 
     private void Volver() => Navigation.NavigateTo("/docentes/mesas-finales");

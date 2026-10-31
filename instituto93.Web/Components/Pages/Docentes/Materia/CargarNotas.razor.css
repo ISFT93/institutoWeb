@@ -87,11 +87,59 @@
     border-radius: 12px;
 }
 
-.progress-card > div {
+.evaluation-results {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    padding-top: var(--space-2);
+}
+
+.evaluation-result {
     display: flex;
+    align-items: center;
     gap: var(--space-2);
-    flex-wrap: wrap;
-    justify-content: space-between;
+}
+
+.evaluation-result ::deep .mud-icon-root {
+    flex: 0 0 auto;
+    color: var(--color-text-secondary);
+}
+
+.evaluation-result div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.evaluation-result span {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+}
+
+.evaluation-result strong {
+    color: var(--color-text);
+    font-size: var(--font-size-sm);
+}
+
+.result-approved ::deep .mud-icon-root { color: var(--color-success); }
+.result-failed ::deep .mud-icon-root { color: var(--color-error); }
+.result-absent ::deep .mud-icon-root { color: var(--color-warning); }
+
+.summary-progress {
+    display: grid;
+    grid-column: 1 / -1;
+    gap: var(--space-2);
+}
+
+.summary-progress > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.summary-progress strong {
+    color: var(--color-text);
+    font-size: var(--font-size-sm);
 }
 
 .search-row {
@@ -303,6 +351,8 @@
     .progress-card {
         padding: var(--space-6);
     }
+
+    .evaluation-results { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
     .section-heading {
         flex-direction: row;

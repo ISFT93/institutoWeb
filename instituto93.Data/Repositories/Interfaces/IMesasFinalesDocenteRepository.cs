@@ -17,5 +17,6 @@ public interface IMesasFinalesDocenteRepository
         int mesaId,
         int profesorId,
         IReadOnlyCollection<GuardarNotaFinalDto> notas,
+        bool cerrarMesa,
         CancellationToken cancellationToken = default);
 }

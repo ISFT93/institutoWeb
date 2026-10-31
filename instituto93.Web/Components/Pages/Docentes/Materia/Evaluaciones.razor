@@ -3,6 +3,8 @@
 @inject DocenteMateriasApiClient Api
 @inject NavigationManager Nav
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@using instituto93.Web.Components.Shared
 @using instituto93.Web.Models
 @using instituto93.Web.Services
 
@@ -40,7 +42,10 @@
                 <MudSelect T="int" @bind-Value="_type" Label="Tipo" Variant="Variant.Outlined">
                     @foreach (var t in _types)
                     {
-                        <MudSelectItem Value="@t.TipoEvaluacionId">@t.Descripcion</MudSelectItem>
+                        <MudSelectItem Value="@t.TipoEvaluacionId"
+                                       Disabled="@(_id is null && EsNotaFinalTipo(t.TipoEvaluacionId) && ExisteNotaFinal)">
+                            @t.Descripcion
+                        </MudSelectItem>
                     }
                 </MudSelect>
 
@@ -122,7 +127,7 @@
                                 <span class="badge @e.Estado.ToLowerInvariant()">@e.Estado</span>
                                 <h2>@e.Nombre</h2>
                             </div>
-                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="@(() => Edit(e))" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" Disabled="@(EsNotaFinalTipo(e.TipoEvaluacionId) && e.Estado == "Cerrada")" OnClick="@(() => Edit(e))" />
                         </div>
                         <p>@e.Tipo · @e.Fecha.ToString("dd/MM/yyyy") · @e.Cuatrimestre° cuatrimestre</p>
                         <p><strong>@e.NotasCargadas</strong> de @e.CantidadEstudiantes notas</p>
@@ -157,6 +162,8 @@
     private DateTime? _date = DateTime.Today;
     private byte _term = 1;
     private decimal? _weight;
+
+    private bool ExisteNotaFinal => _items.Any(e => EsNotaFinalTipo(e.TipoEvaluacionId) && e.EvaluacionId != _id);
 
     private IEnumerable<EvaluacionDocenteModel> FilteredEvaluations =>
         string.IsNullOrWhiteSpace(_search)
@@ -227,6 +234,11 @@
             _error = "Seleccioná un tipo de evaluación.";
             return;
         }
+        if (_id is null && EsNotaFinalTipo(_type) && ExisteNotaFinal)
+        {
+            _error = "Esta materia ya tiene una evaluación de tipo Nota final.";
+            return;
+        }
         if (string.IsNullOrWhiteSpace(_name))
         {
             _error = "Ingresá un nombre.";
@@ -245,7 +257,33 @@
             if (_id is null)
                 await Api.CrearAsync(CursadaId, new(_type, _name, _date ?? DateTime.Today, _term));
             else
+            {
+                if (EsNotaFinalTipo(_type) && _state == "Cerrada")
+                {
+                    var notas = await Api.GetNotasAsync(_id.Value);
+                    if (notas is null || notas.Estudiantes.Any(e => !e.Ausente && e.Nota is null))
+                    {
+                        _error = "Todos los alumnos deben tener nota o estar ausentes antes de cerrar.";
+                        return;
+                    }
+                    var parameters = new DialogParameters
+                    {
+                        [nameof(ConfirmationDialog.Title)] = "¿Cerrar la Nota final?",
+                        [nameof(ConfirmationDialog.Description)] = "Se confirmarán las calificaciones de esta cursada.",
+                        [nameof(ConfirmationDialog.Detail)] = "Esta acción no se puede deshacer. Las notas quedarán bloqueadas y la evaluación no podrá reabrirse.",
+                        [nameof(ConfirmationDialog.Icon)] = Icons.Material.Outlined.WarningAmber,
+                        [nameof(ConfirmationDialog.Tone)] = Color.Warning,
+                        [nameof(ConfirmationDialog.DetailSeverity)] = Severity.Warning,
+                        [nameof(ConfirmationDialog.ConfirmColor)] = Color.Error,
+                        [nameof(ConfirmationDialog.ConfirmIcon)] = Icons.Material.Filled.Lock,
+                        [nameof(ConfirmationDialog.ConfirmText)] = "Cerrar evaluación"
+                    };
+                    var dialog = await DialogService.ShowAsync<ConfirmationDialog>(string.Empty, parameters,
+                        new DialogOptions { NoHeader = true, FullWidth = true, MaxWidth = MaxWidth.Small, CloseOnEscapeKey = true });
+                    if (await dialog.Result is not { Canceled: false }) return;
+                }
                 await Api.ActualizarAsync(_id.Value, new(_type, _name, _date ?? DateTime.Today, _term, _state, _weight, _version));
+            }
 
             _editing = false;
             await Load();
@@ -267,6 +305,10 @@
         "Borrador" => "Activá para cargar notas",
         _ => "Cargar notas"
     };
+
+    private bool EsNotaFinalTipo(int tipoEvaluacionId) =>
+        _types.Any(t => t.TipoEvaluacionId == tipoEvaluacionId &&
+                        t.Codigo.Equals("NOTA_FINAL", StringComparison.OrdinalIgnoreCase));
 
     private void Back() => Nav.NavigateTo($"/docentes/materias/{CursadaId}");
 

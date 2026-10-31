@@ -7,6 +7,7 @@ namespace instituto93.Data.Repositories;
 
 public sealed class MateriasDocenteRepository(Conexion conexion) : IMateriasDocenteRepository
 {
+    private const string NotaFinalCodigo = "NOTA_FINAL";
     private const string PermisoSql = """EXISTS (SELECT 1 FROM Servicios s INNER JOIN Cursadas cp ON cp.CursoMateriaId=s.CursoMateriaId WHERE cp.CursadaId=e.CursadaId AND s.PersonalId=@profesorId AND s.Activo=1 AND s.FechaBaja IS NULL)""";
 
     public async Task<List<MateriaDocenteDto>> GetByProfesorAsync(int profesorId, CancellationToken cancellationToken = default)
@@ -148,27 +149,127 @@ public sealed class MateriasDocenteRepository(Conexion conexion) : IMateriasDoce
 
     public async Task<int?> CrearEvaluacionAsync(int cursadaId, int profesorId, CrearEvaluacionDto r, CancellationToken ct = default)
     {
-        const string sql = """IF NOT EXISTS(SELECT 1 FROM Servicios s INNER JOIN Cursadas c ON c.CursoMateriaId=s.CursoMateriaId WHERE c.CursadaId=@cursadaId AND s.PersonalId=@profesorId AND s.Activo=1 AND s.FechaBaja IS NULL) RETURN; INSERT INTO Evaluaciones(CursadaId,TipoEvaluacionId,Nombre,Fecha,Cuatrimestre) OUTPUT INSERTED.EvaluacionId VALUES(@cursadaId,@tipo,@nombre,@fecha,@cuatri);""";
+        const string validarSql = """
+            SELECT
+                CASE WHEN EXISTS
+                (
+                    SELECT 1
+                    FROM Servicios s
+                    INNER JOIN Cursadas cp ON cp.CursoMateriaId = s.CursoMateriaId
+                    WHERE cp.CursadaId = c.CursadaId
+                      AND s.PersonalId = @profesorId
+                      AND s.Activo = 1
+                      AND s.FechaBaja IS NULL
+                ) THEN 1 ELSE 0 END,
+                CASE WHEN EXISTS
+                (
+                    SELECT 1
+                    FROM Evaluaciones e WITH (UPDLOCK, HOLDLOCK)
+                    INNER JOIN TiposEvaluacion t ON t.TipoEvaluacionId = e.TipoEvaluacionId
+                    WHERE e.CursadaId = c.CursadaId
+                      AND t.Codigo = @notaFinalCodigo
+                      AND EXISTS
+                      (
+                          SELECT 1
+                          FROM TiposEvaluacion tipoSolicitado
+                          WHERE tipoSolicitado.TipoEvaluacionId = @tipo
+                            AND tipoSolicitado.Codigo = @notaFinalCodigo
+                      )
+                ) THEN 1 ELSE 0 END
+            FROM Cursadas c WITH (UPDLOCK, HOLDLOCK)
+            WHERE c.CursadaId = @cursadaId;
+            """;
+        const string insertarSql = """
+            INSERT INTO Evaluaciones(CursadaId,TipoEvaluacionId,Nombre,Fecha,Cuatrimestre)
+            OUTPUT INSERTED.EvaluacionId
+            VALUES(@cursadaId,@tipo,@nombre,@fecha,@cuatri);
+            """;
 
         await conexion.OpenAsync(ct);
+        await using var tx = await conexion.Conector.BeginTransactionAsync(ct);
         try
         {
-            using var c = conexion.Conector.CreateCommand();
-            c.CommandText = sql;
-            c.Parameters.Add("@cursadaId", SqlDbType.Int).Value = cursadaId;
-            c.Parameters.Add("@profesorId", SqlDbType.Int).Value = profesorId;
-            c.Parameters.Add("@tipo", SqlDbType.Int).Value = r.TipoEvaluacionId;
-            c.Parameters.Add("@nombre", SqlDbType.NVarChar, 100).Value = r.Nombre!.Trim();
-            c.Parameters.Add("@fecha", SqlDbType.Date).Value = r.Fecha.Date;
-            c.Parameters.Add("@cuatri", SqlDbType.TinyInt).Value = r.Cuatrimestre;
-            var x = await c.ExecuteScalarAsync(ct);
-            return x is null ? null : Convert.ToInt32(x);
+            using (var c = conexion.Conector.CreateCommand())
+            {
+                c.Transaction = (Microsoft.Data.SqlClient.SqlTransaction)tx;
+                c.CommandText = validarSql;
+                c.Parameters.Add("@cursadaId", SqlDbType.Int).Value = cursadaId;
+                c.Parameters.Add("@profesorId", SqlDbType.Int).Value = profesorId;
+                c.Parameters.Add("@notaFinalCodigo", SqlDbType.NVarChar, 30).Value = NotaFinalCodigo;
+                c.Parameters.Add("@tipo", SqlDbType.Int).Value = r.TipoEvaluacionId;
+                using var reader = await c.ExecuteReaderAsync(ct);
+                if (!await reader.ReadAsync(ct) || reader.GetInt32(0) == 0)
+                {
+                    await tx.RollbackAsync(ct);
+                    return null;
+                }
+
+                if (reader.GetInt32(1) == 1)
+                    throw new InvalidOperationException("Esta materia ya tiene una evaluación de tipo Nota final.");
+            }
+
+            using (var c = conexion.Conector.CreateCommand())
+            {
+                c.Transaction = (Microsoft.Data.SqlClient.SqlTransaction)tx;
+                c.CommandText = insertarSql;
+                c.Parameters.Add("@cursadaId", SqlDbType.Int).Value = cursadaId;
+                c.Parameters.Add("@tipo", SqlDbType.Int).Value = r.TipoEvaluacionId;
+                c.Parameters.Add("@nombre", SqlDbType.NVarChar, 100).Value = r.Nombre!.Trim();
+                c.Parameters.Add("@fecha", SqlDbType.Date).Value = r.Fecha.Date;
+                c.Parameters.Add("@cuatri", SqlDbType.TinyInt).Value = r.Cuatrimestre;
+                var x = await c.ExecuteScalarAsync(ct);
+                await tx.CommitAsync(ct);
+                return x is null ? null : Convert.ToInt32(x);
+            }
+        }
+        catch
+        {
+            await tx.RollbackAsync(CancellationToken.None);
+            throw;
         }
         finally { conexion.Close(); }
     }
 
     public async Task<bool> ActualizarEvaluacionAsync(int id, int profesorId, ActualizarEvaluacionDto r, CancellationToken ct = default)
     {
+        const string validarNotaFinalSql = """
+            DECLARE @tipoActual nvarchar(30), @estadoActual nvarchar(15);
+            SELECT @tipoActual=t.Codigo, @estadoActual=e.Estado
+            FROM Evaluaciones e WITH (UPDLOCK,HOLDLOCK)
+            INNER JOIN TiposEvaluacion t ON t.TipoEvaluacionId=e.TipoEvaluacionId
+            WHERE e.EvaluacionId=@id;
+            IF @tipoActual=N'NOTA_FINAL' AND @estadoActual=N'Cerrada'
+                THROW 51002, 'La Nota final está cerrada y no se puede modificar ni reabrir.', 1;
+            IF @tipoActual=N'NOTA_FINAL' AND NOT EXISTS(SELECT 1 FROM TiposEvaluacion WHERE TipoEvaluacionId=@tipo AND Codigo=N'NOTA_FINAL')
+                THROW 51002, 'No se puede cambiar el tipo de una Nota final.', 1;
+            IF @estado=N'Cerrada' AND EXISTS(SELECT 1 FROM TiposEvaluacion WHERE TipoEvaluacionId=@tipo AND Codigo=N'NOTA_FINAL')
+            AND EXISTS (
+                SELECT 1 FROM Evaluaciones e
+                INNER JOIN CursadaAlumnoCarreras cac ON cac.CursadaId=e.CursadaId
+                LEFT JOIN NotasAlumno n ON n.EvaluacionId=e.EvaluacionId AND n.CursadaAlumnoCarreraId=cac.CursadaAlumnoCarreraId
+                WHERE e.EvaluacionId=@id AND ISNULL(cac.Activo,1)=1
+                AND n.Nota IS NULL AND ISNULL(n.Ausente,0)=0
+            )
+                THROW 51002, 'Todos los alumnos deben tener nota o estar ausentes para cerrar la Nota final.', 1;
+            IF EXISTS
+            (
+                SELECT 1
+                FROM TiposEvaluacion t
+                WHERE t.TipoEvaluacionId = @tipo
+                  AND t.Codigo = @notaFinalCodigo
+            )
+            AND EXISTS
+            (
+                SELECT 1
+                FROM Evaluaciones actual
+                INNER JOIN Evaluaciones otra ON otra.CursadaId = actual.CursadaId
+                INNER JOIN TiposEvaluacion tipoOtra ON tipoOtra.TipoEvaluacionId = otra.TipoEvaluacionId
+                WHERE actual.EvaluacionId = @id
+                  AND otra.EvaluacionId <> @id
+                  AND tipoOtra.Codigo = @notaFinalCodigo
+            )
+                THROW 51001, 'Una materia no puede tener más de una evaluación de tipo Nota final.', 1;
+            """;
         const string actualizarSql =
             """UPDATE e SET TipoEvaluacionId=@tipo,Nombre=@nombre,Fecha=@fecha,Cuatrimestre=@cuatri,Estado=@estado,Ponderacion=@ponderacion,FechaModificacion=SYSUTCDATETIME() FROM Evaluaciones e WHERE e.EvaluacionId=@id AND e.Version=@version AND """
             + PermisoSql;
@@ -210,6 +311,17 @@ public sealed class MateriasDocenteRepository(Conexion conexion) : IMateriasDoce
         await using var tx = await conexion.Conector.BeginTransactionAsync(ct);
         try
         {
+            using (var validar = conexion.Conector.CreateCommand())
+            {
+                validar.Transaction = (Microsoft.Data.SqlClient.SqlTransaction)tx;
+                validar.CommandText = validarNotaFinalSql;
+                validar.Parameters.Add("@id", SqlDbType.Int).Value = id;
+                validar.Parameters.Add("@tipo", SqlDbType.Int).Value = r.TipoEvaluacionId;
+                validar.Parameters.Add("@estado", SqlDbType.NVarChar, 15).Value = r.Estado!;
+                validar.Parameters.Add("@notaFinalCodigo", SqlDbType.NVarChar, 30).Value = NotaFinalCodigo;
+                await validar.ExecuteNonQueryAsync(ct);
+            }
+
             using (var c = conexion.Conector.CreateCommand())
             {
                 c.Transaction = (Microsoft.Data.SqlClient.SqlTransaction)tx;
@@ -290,27 +402,53 @@ public sealed class MateriasDocenteRepository(Conexion conexion) : IMateriasDoce
 
     public async Task<bool> GuardarNotasAsync(int evaluacionId, int profesorId, IReadOnlyCollection<GuardarNotaAlumnoDto> notas, CancellationToken ct = default)
     {
-        const string verify = "SELECT CursadaId FROM Evaluaciones e WITH (UPDLOCK, HOLDLOCK) WHERE EvaluacionId=@id AND Estado=N'Activa' AND " + PermisoSql;
-        const string sql = """UPDATE NotasAlumno SET Nota=CASE WHEN @ausente=1 THEN NULL ELSE @nota END,Ausente=@ausente,Observaciones=@obs,FechaModificacion=SYSUTCDATETIME() WHERE EvaluacionId=@id AND CursadaAlumnoCarreraId=@inscripcion AND (@version IS NULL OR Version=@version); IF @@ROWCOUNT=0 AND @version IS NULL INSERT INTO NotasAlumno(EvaluacionId,CursadaAlumnoCarreraId,CursadaId,Nota,Ausente,Observaciones) SELECT @id,@inscripcion,@cursada,CASE WHEN @ausente=1 THEN NULL ELSE @nota END,@ausente,@obs WHERE EXISTS(SELECT 1 FROM CursadaAlumnoCarreras WHERE CursadaAlumnoCarreraId=@inscripcion AND CursadaId=@cursada);""";
+        const string verify = "SELECT e.CursadaId,t.Codigo FROM Evaluaciones e WITH (UPDLOCK, HOLDLOCK) INNER JOIN TiposEvaluacion t ON t.TipoEvaluacionId=e.TipoEvaluacionId WHERE e.EvaluacionId=@id AND e.Estado=N'Activa' AND " + PermisoSql;
+        const string sql = """
+            UPDATE NotasAlumno
+            SET Nota=CASE WHEN @ausente=1 THEN NULL ELSE @nota END,
+                Ausente=@ausente,
+                Observaciones=@obs,
+                FechaModificacion=SYSUTCDATETIME()
+            WHERE EvaluacionId=@id
+              AND CursadaAlumnoCarreraId=@inscripcion
+              AND (@version IS NULL OR Version=@version);
+
+            IF @@ROWCOUNT=0 AND @version IS NULL
+                INSERT INTO NotasAlumno(EvaluacionId,CursadaAlumnoCarreraId,CursadaId,Nota,Ausente,Observaciones)
+                SELECT @id,@inscripcion,@cursada,CASE WHEN @ausente=1 THEN NULL ELSE @nota END,@ausente,@obs
+                WHERE EXISTS(SELECT 1 FROM CursadaAlumnoCarreras WHERE CursadaAlumnoCarreraId=@inscripcion AND CursadaId=@cursada);
+
+            IF @esNotaFinal=1
+                UPDATE CursadaAlumnoCarreras
+                SET Cursada = CASE
+                    WHEN @ausente=1 THEN 'Ausente'
+                    WHEN @nota IS NULL THEN NULL
+                    ELSE CONVERT(varchar(30), CAST(@nota AS decimal(4,2)))
+                END
+                WHERE CursadaAlumnoCarreraId=@inscripcion
+                  AND CursadaId=@cursada;
+            """;
 
         await conexion.OpenAsync(ct);
         await using var tx = await conexion.Conector.BeginTransactionAsync(ct);
         try
         {
             int cursada;
+            bool esNotaFinal;
             using (var c = conexion.Conector.CreateCommand())
             {
                 c.Transaction = (Microsoft.Data.SqlClient.SqlTransaction)tx;
                 c.CommandText = verify;
                 c.Parameters.Add("@id", SqlDbType.Int).Value = evaluacionId;
                 c.Parameters.Add("@profesorId", SqlDbType.Int).Value = profesorId;
-                var x = await c.ExecuteScalarAsync(ct);
-                if (x is null)
+                using var reader = await c.ExecuteReaderAsync(ct);
+                if (!await reader.ReadAsync(ct))
                 {
                     await tx.RollbackAsync(ct);
                     return false;
                 }
-                cursada = Convert.ToInt32(x);
+                cursada = reader.GetInt32(0);
+                esNotaFinal = string.Equals(reader.GetString(1), NotaFinalCodigo, StringComparison.OrdinalIgnoreCase);
             }
 
             foreach (var n in notas)
@@ -326,6 +464,7 @@ public sealed class MateriasDocenteRepository(Conexion conexion) : IMateriasDoce
                 nota.Scale = 2;
                 nota.Value = (object?)n.Nota ?? DBNull.Value;
                 c.Parameters.Add("@ausente", SqlDbType.Bit).Value = n.Ausente;
+                c.Parameters.Add("@esNotaFinal", SqlDbType.Bit).Value = esNotaFinal;
                 c.Parameters.Add("@obs", SqlDbType.NVarChar, 500).Value = (object?)n.Observaciones ?? DBNull.Value;
                 c.Parameters.Add("@version", SqlDbType.Timestamp).Value = n.Version is null ? DBNull.Value : DecodificarVersion(n.Version);
                 if (await c.ExecuteNonQueryAsync(ct) == 0)

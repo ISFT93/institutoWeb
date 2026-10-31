@@ -1,0 +1,39 @@
+@using MudBlazor
+
+<MudDialog>
+    <DialogContent>
+        <div class="confirmation-content">
+            <div class="confirmation-heading">
+                <MudIcon Icon="@Icon" Color="@Tone" />
+                <h2>@Title</h2>
+            </div>
+            <p>@Description</p>
+            @if (!string.IsNullOrWhiteSpace(Detail))
+            {
+                <MudAlert Severity="@DetailSeverity" Variant="Variant.Outlined">@Detail</MudAlert>
+            }
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <div class="confirmation-actions">
+            <MudButton Variant="Variant.Outlined" OnClick="Cancel">@CancelText</MudButton>
+            <MudButton Variant="Variant.Filled" Color="@ConfirmColor" StartIcon="@ConfirmIcon" OnClick="Confirm">@ConfirmText</MudButton>
+        </div>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private IMudDialogInstance Dialog { get; set; } = null!;
+    [Parameter] public string Title { get; set; } = "Confirmar acción";
+    [Parameter] public string Description { get; set; } = "";
+    [Parameter] public string? Detail { get; set; }
+    [Parameter] public string Icon { get; set; } = Icons.Material.Outlined.Info;
+    [Parameter] public Color Tone { get; set; } = Color.Primary;
+    [Parameter] public Severity DetailSeverity { get; set; } = Severity.Info;
+    [Parameter] public Color ConfirmColor { get; set; } = Color.Primary;
+    [Parameter] public string? ConfirmIcon { get; set; }
+    [Parameter] public string ConfirmText { get; set; } = "Confirmar";
+    [Parameter] public string CancelText { get; set; } = "Cancelar";
+    private void Cancel() => Dialog.Cancel();
+    private void Confirm() => Dialog.Close(DialogResult.Ok(true));
+}

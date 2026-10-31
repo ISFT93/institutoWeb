@@ -51,6 +51,7 @@ public sealed class MesasFinalesDocenteController(IMesasFinalesDocenteService se
                 mesaId,
                 profesorId,
                 request.Notas,
+                request.CerrarMesa,
                 cancellationToken);
 
             return guardado ? NoContent() : NotFound();

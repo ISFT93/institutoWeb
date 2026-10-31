@@ -137,11 +137,11 @@
                                 <MudIcon Icon="@Icons.Material.Outlined.Groups" />
                                 <div><strong>@mesa.CantidadEstudiantes</strong><span>inscriptos</span></div>
                             </div>
-                            <span class="status-badge @EstadoCss(mesa.Estado)">@mesa.Estado</span>
+                            <span class="status-badge @EstadoCss(mesa)">@EstadoTexto(mesa)</span>
                             <MudButton Variant="Variant.Filled" Color="Color.Primary"
                                     EndIcon="@Icons.Material.Filled.ArrowForward"
                                     OnClick="@(() => AbrirMesa(mesa.MesaId))">
-                                Abrir mesa
+                                @(EsMesaCerrada(mesa) ? "Ver notas" : "Abrir mesa")
                             </MudButton>
                         </article>
                     }
@@ -210,10 +210,33 @@
 
     private void AbrirMesa(int mesaId) => Navigation.NavigateTo($"/docentes/mesas-finales/{mesaId}/notas");
 
-    private static string EstadoCss(string estado) => estado.ToLowerInvariant() switch
+    private static bool EsMesaCerrada(MesaFinalDocenteModel mesa) => mesa.FinalEstadoId == 2 ||
+        mesa.Estado.Contains("cerr", StringComparison.OrdinalIgnoreCase) ||
+        mesa.Estado.Equals("Inactivo", StringComparison.OrdinalIgnoreCase);
+
+    private static string EstadoTexto(MesaFinalDocenteModel mesa) => mesa.FinalEstadoId switch
     {
-        "abierta" or "pendiente" => "status-pending",
-        "completa" or "cerrada" => "status-complete",
-        _ => "status-neutral"
+        1 => "Activo",
+        2 => "Cerrada",
+        _ => mesa.Estado
     };
+
+    private static string EstadoCss(MesaFinalDocenteModel mesa) => mesa.FinalEstadoId switch
+    {
+        1 => "status-active",
+        2 => "status-closed",
+        _ => EstadoCssPorTexto(mesa.Estado)
+    };
+
+    private static string EstadoCssPorTexto(string estado) => estado.Contains("cerr", StringComparison.OrdinalIgnoreCase) ||
+        estado.Equals("Inactivo", StringComparison.OrdinalIgnoreCase)
+        ? "status-closed"
+        : estado.Equals("Activo", StringComparison.OrdinalIgnoreCase)
+            ? "status-active"
+            : estado.ToLowerInvariant() switch
+        {
+            "abierta" or "pendiente" => "status-pending",
+            "completa" => "status-complete",
+            _ => "status-neutral"
+        };
 }

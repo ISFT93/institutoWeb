@@ -48,6 +48,8 @@
 .status-badge { justify-self: start; padding: .35rem .7rem; border-radius: 999px; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); }
 .status-pending { background: #fff3df; color: #8b5300; }
 .status-complete { background: #e2f3e5; color: #246b2b; }
+.status-active { background: #e2f3e5; color: #246b2b; }
+.status-closed { background: #fde8e8; color: #a32929; }
 .status-neutral { background: #edf0f4; color: #506073; }
 .mesa-row ::deep .mud-button-root { width: 100%; min-height: 44px; text-transform: none; }
 @media (min-width: 700px) {

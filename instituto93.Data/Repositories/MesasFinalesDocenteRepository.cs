@@ -19,6 +19,7 @@ public sealed class MesasFinalesDocenteRepository(Conexion conexion) : IMesasFin
                    mf.Fecha,
                    COALESCE(t.Descripcion, N'Sin turno'),
                    COALESCE(e.Descripcion, N'Sin estado'),
+                   mf.FinalEstadoId,
                    COUNT(ma.MesaAlumnoId)
             FROM MesasFinales mf
             LEFT JOIN Materias m ON m.MateriaId = mf.MateriaId
@@ -28,7 +29,8 @@ public sealed class MesasFinalesDocenteRepository(Conexion conexion) : IMesasFin
             LEFT JOIN MesaAlumno ma ON ma.MesaFinalId = mf.MesaFinalId
             WHERE (mf.PresidenteId = @profesorId OR mf.VocalId = @profesorId)
               AND mf.Fecha IS NOT NULL
-            GROUP BY mf.MesaFinalId, m.Nombre, c.Nombre, mf.Fecha, t.Descripcion, e.Descripcion
+              AND mf.FinalEstadoId IN (1, 2)
+            GROUP BY mf.MesaFinalId, m.Nombre, c.Nombre, mf.Fecha, t.Descripcion, e.Descripcion, mf.FinalEstadoId
             ORDER BY mf.Fecha, m.Nombre;
             """;
 
@@ -51,6 +53,7 @@ public sealed class MesasFinalesDocenteRepository(Conexion conexion) : IMesasFin
                     reader.GetString(4),
                     reader.GetString(5),
                     reader.GetInt32(6),
+                    reader.GetInt32(7),
                     null));
             }
         }
@@ -73,7 +76,8 @@ public sealed class MesasFinalesDocenteRepository(Conexion conexion) : IMesasFin
                    COALESCE(c.Nombre, N'Carrera sin nombre'),
                    mf.Fecha,
                    COALESCE(t.Descripcion, N'Sin turno'),
-                   COALESCE(e.Descripcion, N'Sin estado')
+                   COALESCE(e.Descripcion, N'Sin estado'),
+                   mf.FinalEstadoId
             FROM MesasFinales mf
             LEFT JOIN Materias m ON m.MateriaId = mf.MateriaId
             LEFT JOIN Carreras c ON c.CarreraId = mf.CarreraId
@@ -123,6 +127,7 @@ public sealed class MesasFinalesDocenteRepository(Conexion conexion) : IMesasFin
                     reader.GetDateTime(3),
                     reader.GetString(4),
                     reader.GetString(5),
+                    reader.GetInt32(6),
                     null,
                     NotaFinalRules.Minima,
                     NotaFinalRules.Maxima,
@@ -160,13 +165,30 @@ public sealed class MesasFinalesDocenteRepository(Conexion conexion) : IMesasFin
         int mesaId,
         int profesorId,
         IReadOnlyCollection<GuardarNotaFinalDto> notas,
+        bool cerrarMesa,
         CancellationToken cancellationToken = default)
     {
         const string verificarMesaSql = """
-            SELECT COUNT(1)
+            SELECT FinalEstadoId
             FROM MesasFinales
             WHERE MesaFinalId = @mesaId
               AND (PresidenteId = @profesorId OR VocalId = @profesorId);
+            """;
+
+        const string validarCompletitudSql = """
+            SELECT COUNT(1)
+            FROM MesaAlumno
+            WHERE MesaFinalId = @mesaId
+              AND Nota IS NULL
+              AND Ausente = 0;
+            """;
+
+        const string cerrarMesaSql = """
+            UPDATE MesasFinales
+            SET FinalEstadoId = 2
+            WHERE MesaFinalId = @mesaId
+              AND (PresidenteId = @profesorId OR VocalId = @profesorId)
+              AND FinalEstadoId <> 2;
             """;
 
         const string actualizarSql = """
@@ -198,11 +220,15 @@ public sealed class MesasFinalesDocenteRepository(Conexion conexion) : IMesasFin
                 command.CommandText = verificarMesaSql;
                 command.Parameters.Add("@mesaId", SqlDbType.Int).Value = mesaId;
                 command.Parameters.Add("@profesorId", SqlDbType.Int).Value = profesorId;
-                if (Convert.ToInt32(await command.ExecuteScalarAsync(cancellationToken)) == 0)
+                var estadoMesa = await command.ExecuteScalarAsync(cancellationToken);
+                if (estadoMesa is null || estadoMesa is DBNull)
                 {
                     await transaction.RollbackAsync(cancellationToken);
                     return false;
                 }
+
+                if (Convert.ToInt32(estadoMesa) == 2)
+                    throw new InvalidOperationException("La mesa final ya está cerrada y no se puede modificar.");
             }
 
             foreach (var nota in notas)
@@ -226,6 +252,24 @@ public sealed class MesasFinalesDocenteRepository(Conexion conexion) : IMesasFin
                 notaParameter.Value = (object?)nota.Nota ?? DBNull.Value;
 
                 if (await command.ExecuteNonQueryAsync(cancellationToken) != 1)
+                    throw new DBConcurrencyException();
+            }
+
+            if (cerrarMesa)
+            {
+                using var validarCommand = conexion.Conector.CreateCommand();
+                validarCommand.Transaction = transaction;
+                validarCommand.CommandText = validarCompletitudSql;
+                validarCommand.Parameters.Add("@mesaId", SqlDbType.Int).Value = mesaId;
+                if (Convert.ToInt32(await validarCommand.ExecuteScalarAsync(cancellationToken)) > 0)
+                    throw new InvalidOperationException("No se puede cerrar la mesa: hay alumnos sin nota ni ausencia.");
+
+                using var cerrarCommand = conexion.Conector.CreateCommand();
+                cerrarCommand.Transaction = transaction;
+                cerrarCommand.CommandText = cerrarMesaSql;
+                cerrarCommand.Parameters.Add("@mesaId", SqlDbType.Int).Value = mesaId;
+                cerrarCommand.Parameters.Add("@profesorId", SqlDbType.Int).Value = profesorId;
+                if (await cerrarCommand.ExecuteNonQueryAsync(cancellationToken) != 1)
                     throw new DBConcurrencyException();
             }
 

@@ -1,0 +1,6 @@
+.confirmation-content { padding: var(--space-2); color: var(--color-text); }
+.confirmation-heading { display: flex; align-items: center; gap: var(--space-3); }
+.confirmation-heading h2 { margin: 0; font-size: var(--font-size-lg); font-weight: var(--font-weight-semibold); }
+.confirmation-content p { color: var(--color-text-secondary); margin: var(--space-4) 0; }
+.confirmation-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-2); padding: var(--space-2); }
+.confirmation-actions ::deep .mud-button-root { text-transform: none; }
