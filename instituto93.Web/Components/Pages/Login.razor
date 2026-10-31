@@ -66,6 +66,8 @@
                     <button type="submit" class="btn btn-primary">Continuar</button>
                 </EditForm>
 
+                
+
                 @* Divisor "o" + preinscripción. Va después del EditForm (no dentro): el enlace
                 navega, nunca envía el formulario del D.N.I ni dispara su validación. *@
                 <div class="login-divider" aria-hidden="true">
@@ -152,7 +154,7 @@
 
             @if (!string.IsNullOrWhiteSpace(_errorMessage))
             {
-                <div class="alert alert-error" role="alert">@_errorMessage</div>
+                <div class="alert alert-error" role="alert">@((MarkupString)_errorMessage)</div>
             }
 
         </article>
@@ -257,7 +259,9 @@
 
             if (!result.IsSuccess)
             {
-                _errorMessage = result.Error;
+                string markup = "<br /> <a href=\"/altaprovisoria\" style=\"color: #007bff; font-weight: 500; text-decoration: "+
+                "underline;\">Click acá</a> para hacer un Alta Provisoria. ";
+                _errorMessage = result.Error + (MarkupString)markup;
                 return;
             }
 

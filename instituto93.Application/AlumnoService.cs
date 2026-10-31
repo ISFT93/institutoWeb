@@ -12,11 +12,13 @@ namespace instituto93.Application
     {
         private readonly IAlumnoRepository _repo;
         private readonly IAlumnosCarrerasRepository _alumnosCarreras;
+        private readonly IUsuarioRepository _usuario;
 
-        public AlumnoService(IAlumnoRepository repo, IAlumnosCarrerasRepository alumnosCarreras)
+        public AlumnoService(IAlumnoRepository repo, IAlumnosCarrerasRepository alumnosCarreras, IUsuarioRepository usuario)
         {
             _repo = repo ?? throw new System.ArgumentNullException(nameof(repo));
             _alumnosCarreras = alumnosCarreras ?? throw new System.ArgumentNullException(nameof(alumnosCarreras));
+            _usuario = usuario ?? throw new System.ArgumentNullException(nameof(usuario));
         }
 
         public async Task<List<AlumnoModelo>> GetAlumnosModelos(
@@ -197,6 +199,68 @@ namespace instituto93.Application
                 await _repo.DeleteAsync(alumnoId, cancellationToken);
                 throw;
             }
+
+            return alumnoId;
+        }
+
+        public async Task<int> CreateAltaPAsync(AltaPDto altaP, CancellationToken cancellationToken = default)
+        {
+            if (altaP == null)
+                throw new ArgumentNullException(nameof(altaP));
+
+            if (!altaP.FechaNacimiento.HasValue)
+                throw new ArgumentException(
+                    "La fecha de nacimiento es obligatoria.");
+
+            var alumno = new AlumnoModelo
+            {
+                Apellido = altaP.Apellido,
+                Nombre = altaP.Nombre,
+                TipoDocumento = altaP.TipoDocumento,
+                NumeroDocumento = altaP.NumeroDocumento,
+                Sexo = altaP.Sexo,
+                FechaNacimiento = altaP.FechaNacimiento.Value,
+                Calle = altaP.Calle,
+                Localidad = altaP.Localidad,
+                Telefono = altaP.Telefono,
+                Email = altaP.Email,
+                Activo = true,
+            };
+
+            var alumnoId = await _repo.CreateAsync(alumno, cancellationToken);
+
+            // Insercion en AlumnoCarreras para vincular el alumno con la carrera
+            try
+            {
+                await _alumnosCarreras.CreateAsync(
+                    new AlumnosCarreras
+                    {
+                        AlumnoId = alumnoId,
+                        CarreraId = altaP.CarreraId!.Value,
+                        FechaAlta = DateTime.Today,
+                        Activo = true
+                    },
+                    cancellationToken);
+            }
+            catch
+            {
+                //Borra registro en caso de fallar, para no dejar registros huerfanos
+                //simulando un transaccion
+                await _repo.DeleteAsync(alumnoId, cancellationToken);
+                throw;
+            }
+
+            //Creación de usuario
+            Rol rol = new Rol { Id = 1, Nombre = "Alumno" };
+            await _usuario.AddAsync(
+                new Usuario
+                {
+                    RolId=1,
+                    AlumnoId = alumnoId,
+                    Password = altaP.Password,
+                    Activo = true,
+                    Rol=rol
+                }, cancellationToken);
 
             return alumnoId;
         }

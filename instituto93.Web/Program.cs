@@ -32,6 +32,11 @@ if (!Uri.TryCreate(apiBaseUrl, UriKind.Absolute, out var apiUri))
 
 var apiBaseUri = new Uri($"{apiUri.AbsoluteUri.TrimEnd('/')}/");
 
+builder.Services.AddHttpClient<AltaPApiClient>(client =>
+{
+    client.BaseAddress = apiBaseUri;
+});
+
 builder.Services.AddHttpClient<AuthApiClient>(client =>
 {
     client.BaseAddress = apiBaseUri;
