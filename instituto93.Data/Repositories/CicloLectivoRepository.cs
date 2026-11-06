@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using instituto93.Data.Repositories.Interfaces;
 using instituto93.Domain.Models;
+using instituto93.Domain.DTOs;
 
 namespace instituto93.Data.Repositories
 {
@@ -191,6 +192,37 @@ namespace instituto93.Data.Repositories
 
                 var rows = await cmd.ExecuteNonQueryAsync(cancellationToken);
                 return rows > 0;
+            }
+            finally
+            {
+                _conexion.Close();
+            }
+        }
+
+        // El plazo de preinscripción es el que el desktop (InstitutoNET) carga en la configuración
+        // del ciclo lectivo como "Fecha de Preinscripción anual": FechaInscripcionInicio/Final.
+        public async Task<EstadoPreinscripcionDto?> GetPlazoPreinscripcionAbiertoAsync(CancellationToken cancellationToken = default)
+        {
+            const string sql = @"SELECT TOP 1 FechaInscripcionInicio, FechaInscripcionFinal
+                                 FROM CicloLectivo
+                                 WHERE CAST(GETDATE() AS date) BETWEEN FechaInscripcionInicio AND FechaInscripcionFinal
+                                 ORDER BY FechaInscripcionInicio DESC";
+            try
+            {
+                await _conexion.OpenAsync(cancellationToken);
+                using var cmd = _conexion.Conector.CreateCommand();
+                cmd.CommandText = sql;
+                using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+                if (await reader.ReadAsync(cancellationToken))
+                {
+                    return new EstadoPreinscripcionDto
+                    {
+                        Abierta = true,
+                        Desde = reader.GetDateTime(0),
+                        Hasta = reader.GetDateTime(1)
+                    };
+                }
+                return null;
             }
             finally
             {

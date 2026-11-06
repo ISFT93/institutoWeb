@@ -1,5 +1,6 @@
 using instituto93.Application.Interfaces;
 using instituto93.Data.Repositories.Interfaces;
+using instituto93.Domain.DTOs;
 using instituto93.Domain.Models;
 
 namespace instituto93.Application;

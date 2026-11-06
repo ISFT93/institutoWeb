@@ -13,11 +13,14 @@ namespace instituto93.Controller.Controllers
     public class AlumnoController : ControllerBase
     {
         private readonly IAlumnoService _service;
+        private readonly ICicloLectivoService _ciclos;
 
         public AlumnoController(
-            IAlumnoService service)
+            IAlumnoService service,
+            ICicloLectivoService ciclos)
         {
             _service = service;
+            _ciclos = ciclos;
         }
 
         [HttpGet]
@@ -90,6 +93,20 @@ namespace instituto93.Controller.Controllers
         {
             try
             {
+                var estado =
+                    await _ciclos
+                        .GetEstadoPreinscripcionAsync(
+                            cancellationToken);
+
+                if (!estado.Abierta)
+                    return StatusCode(
+                        403,
+                        new
+                        {
+                            message =
+                                "La preinscripción está fuera de plazo."
+                        });
+
                 var nuevoId =
                     await _service
                         .CreatePreinscripcionAsync(
@@ -121,6 +138,49 @@ namespace instituto93.Controller.Controllers
                     {
                         message =
                             "No se pudo guardar la preinscripción.",
+
+                        detail =
+                            ex.Message
+                    });
+            }
+        }
+
+        [HttpPost("Alta provisoria")]
+        public async Task<ActionResult> CreateAltaP([FromBody] AltaPDto altaP, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var nuevoId =
+                    await _service
+                        .CreateAltaPAsync(
+                            altaP,
+                            cancellationToken);
+
+                return CreatedAtAction(
+                    nameof(GetById),
+
+                    new
+                    {
+                        id = nuevoId
+                    },
+
+                    new
+                    {
+                        alumnoId = nuevoId,
+
+                        message =
+                            "Alta provisoria realizada correctamente."
+                    });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(
+                    500,
+
+                    new
+                    {
+                        message =
+                            "No se pudo realizar el alta provisoria.",
 
                         detail =
                             ex.Message

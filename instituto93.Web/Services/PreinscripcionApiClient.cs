@@ -27,6 +27,24 @@ public sealed class PreinscripcionApiClient(HttpClient httpClient)
             await ReadErrorAsync(response, "No se pudo guardar la preinscripción.", cancellationToken));
     }
 
+    // Ante cualquier fallo se considera cerrada: es más seguro no ofrecer la preinscripción que ofrecerla fuera de plazo.
+    public async Task<EstadoPreinscripcion> GetEstadoAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var estado = await httpClient.GetFromJsonAsync<EstadoPreinscripcion>(
+                "api/Preinscripcion/estado",
+                ErrorJson,
+                cancellationToken);
+
+            return estado ?? EstadoPreinscripcion.Cerrada;
+        }
+        catch (Exception ex) when (ex is HttpRequestException or JsonException or TaskCanceledException)
+        {
+            return EstadoPreinscripcion.Cerrada;
+        }
+    }
+
     // Los adjuntos viajan como bool (adjuntado / no) porque IBrowserFile no es serializable a la API.
     // MateriasAdeuda no se manda: la API lo deriva de CantidadAdeudaMaterias.
     private static PreinscripcionRequest ToRequest(PreinscripcionModel model) =>
@@ -282,6 +300,11 @@ public sealed class PreinscripcionApiClient(HttpClient httpClient)
 
         public string? TelefonoContacto { get; set; }
     }
+}
+
+public sealed record EstadoPreinscripcion(bool Abierta, DateTime? Desde, DateTime? Hasta)
+{
+    public static EstadoPreinscripcion Cerrada { get; } = new(false, null, null);
 }
 
 public sealed record PreinscripcionResult(bool IsSuccess, int? AlumnoId, string? Error)

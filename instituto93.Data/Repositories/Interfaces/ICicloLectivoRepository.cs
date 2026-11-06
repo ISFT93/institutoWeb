@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using instituto93.Domain.Models;
+using instituto93.Domain.DTOs;
 
 namespace instituto93.Data.Repositories.Interfaces
 {
@@ -18,5 +19,7 @@ namespace instituto93.Data.Repositories.Interfaces
         Task<int> CreateAsync(CicloLectivoModelo cicloLectivo, CancellationToken cancellationToken = default);
         Task<bool> UpdateAsync(CicloLectivoModelo cicloLectivo, CancellationToken cancellationToken = default);
         Task<bool> DeleteAsync(int anioLectivo, CancellationToken cancellationToken = default);
+
+        Task<EstadoPreinscripcionDto?> GetPlazoPreinscripcionAbiertoAsync(CancellationToken cancellationToken = default);
     }
 }
