@@ -6,7 +6,7 @@ namespace instituto93.Web.Services;
 
 public sealed class MesasFinalesApiClient(HttpClient httpClient)
 {
-    public async Task<MesasFinalesResult> GetAsync(
+    public async Task<MesasFinalesListadoResult> GetAsync(
         MesasFinalesFiltroModel filtro,
         CancellationToken cancellationToken = default)
     {
@@ -20,20 +20,20 @@ public sealed class MesasFinalesApiClient(HttpClient httpClient)
                 var payload =
                     await response.Content.ReadFromJsonAsync<List<MesaFinalFilaModel>>(cancellationToken);
 
-                return MesasFinalesResult.Success(payload ?? []);
+                return MesasFinalesListadoResult.Success(payload ?? []);
             }
 
-            return MesasFinalesResult.Failure(
+            return MesasFinalesListadoResult.Failure(
                 await ReadErrorAsync(response, "No se pudieron cargar las mesas de finales.", cancellationToken));
         }
         catch (HttpRequestException ex)
         {
-            return MesasFinalesResult.Failure(
+            return MesasFinalesListadoResult.Failure(
                 "No se pudo conectar con instituto93.Controller. Verificá que la API esté iniciada. " + ex.Message);
         }
         catch (TaskCanceledException)
         {
-            return MesasFinalesResult.Failure("La carga de las mesas de finales demoró demasiado y se canceló.");
+            return MesasFinalesListadoResult.Failure("La carga de las mesas de finales demoró demasiado y se canceló.");
         }
     }
 
@@ -110,11 +110,11 @@ public sealed class MesasFinalesApiClient(HttpClient httpClient)
     private sealed record ApiError(string? Message, string? Detail);
 }
 
-public sealed record MesasFinalesResult(bool IsSuccess, List<MesaFinalFilaModel> Mesas, string? Error)
+public sealed record MesasFinalesListadoResult(bool IsSuccess, List<MesaFinalFilaModel> Mesas, string? Error)
 {
-    public static MesasFinalesResult Success(List<MesaFinalFilaModel> mesas) => new(true, mesas, null);
+    public static MesasFinalesListadoResult Success(List<MesaFinalFilaModel> mesas) => new(true, mesas, null);
 
-    public static MesasFinalesResult Failure(string error) => new(false, [], error);
+    public static MesasFinalesListadoResult Failure(string error) => new(false, [], error);
 }
 
 public sealed record InscripcionResult(bool IsSuccess, string? Error)
