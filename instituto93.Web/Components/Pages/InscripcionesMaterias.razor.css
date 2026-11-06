@@ -199,6 +199,29 @@
     background-color: #2C5484;
 }
 
+/* Vista "ya inscripto": pestaña + tarjeta de ancho completo con el listado. */
+
+.inscripciones-container > .insc-tab {
+    margin-top: 1.5rem;
+}
+
+.insc-card-inscripto {
+    padding: 1.5625rem 1.25rem 1.25rem;
+
+    border-radius: 0 6px 6px 6px;
+}
+
+.insc-card-inscripto .insc-seleccion-titulo {
+    text-align: left;
+}
+
+.insc-card-inscripto .insc-card-scroll {
+    height: auto;
+    max-height: 26.875rem;
+
+    padding: 1.25rem 0 0;
+}
+
 /* Pantallas angostas: una sola columna, la izquierda primero. */
 @media (max-width: 1024px) {
     .inscripciones-container {

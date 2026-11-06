@@ -20,6 +20,7 @@ public sealed class MockDataStore
     private readonly List<MesaFinalDetalleModel> _mesasDocente;
     private readonly List<MateriaInscripcionModel> _materiasInscripcion;
     private readonly List<MesaFinalInscripcionModel> _mesasAlumno;
+    private readonly Dictionary<int, HashSet<int>> _inscripcionesMaterias = [];
     private int _nextEvaluacionId;
 
     public MockDataStore(IWebHostEnvironment environment)
@@ -43,6 +44,29 @@ public sealed class MockDataStore
     public List<MateriaInscripcionModel> MateriasInscripcion() => [.. _materiasInscripcion];
 
     public List<MesaFinalInscripcionModel> MesasAlumno() => [.. _mesasAlumno];
+
+    public List<MateriaInscripcionModel> MateriasInscriptas(int alumnoId)
+    {
+        lock (_gate)
+        {
+            if (!_inscripcionesMaterias.TryGetValue(alumnoId, out var ids))
+                return [];
+
+            return _materiasInscripcion.Where(m => ids.Contains(m.MateriaId)).ToList();
+        }
+    }
+
+    public void InscribirMaterias(int alumnoId, IEnumerable<int> materiaIds)
+    {
+        lock (_gate)
+        {
+            if (!_inscripcionesMaterias.TryGetValue(alumnoId, out var ids))
+                _inscripcionesMaterias[alumnoId] = ids = [];
+
+            foreach (var id in materiaIds.Where(id => _materiasInscripcion.Any(m => m.MateriaId == id)))
+                ids.Add(id);
+        }
+    }
 
     public List<TipoEvaluacionModel> Tipos() => [.. _tipos];
 
