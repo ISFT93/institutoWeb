@@ -26,4 +26,16 @@ public sealed class OfertaAcademicaService(MockDataStore? mocks = null)
 
     public Task<List<MesaFinalInscripcionModel>> GetMesasAsync() =>
         Task.FromResult(mocks?.MesasAlumno() ?? []);
+
+    public Task<List<MesaFinalInscripcionModel>> GetInscripcionesMesasAsync(int alumnoId) =>
+        Task.FromResult(mocks?.MesasInscriptas(alumnoId) ?? []);
+
+    public Task<bool> InscribirMesasAsync(int alumnoId, IEnumerable<int> mesaIds)
+    {
+        if (mocks is null)
+            return Task.FromResult(false);
+
+        mocks.InscribirMesas(alumnoId, mesaIds);
+        return Task.FromResult(true);
+    }
 }

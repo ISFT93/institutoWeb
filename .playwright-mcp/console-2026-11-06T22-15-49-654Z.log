@@ -1,0 +1,6 @@
+[     197ms] [INFO] [2026-11-06T22:15:49.851Z] Information: Normalizing '_blazor' to 'http://localhost:8080/_blazor'. @ http://localhost:8080/_framework/blazor.web.js:0
+[     243ms] [INFO] [2026-11-06T22:15:49.897Z] Information: WebSocket connected to ws://localhost:8080/_blazor?id=oG5cBxXZZq2t0vUf6O425Q. @ http://localhost:8080/_framework/blazor.web.js:0
+[     686ms] [ERROR] WebSocket connection to 'wss://localhost:37449/' failed:  @ http://localhost:8080/_framework/aspnetcore-browser-refresh.js:354
+[    1807ms] [INFO] Clear-Site-Data header on 'http://localhost:8080/_framework/clear-browser-cache': Cleared data types: "cache". @ http://localhost:8080/:0
+[   25365ms] [INFO] Clear-Site-Data header on 'http://localhost:8080/_framework/clear-browser-cache': Cleared data types: "cache". @ http://localhost:8080/:0
+[   59078ms] [INFO] Clear-Site-Data header on 'http://localhost:8080/_framework/clear-browser-cache': Cleared data types: "cache". @ http://localhost:8080/:0

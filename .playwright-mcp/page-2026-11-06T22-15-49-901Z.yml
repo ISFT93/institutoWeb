@@ -1,0 +1,80 @@
+- generic [ref=f1e2]:
+  - generic [ref=f1e3]:
+    - banner [ref=f1e5]:
+      - toolbar [ref=f1e6]:
+        - link "Ir al inicio" [ref=f1e7] [cursor=pointer]:
+          - /url: /
+          - img "Logo del Instituto Superior de Formación Docente y Técnica N°93" [ref=f1e9]
+          - generic [ref=f1e10]: Instituto Superior de Formación Docente y Tecnica N°93
+        - generic [ref=f1e11]:
+          - generic [ref=f1e12]:
+            - button "Notificaciones" [ref=f1e13] [cursor=pointer]
+            - status [ref=f1e18]
+          - button "Docente Prueba" [ref=f1e21] [cursor=pointer]
+    - navigation [ref=f1e31]:
+      - generic [ref=f1e32]:
+        - link "Inicio" [ref=f1e33] [cursor=pointer]:
+          - /url: /
+        - button "Instituto" [ref=f1e39] [cursor=pointer]
+        - button "Calendario" [ref=f1e56] [cursor=pointer]
+        - button "Alumnos" [ref=f1e68] [cursor=pointer]
+        - button "Docentes" [ref=f1e78] [cursor=pointer]
+  - main [ref=f1e89]:
+    - generic [ref=f1e91]:
+      - generic [ref=f1e92]:
+        - generic [ref=f1e95]:
+          - heading "BIENVENIDO AL PORTAL ACADEMICO" [level=2] [ref=f1e96]: BIENVENIDO AL PORTALACADEMICO
+          - paragraph [ref=f1e97]: Acompañandote en tu formación
+        - generic [ref=f1e98]:
+          - link [ref=f1e99] [cursor=pointer]:
+            - /url: /docentes/mesas-finales
+            - generic [ref=f1e100]:
+              - img "MIS MESAS FINALES" [ref=f1e102]
+              - generic [ref=f1e103]:
+                - heading "MIS MESAS FINALES" [level=3] [ref=f1e104]
+                - paragraph [ref=f1e105]: Consultá tus mesas y cargá notas
+          - link [ref=f1e106] [cursor=pointer]:
+            - /url: /docentes/materias
+            - generic [ref=f1e107]:
+              - img "Mis materias" [ref=f1e109]
+              - generic [ref=f1e110]:
+                - heading "MIS MATERIAS" [level=3] [ref=f1e111]
+                - paragraph [ref=f1e112]: Gestioná materias y evaluaciones
+      - generic [ref=f1e113]:
+        - generic [ref=f1e114]:
+          - heading "Mis eventos" [level=2] [ref=f1e115]
+          - generic [ref=f1e116]:
+            - generic [ref=f1e123]:
+              - generic [ref=f1e124]: Examenes finales
+              - generic [ref=f1e125]: Turno Nov/Dic ....
+            - generic [ref=f1e135]:
+              - generic [ref=f1e136]: Actividad Instituto
+              - generic [ref=f1e137]: Reunión de estudiantes ....
+        - generic [ref=f1e141]:
+          - heading "Avisos" [level=2] [ref=f1e142]
+          - link "Incripciones abiertas" [ref=f1e144] [cursor=pointer]:
+            - /url: /inscripciones-materias
+  - banner [ref=f1e154]:
+    - toolbar [ref=f1e155]:
+      - generic [ref=f1e156]: Instituto Superior de Formación Docente y Tecnica N°93
+      - separator [ref=f1e158]
+      - generic [ref=f1e159]:
+        - generic [ref=f1e160]:
+          - heading "Contacto" [level=3] [ref=f1e161]
+          - generic [ref=f1e162]: 02225 48–1175
+          - generic [ref=f1e167]: instituto93@gmail.com
+        - generic [ref=f1e172]:
+          - heading "Sedes del instituto" [level=3] [ref=f1e173]
+          - link "Sede San Vicente - San Martín 101 - San Vicente" [ref=f1e175] [cursor=pointer]:
+            - /url: https://maps.app.goo.gl/kfQUpu4rjd9w262y7
+          - link "Anexo Enfermería - E.E.S. N° 5 (Alejandro Korn) Juan B. Justo 263 - Alejandro Korn" [ref=f1e177] [cursor=pointer]:
+            - /url: https://maps.app.goo.gl/BxbBzk5VLGzGtvHo9
+          - link "Anexo UnSav - Av. Sarmiento esquina Illia - San Vicente" [ref=f1e179] [cursor=pointer]:
+            - /url: https://maps.app.goo.gl/sLkF66hxRhRjPEKWA
+        - generic [ref=f1e180]:
+          - heading "Redes sociales" [level=3] [ref=f1e181]
+          - generic [ref=f1e182]:
+            - button "YouTube" [ref=f1e183] [cursor=pointer]
+            - button "Facebook" [ref=f1e187] [cursor=pointer]
+            - button "Instagram" [ref=f1e191] [cursor=pointer]
+            - button "X" [ref=f1e195] [cursor=pointer]

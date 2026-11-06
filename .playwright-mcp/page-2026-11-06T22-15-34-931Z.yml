@@ -1,0 +1,160 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - banner [ref=e5]:
+      - toolbar [ref=e6]:
+        - link "Ir al inicio" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - img "Logo del Instituto Superior de Formación Docente y Técnica N°93" [ref=e9]
+          - generic [ref=e10]: Instituto Superior de Formación Docente y Tecnica N°93
+        - generic [ref=e11]:
+          - generic [ref=e12]:
+            - button "Notificaciones" [ref=e13] [cursor=pointer]
+            - status [ref=e18]
+          - button "Docente Prueba" [ref=e21] [cursor=pointer]
+    - navigation [ref=e31]:
+      - generic [ref=e32]:
+        - link "Inicio" [ref=e33] [cursor=pointer]:
+          - /url: /
+        - button "Instituto" [ref=e39] [cursor=pointer]
+        - button "Calendario" [ref=e56] [cursor=pointer]
+        - button "Alumnos" [ref=e68] [cursor=pointer]
+        - button "Docentes" [ref=e78] [cursor=pointer]
+  - main [ref=e89]:
+    - generic [ref=e91]:
+      - heading "Inscripción a Materias 2027" [level=5] [ref=e92]
+      - generic [ref=e93]:
+        - generic [ref=e94]:
+          - generic [ref=e95]:
+            - strong [ref=e96]: "Carrera :"
+            - text: Análisis, Desarrollo y Programación de Aplicaciones
+          - generic [ref=e98]:
+            - generic [ref=e99]:
+              - heading "1° AÑO" [level=2] [ref=e100]
+              - table [ref=e104]:
+                - rowgroup [ref=e105]:
+                  - row [ref=e106]:
+                    - columnheader "Asiste" [ref=e107]
+                    - columnheader "Materia" [ref=e108]
+                    - columnheader "Docente" [ref=e109]
+                    - columnheader "Sede" [ref=e110]
+                - rowgroup [ref=e111]:
+                  - row [ref=e112]:
+                    - cell [ref=e113]:
+                      - checkbox "Asistir a Programación I" [ref=e118] [cursor=pointer]
+                    - cell "Programación I" [ref=e122]
+                    - cell "Mariana Sosa" [ref=e123]
+                    - cell "Sede Central" [ref=e124]
+                  - row [ref=e125]:
+                    - cell [ref=e126]:
+                      - checkbox "Asistir a Matemática Aplicada" [ref=e131] [cursor=pointer]
+                    - cell "Matemática Aplicada" [ref=e135]
+                    - cell "Ricardo Paz" [ref=e136]
+                    - cell "Sede Central" [ref=e137]
+                  - row [ref=e138]:
+                    - cell [ref=e139]:
+                      - checkbox "Asistir a Sistemas Operativos" [ref=e144] [cursor=pointer]
+                    - cell "Sistemas Operativos" [ref=e148]
+                    - cell "Lucas Ferreyra" [ref=e149]
+                    - cell "Sede Anexo" [ref=e150]
+                  - row [ref=e151]:
+                    - cell [ref=e152]:
+                      - checkbox "Asistir a Inglés Técnico I" [ref=e157] [cursor=pointer]
+                    - cell "Inglés Técnico I" [ref=e161]
+                    - cell "Carolina Vera" [ref=e162]
+                    - cell "Sede Central" [ref=e163]
+            - generic [ref=e164]:
+              - heading "2° AÑO" [level=2] [ref=e165]
+              - table [ref=e169]:
+                - rowgroup [ref=e170]:
+                  - row [ref=e171]:
+                    - columnheader "Asiste" [ref=e172]
+                    - columnheader "Materia" [ref=e173]
+                    - columnheader "Docente" [ref=e174]
+                    - columnheader "Sede" [ref=e175]
+                - rowgroup [ref=e176]:
+                  - row [ref=e177]:
+                    - cell [ref=e178]:
+                      - checkbox "Asistir a Base de Datos" [ref=e183] [cursor=pointer]
+                    - cell "Base de Datos" [ref=e187]
+                    - cell "Martín Acosta" [ref=e188]
+                    - cell "Sede Central" [ref=e189]
+                  - row [ref=e190]:
+                    - cell [ref=e191]:
+                      - checkbox "Asistir a Programación II" [ref=e196] [cursor=pointer]
+                    - cell "Programación II" [ref=e200]
+                    - cell "Mariana Sosa" [ref=e201]
+                    - cell "Sede Central" [ref=e202]
+                  - row [ref=e203]:
+                    - cell [ref=e204]:
+                      - checkbox "Asistir a Análisis de Sistemas" [ref=e209] [cursor=pointer]
+                    - cell "Análisis de Sistemas" [ref=e213]
+                    - cell "Elena Roldán" [ref=e214]
+                    - cell "Sede Anexo" [ref=e215]
+                  - row [ref=e216]:
+                    - cell [ref=e217]:
+                      - checkbox "Asistir a Redes de Datos" [ref=e222] [cursor=pointer]
+                    - cell "Redes de Datos" [ref=e226]
+                    - cell "Lucas Ferreyra" [ref=e227]
+                    - cell "Sede Central" [ref=e228]
+            - generic [ref=e229]:
+              - heading "3° AÑO" [level=2] [ref=e230]
+              - table [ref=e234]:
+                - rowgroup [ref=e235]:
+                  - row [ref=e236]:
+                    - columnheader "Asiste" [ref=e237]
+                    - columnheader "Materia" [ref=e238]
+                    - columnheader "Docente" [ref=e239]
+                    - columnheader "Sede" [ref=e240]
+                - rowgroup [ref=e241]:
+                  - row [ref=e242]:
+                    - cell [ref=e243]:
+                      - checkbox "Asistir a Ingeniería de Software" [ref=e248] [cursor=pointer]
+                    - cell "Ingeniería de Software" [ref=e252]
+                    - cell "Sergio Molina" [ref=e253]
+                    - cell "Sede Central" [ref=e254]
+                  - row [ref=e255]:
+                    - cell [ref=e256]:
+                      - checkbox "Asistir a Desarrollo de Aplicaciones Web" [ref=e261] [cursor=pointer]
+                    - cell "Desarrollo de Aplicaciones Web" [ref=e265]
+                    - cell "Julieta Barrios" [ref=e266]
+                    - cell "Sede Central" [ref=e267]
+                  - row [ref=e268]:
+                    - cell [ref=e269]:
+                      - checkbox "Asistir a Seguridad Informática" [ref=e274] [cursor=pointer]
+                    - cell "Seguridad Informática" [ref=e278]
+                    - cell "Ricardo Paz" [ref=e279]
+                    - cell "Sede Anexo" [ref=e280]
+                  - row [ref=e281]:
+                    - cell [ref=e282]:
+                      - checkbox "Asistir a Práctica Profesionalizante" [ref=e287] [cursor=pointer]
+                    - cell "Práctica Profesionalizante" [ref=e291]
+                    - cell "Elena Roldán" [ref=e292]
+                    - cell "Sede Central" [ref=e293]
+        - generic [ref=e295]:
+          - heading "Materias seleccionadas" [level=2] [ref=e296]
+          - paragraph [ref=e303]: Acá encontrarás las materias que seleccionaste para inscribirte.
+          - button "Anotarse" [disabled]
+  - banner [ref=e305]:
+    - toolbar [ref=e306]:
+      - generic [ref=e307]: Instituto Superior de Formación Docente y Tecnica N°93
+      - separator [ref=e309]
+      - generic [ref=e310]:
+        - generic [ref=e311]:
+          - heading "Contacto" [level=3] [ref=e312]
+          - generic [ref=e313]: 02225 48–1175
+          - generic [ref=e318]: instituto93@gmail.com
+        - generic [ref=e323]:
+          - heading "Sedes del instituto" [level=3] [ref=e324]
+          - link "Sede San Vicente - San Martín 101 - San Vicente" [ref=e326] [cursor=pointer]:
+            - /url: https://maps.app.goo.gl/kfQUpu4rjd9w262y7
+          - link "Anexo Enfermería - E.E.S. N° 5 (Alejandro Korn) Juan B. Justo 263 - Alejandro Korn" [ref=e328] [cursor=pointer]:
+            - /url: https://maps.app.goo.gl/BxbBzk5VLGzGtvHo9
+          - link "Anexo UnSav - Av. Sarmiento esquina Illia - San Vicente" [ref=e330] [cursor=pointer]:
+            - /url: https://maps.app.goo.gl/sLkF66hxRhRjPEKWA
+        - generic [ref=e331]:
+          - heading "Redes sociales" [level=3] [ref=e332]
+          - generic [ref=e333]:
+            - button "YouTube" [ref=e334] [cursor=pointer]
+            - button "Facebook" [ref=e338] [cursor=pointer]
+            - button "Instagram" [ref=e342] [cursor=pointer]
+            - button "X" [ref=e346] [cursor=pointer]

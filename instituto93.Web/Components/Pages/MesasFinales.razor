@@ -1,5 +1,7 @@
 @page "/mesas-finales"
 @inject OfertaAcademicaService Oferta
+@inject ISnackbar Snackbar
+@using instituto93.Web.Auth
 @using instituto93.Web.Models
 @using instituto93.Web.Services
 
@@ -11,122 +13,179 @@
             Listado de Mesas Finales - Inscripción 2026
         </MudText>
 
-        <div class="mesas-filtros">
-            <MudTextField T="string"
-                Class="mesas-buscador"
-                @bind-Value="_busqueda"
-                Immediate="true"
-                Placeholder="Buscar materia, docente, año...."
-                Adornment="Adornment.Start"
-                AdornmentIcon="@Icons.Material.Filled.Search"
-                Variant="Variant.Outlined" />
+        @if (_cargando)
+        {
+            <MudProgressCircular Indeterminate="true" />
+        }
+        else if (_inscriptas.Count > 0)
+        {
+            <div class="mesas-bloque-tabla">
+                <div class="mesas-tab">Carrera : @_inscriptas[0].Carrera</div>
 
-            <div class="mesas-select mesas-select-turno">
-                <span class="mesas-select-etiqueta">Turno:</span>
+                <div class="mesas-card">
+                    <h2 class="mesas-inscripto-titulo">Ya te inscribiste en las siguientes mesas finales</h2>
 
-                <MudSelect T="string"
-                    @bind-Value="_turno"
-                    Clearable="true"
-                    Placeholder="Nov/Dic"
-                    Variant="Variant.Outlined">
-                    @foreach (var turno in _mesas.Select(m => m.Turno).Distinct().Order())
+                    @foreach (var anio in _inscriptas.Select(m => m.Anio).Distinct().Order())
                     {
-                        <MudSelectItem Value="@turno">@turno</MudSelectItem>
-                    }
-                </MudSelect>
-            </div>
+                        <section class="mesas-anio">
+                            <MudText Typo="Typo.h6" Class="mesas-anio-titulo">@anio° AÑO</MudText>
 
-            <div class="mesas-select">
-                <MudIcon Class="mesas-select-icono"
-                    Icon="@Icons.Material.Filled.School" />
-
-                <MudSelect T="string"
-                    @bind-Value="_carrera"
-                    Clearable="true"
-                    Placeholder="Carrera"
-                    Variant="Variant.Outlined">
-                    @foreach (var carrera in _mesas.Select(m => m.Carrera).Distinct().Order())
-                    {
-                        <MudSelectItem Value="@carrera">@carrera</MudSelectItem>
-                    }
-                </MudSelect>
-            </div>
-
-            <div class="mesas-select">
-                <MudIcon Class="mesas-select-icono"
-                    Icon="@Icons.Material.Filled.CalendarMonth" />
-
-                <MudSelect T="string"
-                    Class="mesas-select-anio"
-                    @bind-Value="_anioAcademico"
-                    Clearable="true"
-                    Placeholder="Año academico"
-                    Variant="Variant.Outlined">
-                    <MudSelectItem Value="@("1°")">1°</MudSelectItem>
-                    <MudSelectItem Value="@("2°")">2°</MudSelectItem>
-                    <MudSelectItem Value="@("3°")">3°</MudSelectItem>
-                </MudSelect>
-            </div>
-        </div>
-
-        <div class="mesas-bloque-tabla">
-            <div class="mesas-tab">Carrera : @_mesas.FirstOrDefault()?.Carrera</div>
-
-            <div class="mesas-card">
-                @foreach (var anio in Anios)
-                {
-                    <section class="mesas-anio">
-                        <MudText Typo="Typo.h6" Class="mesas-anio-titulo">@anio° AÑO</MudText>
-
-                        <div class="mesas-tabla-scroll">
-                            <MudSimpleTable Class="mesas-tabla">
-                                <thead>
-                                    <tr>
-                                        <th>Asiste</th>
-                                        <th>Materia</th>
-                                        <th>Docente</th>
-                                        <th>Fecha y Hora</th>
-                                        <th>Sede</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var mesa in Filtradas.Where(m => m.Anio == anio))
-                                    {
+                            <div class="mesas-tabla-scroll">
+                                <MudSimpleTable Class="mesas-tabla">
+                                    <thead>
                                         <tr>
-                                            <td>
-                                                <MudCheckBox T="bool"
-                                                            Value="@_seleccionadas.Contains(mesa.MesaId)"
-                                                            ValueChanged="@(marcada => Seleccionar(mesa.MesaId, marcada))"
-                                                            Size="Size.Small"
-                                                            aria-label="@($"Asistir a la mesa de {mesa.Materia}")" />
-                                            </td>
-                                            <td>@mesa.Materia</td>
-                                            <td>@mesa.Docente</td>
-                                            <td>@mesa.FechaHora.ToString("dd/MM/yyyy HH:mm")</td>
-                                            <td>@mesa.Sede</td>
+                                            <th>Materia</th>
+                                            <th>Docente</th>
+                                            <th>Fecha y Hora</th>
+                                            <th>Sede</th>
                                         </tr>
-                                    }
-                                </tbody>
-                            </MudSimpleTable>
-                        </div>
-                    </section>
-                }
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var mesa in _inscriptas.Where(m => m.Anio == anio))
+                                        {
+                                            <tr>
+                                                <td>@mesa.Materia</td>
+                                                <td>@mesa.Docente</td>
+                                                <td>@mesa.FechaHora.ToString("dd/MM/yyyy HH:mm")</td>
+                                                <td>@mesa.Sede</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </MudSimpleTable>
+                            </div>
+                        </section>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="mesas-filtros">
+                <MudTextField T="string"
+                    Class="mesas-buscador"
+                    @bind-Value="_busqueda"
+                    Immediate="true"
+                    Placeholder="Buscar materia, docente, año...."
+                    Adornment="Adornment.Start"
+                    AdornmentIcon="@Icons.Material.Filled.Search"
+                    Variant="Variant.Outlined" />
+
+                <div class="mesas-select mesas-select-turno">
+                    <span class="mesas-select-etiqueta">Turno:</span>
+
+                    <MudSelect T="string"
+                        @bind-Value="_turno"
+                        Clearable="true"
+                        Placeholder="Nov/Dic"
+                        Variant="Variant.Outlined">
+                        @foreach (var turno in _mesas.Select(m => m.Turno).Distinct().Order())
+                        {
+                            <MudSelectItem Value="@turno">@turno</MudSelectItem>
+                        }
+                    </MudSelect>
+                </div>
+
+                <div class="mesas-select">
+                    <MudIcon Class="mesas-select-icono"
+                        Icon="@Icons.Material.Filled.School" />
+
+                    <MudSelect T="string"
+                        @bind-Value="_carrera"
+                        Clearable="true"
+                        Placeholder="Carrera"
+                        Variant="Variant.Outlined">
+                        @foreach (var carrera in _mesas.Select(m => m.Carrera).Distinct().Order())
+                        {
+                            <MudSelectItem Value="@carrera">@carrera</MudSelectItem>
+                        }
+                    </MudSelect>
+                </div>
+
+                <div class="mesas-select">
+                    <MudIcon Class="mesas-select-icono"
+                        Icon="@Icons.Material.Filled.CalendarMonth" />
+
+                    <MudSelect T="string"
+                        Class="mesas-select-anio"
+                        @bind-Value="_anioAcademico"
+                        Clearable="true"
+                        Placeholder="Año academico"
+                        Variant="Variant.Outlined">
+                        <MudSelectItem Value="@("1°")">1°</MudSelectItem>
+                        <MudSelectItem Value="@("2°")">2°</MudSelectItem>
+                        <MudSelectItem Value="@("3°")">3°</MudSelectItem>
+                    </MudSelect>
+                </div>
             </div>
 
-            <div class="mesas-acciones">
-                <MudButton Class="mesas-btn-anotarse"
-                    Variant="Variant.Filled"
-                    Color="Color.Primary">
-                    Anotarse
-                </MudButton>
+            <div class="mesas-bloque-tabla">
+                <div class="mesas-tab">Carrera : @_mesas.FirstOrDefault()?.Carrera</div>
+
+                <div class="mesas-card">
+                    @foreach (var anio in Anios)
+                    {
+                        <section class="mesas-anio">
+                            <MudText Typo="Typo.h6" Class="mesas-anio-titulo">@anio° AÑO</MudText>
+
+                            <div class="mesas-tabla-scroll">
+                                <MudSimpleTable Class="mesas-tabla">
+                                    <thead>
+                                        <tr>
+                                            <th>Asiste</th>
+                                            <th>Materia</th>
+                                            <th>Docente</th>
+                                            <th>Fecha y Hora</th>
+                                            <th>Sede</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var mesa in Filtradas.Where(m => m.Anio == anio))
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <MudCheckBox T="bool"
+                                                                Value="@_seleccionadas.Contains(mesa.MesaId)"
+                                                                ValueChanged="@(marcada => Seleccionar(mesa.MesaId, marcada))"
+                                                                Size="Size.Small"
+                                                                aria-label="@($"Asistir a la mesa de {mesa.Materia}")" />
+                                                </td>
+                                                <td>@mesa.Materia</td>
+                                                <td>@mesa.Docente</td>
+                                                <td>@mesa.FechaHora.ToString("dd/MM/yyyy HH:mm")</td>
+                                                <td>@mesa.Sede</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </MudSimpleTable>
+                            </div>
+                        </section>
+                    }
+                </div>
+
+                <div class="mesas-acciones">
+                    <MudButton Class="mesas-btn-anotarse"
+                        Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        Disabled="@(_alumnoId is null || _seleccionadas.Count == 0 || _guardando)"
+                        OnClick="Anotarse">
+                        Anotarse
+                    </MudButton>
+                </div>
             </div>
-        </div>
+        }
     </div>
 </div>
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthState { get; set; }
+
     private List<MesaFinalInscripcionModel> _mesas = [];
+    private List<MesaFinalInscripcionModel> _inscriptas = [];
     private readonly HashSet<int> _seleccionadas = [];
+    private int? _alumnoId;
+    private bool _cargando = true;
+    private bool _guardando;
     private string? _anioAcademico;
     private string? _busqueda;
     private string? _turno;
@@ -143,7 +202,23 @@
         (string.IsNullOrEmpty(_carrera) || m.Carrera == _carrera) &&
         (string.IsNullOrEmpty(_anioAcademico) || $"{m.Anio}°" == _anioAcademico));
 
-    protected override async Task OnInitializedAsync() => _mesas = await Oferta.GetMesasAsync();
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthState is not null)
+        {
+            var user = (await AuthState).User;
+            if (int.TryParse(user.FindFirst(AuthClaimTypes.AlumnoId)?.Value, out var alumnoId))
+                _alumnoId = alumnoId;
+        }
+
+        if (_alumnoId is int id)
+            _inscriptas = await Oferta.GetInscripcionesMesasAsync(id);
+
+        if (_inscriptas.Count == 0)
+            _mesas = await Oferta.GetMesasAsync();
+
+        _cargando = false;
+    }
 
     private void Seleccionar(int mesaId, bool marcada)
     {
@@ -151,5 +226,29 @@
             _seleccionadas.Add(mesaId);
         else
             _seleccionadas.Remove(mesaId);
+    }
+
+    private async Task Anotarse()
+    {
+        if (_alumnoId is not int id || _seleccionadas.Count == 0)
+            return;
+
+        _guardando = true;
+        try
+        {
+            if (!await Oferta.InscribirMesasAsync(id, _seleccionadas))
+            {
+                Snackbar.Add("No se pudo guardar la inscripción.", Severity.Error);
+                return;
+            }
+
+            _inscriptas = await Oferta.GetInscripcionesMesasAsync(id);
+            _seleccionadas.Clear();
+            Snackbar.Add("Te inscribiste correctamente.", Severity.Success);
+        }
+        finally
+        {
+            _guardando = false;
+        }
     }
 }

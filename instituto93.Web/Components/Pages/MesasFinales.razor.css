@@ -167,6 +167,14 @@
     border-radius: 0 10px 10px 10px;
 }
 
+.mesas-inscripto-titulo {
+    margin: 0 0 1.25rem;
+
+    color: #333333;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
 .mesas-anio + .mesas-anio {
     margin-top: 1.75rem;
 }
