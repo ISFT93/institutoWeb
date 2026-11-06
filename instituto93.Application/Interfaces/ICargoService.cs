@@ -9,8 +9,8 @@ namespace instituto93.Application
     {
         Task<List<Cargo>> GetCargos(CancellationToken cancellationToken = default);
         Task<Cargo> GetByIdCargos(int id, CancellationToken cancellationToken = default);
-        Task<int> CreateCargo (Cargo cargo, CancellationToken cancellationToken = default);
-        Task<bool> UpdateCargo (Cargo cargo, CancellationToken cancellationToken = default);
-        Task<bool> DeleteCargo (int id, CancellationToken cancellationToken = default);
+        Task<int> CreateCargo(Cargo cargo, CancellationToken cancellationToken = default);
+        Task<bool> UpdateCargo(Cargo cargo, CancellationToken cancellationToken = default);
+        Task<bool> DeleteCargo(int id, CancellationToken cancellationToken = default);
     }
 }

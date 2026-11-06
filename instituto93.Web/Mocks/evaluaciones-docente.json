@@ -1,0 +1,294 @@
+[
+  {
+    "evaluacionId": 9101,
+    "cursadaId": 9001,
+    "tipoEvaluacionId": 1,
+    "nombre": "Primer parcial",
+    "fecha": "2026-05-14T00:00:00",
+    "cuatrimestre": 1,
+    "estado": "Cerrada",
+    "ponderacion": 40,
+    "notas": [
+      {
+        "cursadaAlumnoCarreraId": 900101,
+        "nota": 7.5,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900102,
+        "nota": 4,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900103,
+        "nota": 7,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900104,
+        "nota": 7,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900105,
+        "nota": null,
+        "ausente": true,
+        "observaciones": "No se presentó"
+      },
+      {
+        "cursadaAlumnoCarreraId": 900106,
+        "nota": 9,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900107,
+        "nota": 6,
+        "ausente": false,
+        "observaciones": null
+      }
+    ]
+  },
+  {
+    "evaluacionId": 9102,
+    "cursadaId": 9001,
+    "tipoEvaluacionId": 2,
+    "nombre": "TP 1 - Algoritmos y estructuras",
+    "fecha": "2026-04-20T00:00:00",
+    "cuatrimestre": 1,
+    "estado": "Cerrada",
+    "ponderacion": 20,
+    "notas": [
+      {
+        "cursadaAlumnoCarreraId": 900101,
+        "nota": 8,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900102,
+        "nota": 10,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900103,
+        "nota": 5,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900104,
+        "nota": 10,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900105,
+        "nota": null,
+        "ausente": true,
+        "observaciones": "No se presentó"
+      },
+      {
+        "cursadaAlumnoCarreraId": 900106,
+        "nota": 9,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900107,
+        "nota": 6,
+        "ausente": false,
+        "observaciones": null
+      }
+    ]
+  },
+  {
+    "evaluacionId": 9103,
+    "cursadaId": 9001,
+    "tipoEvaluacionId": 1,
+    "nombre": "Segundo parcial",
+    "fecha": "2026-10-29T00:00:00",
+    "cuatrimestre": 2,
+    "estado": "Activa",
+    "ponderacion": 40,
+    "notas": [
+      {
+        "cursadaAlumnoCarreraId": 900101,
+        "nota": 6,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900103,
+        "nota": 5,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900105,
+        "nota": null,
+        "ausente": true,
+        "observaciones": "No se presentó"
+      },
+      {
+        "cursadaAlumnoCarreraId": 900107,
+        "nota": 7.5,
+        "ausente": false,
+        "observaciones": null
+      }
+    ]
+  },
+  {
+    "evaluacionId": 9104,
+    "cursadaId": 9001,
+    "tipoEvaluacionId": 4,
+    "nombre": "Integrador final",
+    "fecha": "2026-11-26T00:00:00",
+    "cuatrimestre": 2,
+    "estado": "Borrador",
+    "ponderacion": null,
+    "notas": []
+  },
+  {
+    "evaluacionId": 9105,
+    "cursadaId": 9002,
+    "tipoEvaluacionId": 1,
+    "nombre": "Parcial de modelado relacional",
+    "fecha": "2026-09-17T00:00:00",
+    "cuatrimestre": 2,
+    "estado": "Activa",
+    "ponderacion": 50,
+    "notas": [
+      {
+        "cursadaAlumnoCarreraId": 900201,
+        "nota": 8,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900203,
+        "nota": 5,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900205,
+        "nota": null,
+        "ausente": true,
+        "observaciones": "No se presentó"
+      }
+    ]
+  },
+  {
+    "evaluacionId": 9106,
+    "cursadaId": 9002,
+    "tipoEvaluacionId": 2,
+    "nombre": "TP - Consultas SQL",
+    "fecha": "2026-10-08T00:00:00",
+    "cuatrimestre": 2,
+    "estado": "Cerrada",
+    "ponderacion": 25,
+    "notas": [
+      {
+        "cursadaAlumnoCarreraId": 900201,
+        "nota": 4,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900202,
+        "nota": 7.5,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900203,
+        "nota": 4,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900204,
+        "nota": 9,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900205,
+        "nota": null,
+        "ausente": true,
+        "observaciones": "No se presentó"
+      },
+      {
+        "cursadaAlumnoCarreraId": 900206,
+        "nota": 4,
+        "ausente": false,
+        "observaciones": null
+      }
+    ]
+  },
+  {
+    "evaluacionId": 9107,
+    "cursadaId": 9003,
+    "tipoEvaluacionId": 2,
+    "nombre": "TP - Documento de requerimientos",
+    "fecha": "2026-10-15T00:00:00",
+    "cuatrimestre": 2,
+    "estado": "Activa",
+    "ponderacion": 30,
+    "notas": []
+  },
+  {
+    "evaluacionId": 9108,
+    "cursadaId": 9004,
+    "tipoEvaluacionId": 1,
+    "nombre": "Primer parcial",
+    "fecha": "2026-06-04T00:00:00",
+    "cuatrimestre": 1,
+    "estado": "Cerrada",
+    "ponderacion": 50,
+    "notas": [
+      {
+        "cursadaAlumnoCarreraId": 900401,
+        "nota": 4,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900402,
+        "nota": 10,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900403,
+        "nota": 4,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900404,
+        "nota": 4,
+        "ausente": false,
+        "observaciones": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900405,
+        "nota": null,
+        "ausente": true,
+        "observaciones": "No se presentó"
+      },
+      {
+        "cursadaAlumnoCarreraId": 900406,
+        "nota": 9,
+        "ausente": false,
+        "observaciones": null
+      }
+    ]
+  }
+]

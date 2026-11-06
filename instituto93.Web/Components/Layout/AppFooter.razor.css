@@ -108,3 +108,40 @@
 
     margin-left: auto;
 }
+
+/* --- Responsive ------------------------------------------------------ */
+
+.app-footer-sedes-linea {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 1000px) {
+    .app-footer-inner {
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: var(--space-6) var(--space-8);
+    }
+}
+
+@media (max-width: 700px) {
+    .app-footer-wrapper ::deep .mud-toolbar {
+        padding: var(--space-6) 1rem;
+    }
+
+    .app-footer-separador {
+        width: 100%;
+    }
+
+    .app-footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .app-footer-social-iconos {
+        margin-left: -0.5rem;
+    }
+
+    .app-footer-titulo {
+        font-size: 0.9rem;
+    }
+}

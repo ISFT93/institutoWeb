@@ -1,0 +1,98 @@
+[
+  {
+    "materiaId": 9301,
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "anio": 1,
+    "materia": "Programación I",
+    "docente": "Mariana Sosa",
+    "sede": "Sede Central"
+  },
+  {
+    "materiaId": 9302,
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "anio": 1,
+    "materia": "Matemática Aplicada",
+    "docente": "Ricardo Paz",
+    "sede": "Sede Central"
+  },
+  {
+    "materiaId": 9303,
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "anio": 1,
+    "materia": "Sistemas Operativos",
+    "docente": "Lucas Ferreyra",
+    "sede": "Sede Anexo"
+  },
+  {
+    "materiaId": 9304,
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "anio": 1,
+    "materia": "Inglés Técnico I",
+    "docente": "Carolina Vera",
+    "sede": "Sede Central"
+  },
+  {
+    "materiaId": 9305,
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "anio": 2,
+    "materia": "Base de Datos",
+    "docente": "Martín Acosta",
+    "sede": "Sede Central"
+  },
+  {
+    "materiaId": 9306,
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "anio": 2,
+    "materia": "Programación II",
+    "docente": "Mariana Sosa",
+    "sede": "Sede Central"
+  },
+  {
+    "materiaId": 9307,
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "anio": 2,
+    "materia": "Análisis de Sistemas",
+    "docente": "Elena Roldán",
+    "sede": "Sede Anexo"
+  },
+  {
+    "materiaId": 9308,
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "anio": 2,
+    "materia": "Redes de Datos",
+    "docente": "Lucas Ferreyra",
+    "sede": "Sede Central"
+  },
+  {
+    "materiaId": 9309,
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "anio": 3,
+    "materia": "Ingeniería de Software",
+    "docente": "Sergio Molina",
+    "sede": "Sede Central"
+  },
+  {
+    "materiaId": 9310,
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "anio": 3,
+    "materia": "Desarrollo de Aplicaciones Web",
+    "docente": "Julieta Barrios",
+    "sede": "Sede Central"
+  },
+  {
+    "materiaId": 9311,
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "anio": 3,
+    "materia": "Seguridad Informática",
+    "docente": "Ricardo Paz",
+    "sede": "Sede Anexo"
+  },
+  {
+    "materiaId": 9312,
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "anio": 3,
+    "materia": "Práctica Profesionalizante",
+    "docente": "Elena Roldán",
+    "sede": "Sede Central"
+  }
+]

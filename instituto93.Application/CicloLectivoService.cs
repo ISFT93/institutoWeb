@@ -20,7 +20,7 @@ namespace instituto93.Application
         public async Task<List<CicloLectivoModelo>> GetCiclosLectivosAsync(CancellationToken cancellationToken = default)
         {
             var ciclos = await _repo.GetAllAsync(cancellationToken);
-            return ciclos.ToList(); 
+            return ciclos.ToList();
         }
 
         public async Task<CicloLectivoModelo?> GetByAnioAsync(int anioLectivo, CancellationToken cancellationToken = default)

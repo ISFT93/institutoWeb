@@ -14,7 +14,7 @@ namespace instituto93.Domain.Models
         public int AnioCarreraId { get; set; }
         public bool Activo { get; set; }
         public bool AdmiteCurso { get; set; }
-         public int AnioCarrera { get; set; }
+        public int AnioCarrera { get; set; }
 
     }
 }

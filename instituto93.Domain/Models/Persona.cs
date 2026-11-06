@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace instituto93.Domain.Models
 {
-    public class Persona:IPersona
+    public class Persona : IPersona
     {
         public int Id { get; set; }
         public string Nombre { get; set; }

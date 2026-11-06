@@ -1,0 +1,234 @@
+[
+  {
+    "cursadaId": 9001,
+    "materia": "Programación I",
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "curso": "1° Año - Comisión A",
+    "anioLectivo": 2026,
+    "cargaHoraria": 128,
+    "estudiantes": [
+      {
+        "cursadaAlumnoCarreraId": 900101,
+        "alumnoId": 9001,
+        "nombreCompleto": "Agustina Benítez",
+        "dni": "44123456",
+        "estado": "Cursando",
+        "porcentajeAsistencia": 91.25
+      },
+      {
+        "cursadaAlumnoCarreraId": 900102,
+        "alumnoId": 9002,
+        "nombreCompleto": "Bruno Cabrera",
+        "dni": "43987654",
+        "estado": "Regular",
+        "porcentajeAsistencia": 78.5
+      },
+      {
+        "cursadaAlumnoCarreraId": 900103,
+        "alumnoId": 9003,
+        "nombreCompleto": "Camila Domínguez",
+        "dni": "44561237",
+        "estado": "Cursando",
+        "porcentajeAsistencia": 62.5
+      },
+      {
+        "cursadaAlumnoCarreraId": 900104,
+        "alumnoId": 9004,
+        "nombreCompleto": "Dante Escobar",
+        "dni": "42876123",
+        "estado": "Cursando",
+        "porcentajeAsistencia": 70
+      },
+      {
+        "cursadaAlumnoCarreraId": 900105,
+        "alumnoId": 9005,
+        "nombreCompleto": "Florencia Giménez",
+        "dni": "44098765",
+        "estado": "Cursando",
+        "porcentajeAsistencia": 85
+      },
+      {
+        "cursadaAlumnoCarreraId": 900106,
+        "alumnoId": 9006,
+        "nombreCompleto": "Gonzalo Herrera",
+        "dni": "43456781",
+        "estado": "Cursando",
+        "porcentajeAsistencia": null
+      },
+      {
+        "cursadaAlumnoCarreraId": 900107,
+        "alumnoId": 9007,
+        "nombreCompleto": "Irina Juárez",
+        "dni": "44321098",
+        "estado": "Cursando",
+        "porcentajeAsistencia": 91.25
+      }
+    ]
+  },
+  {
+    "cursadaId": 9002,
+    "materia": "Base de Datos",
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "curso": "2° Año - Comisión A",
+    "anioLectivo": 2026,
+    "cargaHoraria": 96,
+    "estudiantes": [
+      {
+        "cursadaAlumnoCarreraId": 900201,
+        "alumnoId": 9005,
+        "nombreCompleto": "Florencia Giménez",
+        "dni": "44098765",
+        "estado": "Cursando",
+        "porcentajeAsistencia": 91.25
+      },
+      {
+        "cursadaAlumnoCarreraId": 900202,
+        "alumnoId": 9006,
+        "nombreCompleto": "Gonzalo Herrera",
+        "dni": "43456781",
+        "estado": "Regular",
+        "porcentajeAsistencia": 62.5
+      },
+      {
+        "cursadaAlumnoCarreraId": 900203,
+        "alumnoId": 9007,
+        "nombreCompleto": "Irina Juárez",
+        "dni": "44321098",
+        "estado": "Regular",
+        "porcentajeAsistencia": 91.25
+      },
+      {
+        "cursadaAlumnoCarreraId": 900204,
+        "alumnoId": 9008,
+        "nombreCompleto": "Joaquín Luna",
+        "dni": "42765432",
+        "estado": "Cursando",
+        "porcentajeAsistencia": 85
+      },
+      {
+        "cursadaAlumnoCarreraId": 900205,
+        "alumnoId": 9009,
+        "nombreCompleto": "Lucía Medina",
+        "dni": "44213579",
+        "estado": "Cursando",
+        "porcentajeAsistencia": 100
+      },
+      {
+        "cursadaAlumnoCarreraId": 900206,
+        "alumnoId": 9010,
+        "nombreCompleto": "Mateo Navarro",
+        "dni": "43654321",
+        "estado": "Cursando",
+        "porcentajeAsistencia": null
+      }
+    ]
+  },
+  {
+    "cursadaId": 9003,
+    "materia": "Ingeniería de Software",
+    "carrera": "Análisis, Desarrollo y Programación de Aplicaciones",
+    "curso": "3° Año - Comisión B",
+    "anioLectivo": 2026,
+    "cargaHoraria": 96,
+    "estudiantes": [
+      {
+        "cursadaAlumnoCarreraId": 900301,
+        "alumnoId": 9009,
+        "nombreCompleto": "Lucía Medina",
+        "dni": "44213579",
+        "estado": "Regular",
+        "porcentajeAsistencia": 70
+      },
+      {
+        "cursadaAlumnoCarreraId": 900302,
+        "alumnoId": 9010,
+        "nombreCompleto": "Mateo Navarro",
+        "dni": "43654321",
+        "estado": "Cursando",
+        "porcentajeAsistencia": 100
+      },
+      {
+        "cursadaAlumnoCarreraId": 900303,
+        "alumnoId": 9011,
+        "nombreCompleto": "Nahuel Ortiz",
+        "dni": "44789012",
+        "estado": "Cursando",
+        "porcentajeAsistencia": 70
+      },
+      {
+        "cursadaAlumnoCarreraId": 900304,
+        "alumnoId": 9012,
+        "nombreCompleto": "Paula Quiroga",
+        "dni": "43210987",
+        "estado": "Regular",
+        "porcentajeAsistencia": 78.5
+      },
+      {
+        "cursadaAlumnoCarreraId": 900305,
+        "alumnoId": 9001,
+        "nombreCompleto": "Agustina Benítez",
+        "dni": "44123456",
+        "estado": "Regular",
+        "porcentajeAsistencia": 78.5
+      }
+    ]
+  },
+  {
+    "cursadaId": 9004,
+    "materia": "Estadística",
+    "carrera": "Ciencia de Datos e Inteligencia Artificial",
+    "curso": "1° Año - Comisión A",
+    "anioLectivo": 2026,
+    "cargaHoraria": 64,
+    "estudiantes": [
+      {
+        "cursadaAlumnoCarreraId": 900401,
+        "alumnoId": 9003,
+        "nombreCompleto": "Camila Domínguez",
+        "dni": "44561237",
+        "estado": "Cursando",
+        "porcentajeAsistencia": 70
+      },
+      {
+        "cursadaAlumnoCarreraId": 900402,
+        "alumnoId": 9004,
+        "nombreCompleto": "Dante Escobar",
+        "dni": "42876123",
+        "estado": "Cursando",
+        "porcentajeAsistencia": 62.5
+      },
+      {
+        "cursadaAlumnoCarreraId": 900403,
+        "alumnoId": 9005,
+        "nombreCompleto": "Florencia Giménez",
+        "dni": "44098765",
+        "estado": "Cursando",
+        "porcentajeAsistencia": 62.5
+      },
+      {
+        "cursadaAlumnoCarreraId": 900404,
+        "alumnoId": 9006,
+        "nombreCompleto": "Gonzalo Herrera",
+        "dni": "43456781",
+        "estado": "Cursando",
+        "porcentajeAsistencia": 91.25
+      },
+      {
+        "cursadaAlumnoCarreraId": 900405,
+        "alumnoId": 9007,
+        "nombreCompleto": "Irina Juárez",
+        "dni": "44321098",
+        "estado": "Cursando",
+        "porcentajeAsistencia": 62.5
+      },
+      {
+        "cursadaAlumnoCarreraId": 900406,
+        "alumnoId": 9008,
+        "nombreCompleto": "Joaquín Luna",
+        "dni": "42765432",
+        "estado": "Cursando",
+        "porcentajeAsistencia": null
+      }
+    ]
+  }
+]

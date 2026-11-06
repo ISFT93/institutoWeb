@@ -1,0 +1,244 @@
+.inscripciones-page {
+    min-height: 100vh;
+
+    background: #F5F8FD;
+}
+
+/* Mismo contenedor que /mesas-finales */
+.inscripciones-container {
+    max-width: 1260px;
+
+    margin-left: 6.5%;
+    margin-right: 10%;
+    padding: 2.5rem 0 3rem;
+}
+
+/* Título */
+
+.inscripciones-page ::deep .insc-titulo {
+    margin: 0;
+
+    color: #333333;
+    font-size: 2.125rem;
+    font-weight: 600;
+}
+
+/* Dos columnas: 59% / 39% del ancho útil, ~33px de separación, alineadas arriba. */
+
+.insc-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 59fr) minmax(0, 39fr);
+    column-gap: 2.0625rem; /* ~33px */
+
+    align-items: start;
+    margin-top: 1.5rem;
+}
+
+/* Tarjetas (HTML propio, mismo lenguaje que .mesas-card) */
+
+.insc-card {
+    box-sizing: border-box;
+
+    background-color: #ffffff;
+    border: 1px solid #D9DDE3;
+    border-radius: 6px;
+}
+
+/* Columna izquierda: pestaña pegada a la tarjeta (patrón .mesas-tab de /mesas-finales). */
+
+.insc-col-izq {
+    position: relative;
+}
+
+.insc-tab {
+    position: relative;
+    z-index: 1;
+    width: 78%;
+    margin-bottom: -1px; /* pegada a la tarjeta, sin espacio */
+
+    padding: 0.5rem 1.25rem;
+
+    background-color: #EEEEF1;
+    border: 1px solid #D9DDE3;
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+
+    color: #444444;
+    font-size: 0.75rem; /* ~12px */
+    font-weight: 400;
+}
+
+.insc-tab strong {
+    font-weight: 600;
+}
+
+/* Tarjeta con scroll interno: el scroll vive en el div, nunca en la tarjeta ni en la pestaña. */
+
+.insc-card-listado {
+    height: 26.875rem; /* ~430px en el diseño */
+
+    /* la esquina superior izquierda la cubre la pestaña */
+    border-radius: 0 6px 6px 6px;
+}
+
+.insc-card-scroll {
+    box-sizing: border-box;
+    height: 100%;
+
+    padding: 1.25rem; /* ~20px */
+
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #B8B8B8 transparent;
+}
+
+.insc-card-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.insc-card-scroll::-webkit-scrollbar-thumb {
+    background-color: #B8B8B8;
+    border-radius: 3px;
+}
+
+.insc-card-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Secciones 1°/2°/3° AÑO */
+
+.insc-anio + .insc-anio {
+    margin-top: 1.25rem; /* el contenido total supera la tarjeta: por eso hace scroll */
+}
+
+.insc-anio-titulo {
+    margin: 0 0 0.75rem; /* ~12px hasta su tabla */
+
+    color: var(--color-text);
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+/* Mismo estilo de tabla que /mesas-finales */
+
+.insc-tabla-scroll {
+    overflow-x: auto;
+}
+
+.insc-card ::deep .insc-tabla {
+    width: 100%;
+
+    border-radius: 0.5rem;
+}
+
+.insc-card ::deep .insc-tabla thead th {
+    padding: 0.75rem 1rem;
+
+    background-color: #EDF1F6;
+    color: var(--color-text);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.insc-card-seleccion {
+    min-height: 29.375rem; /* ~470px en el diseño */
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 1.5625rem 1.5625rem 3.4375rem; /* ~25px arriba/costados, ~55px abajo */
+
+    text-align: center;
+}
+
+.insc-seleccion-titulo {
+    margin: 0;
+
+    color: #333333;
+    font-size: 1.25rem; /* ~20px */
+    font-weight: 600;
+}
+
+.insc-seleccion-ilustracion {
+    width: 10rem; /* ~160px */
+    height: 10.3125rem; /* ~165px, igual que el viewBox: sin deformarse */
+
+    margin-top: 2.8125rem; /* ~45px */
+
+    color: #D9D4D4;
+}
+
+.insc-seleccion-texto {
+    max-width: 15.625rem; /* ~250px: el texto cae en dos líneas */
+    margin: 1.875rem 0 0; /* ~30px */
+
+    color: #666666;
+    font-size: 0.8125rem; /* ~13px */
+}
+
+.insc-card-seleccion ::deep .insc-btn-anotarse {
+    width: 10.9375rem; /* ~175px */
+    height: 2.375rem; /* ~38px */
+    min-height: 2.375rem;
+
+    margin-top: 2.5rem; /* ~40px */
+
+    background-color: #22426A;
+    box-shadow: none;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 1.125rem; /* ~18px */
+    font-weight: 400;
+    text-transform: none;
+}
+
+.insc-card-seleccion ::deep .insc-btn-anotarse:hover {
+    background-color: #2C5484;
+}
+
+/* Pantallas angostas: una sola columna, la izquierda primero. */
+@media (max-width: 1024px) {
+    .inscripciones-container {
+        margin-left: 5%;
+        margin-right: 5%;
+    }
+}
+
+@media (max-width: 768px) {
+    .inscripciones-page ::deep .insc-titulo {
+        font-size: 1.75rem;
+    }
+
+    .insc-tab {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .insc-card-listado {
+        height: 24rem;
+    }
+
+    .insc-card-scroll {
+        padding: 1rem;
+    }
+
+    .insc-card-seleccion {
+        min-height: 0;
+
+        padding-bottom: 2rem;
+    }
+
+    .insc-card-seleccion ::deep .insc-btn-anotarse {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 900px) {
+    .insc-grid {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 1.5rem;
+    }
+}

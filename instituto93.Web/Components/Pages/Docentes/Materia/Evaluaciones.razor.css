@@ -1,0 +1,207 @@
+.materias-page {
+    min-height: calc(100vh - 124px);
+    background: var(--color-background);
+}
+
+.materias-container {
+    width: min(1180px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: var(--space-4) 0 var(--space-12);
+}
+
+.back-button {
+    margin-bottom: var(--space-4);
+}
+
+.back-button ::deep .mud-button-label,
+.materias-container ::deep .mud-button-label {
+    text-transform: none;
+}
+
+.page-header {
+    display: grid;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+}
+
+.page-header h1,
+.page-header p {
+    margin: 0;
+}
+
+.page-header h1 {
+    color: var(--color-text);
+    font-size: var(--font-size-3xl);
+    line-height: var(--line-height-tight);
+}
+
+.page-header p {
+    color: var(--color-text-secondary);
+}
+
+.page-header ::deep .mud-button-root {
+    justify-self: start;
+    margin-top: var(--space-2);
+}
+
+.cards {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-6);
+}
+
+.search-row {
+    width: min(525px, 100%);
+    margin-bottom: var(--space-6);
+}
+
+.search-row ::deep .mud-input.mud-input-outlined {
+    height: 45px;
+    background: #fafafa;
+    border-radius: .75rem;
+}
+
+.search-row ::deep .mud-input-outlined-border {
+    border-radius: .75rem;
+}
+
+.search-row ::deep .mud-input-root-outlined {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.search-row ::deep .mud-input-root,
+.search-row ::deep .mud-input-adornment-icon {
+    color: #555;
+    font-weight: var(--font-weight-regular);
+}
+
+.search-row ::deep input::placeholder {
+    color: #555;
+    font-weight: var(--font-weight-regular);
+    opacity: 1;
+}
+
+.filter-empty {
+    margin-top: 0;
+}
+
+.card,
+.state {
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+}
+
+.card p {
+    margin: 0;
+    color: var(--color-text-secondary);
+}
+
+.form {
+    margin: var(--space-6) 0;
+}
+
+.form h2 {
+    margin: 0 0 var(--space-1);
+    color: var(--color-text);
+    font-size: var(--font-size-xl);
+}
+
+.form-actions {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    margin-top: var(--space-2);
+}
+
+.title {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.title h2 {
+    margin: var(--space-2) 0 0;
+    color: var(--color-text);
+    font-size: var(--font-size-lg);
+}
+
+.badge {
+    display: inline-block;
+    padding: .35rem .7rem;
+    color: #506073;
+    background: #edf0f4;
+    border-radius: 999px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+.badge.activa {
+    color: #246b2b;
+    background: #e2f3e5;
+}
+
+.badge.cerrada {
+    color: #506073;
+    background: #edf0f4;
+}
+
+.state {
+    place-items: center;
+    min-height: 180px;
+    text-align: center;
+}
+
+.state div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.state span {
+    color: var(--color-text-secondary);
+}
+
+.error {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: var(--space-4);
+    color: var(--color-error);
+    background: color-mix(in srgb, var(--color-error) 8%, white);
+    border: 1px solid color-mix(in srgb, var(--color-error) 35%, white);
+    border-radius: 12px;
+}
+
+@media (min-width: 700px) {
+    .materias-container {
+        width: min(1180px, calc(100% - 4rem));
+        padding-top: var(--space-6);
+    }
+
+    .card,
+    .state {
+        padding: var(--space-6);
+    }
+}
+
+@media (min-width: 800px) {
+    .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .form h2,
+    .form-actions {
+        grid-column: 1 / -1;
+    }
+}

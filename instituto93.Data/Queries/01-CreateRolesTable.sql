@@ -1,6 +1,8 @@
 -- Roles de acceso de los usuarios (dbo.Usuarios.RolId).
 -- Script idempotente. Debe ejecutarse antes de 02-CreateUsuariosTable.sql.
 
+USE instituto_db;
+
 IF OBJECT_ID(N'dbo.Roles', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Roles

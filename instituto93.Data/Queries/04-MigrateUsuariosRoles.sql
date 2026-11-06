@@ -2,6 +2,8 @@
 -- Agrega RolId (los usuarios actuales quedan con rol Alumno), hace AlumnoId opcional y agrega ProfesorId.
 -- Script idempotente. Requiere dbo.Roles (01), dbo.Usuarios (02) y dbo.Personal.
 
+USE instituto_db;
+
 IF OBJECT_ID(N'dbo.Usuarios', N'U') IS NULL
     THROW 50000, 'La tabla dbo.Usuarios debe existir antes de migrarla.', 1;
 GO

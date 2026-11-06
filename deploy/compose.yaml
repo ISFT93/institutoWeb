@@ -1,0 +1,78 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "true"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Definir MSSQL_SA_PASSWORD en .env}
+      MSSQL_PID: ${MSSQL_PID:-Express}
+      TZ: ${TZ:-America/Argentina/Buenos_Aires}
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserverdata:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  db-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: "no"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      MSSQL_DATABASE: ${MSSQL_DATABASE:-instituto_db}
+    volumes:
+      - ./scripts/init-db.sh:/init-db.sh:ro
+      - ./scripts/base:/scripts/base:ro
+      - ./scripts/web:/scripts/web:ro
+    entrypoint: ["/bin/bash", "/init-db.sh"]
+
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    restart: unless-stopped
+    depends_on:
+      - sqlserver
+    ports:
+      - "8978:8978"
+    volumes:
+      - cloudbeaver_data:/opt/cloudbeaver/workspace
+
+  api:
+    build:
+      context: ..
+      dockerfile: instituto93.Controller/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      ConnectionStrings__InstiDb: "Server=sqlserver,1433;Database=${MSSQL_DATABASE:-instituto_db};User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;"
+      Jwt__Secret: ${Jwt__Secret:?Definir Jwt__Secret en .env}
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ../instituto93.Web
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      Api__BaseUrl: http://api:8000
+    depends_on:
+      - api
+    ports:
+      - "8080:8080"
+    volumes:
+      - web-keys:/app/keys
+    restart: unless-stopped
+
+volumes:
+  sqlserverdata:
+  cloudbeaver_data:
+  web-keys:

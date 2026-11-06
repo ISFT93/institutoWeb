@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace instituto93.Data.Repositories
 {
-    public class MateriasModeloRepository: IMateriasModeloRepository
+    public class MateriasModeloRepository : IMateriasModeloRepository
     {
         private readonly Conexion _conexion;
 

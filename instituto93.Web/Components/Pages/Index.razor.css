@@ -270,23 +270,158 @@
     color: #9AA5B5;
 }
 
-@media (max-width: 768px) {
+.home-card-link,
+.evento-texto,
+.aviso-texto {
+    min-width: 0;
+}
+
+.home-cards > * {
+    min-width: 0;
+}
+
+.home-col-der a {
+    display: block;
+
+    color: inherit;
+    text-decoration: none;
+}
+
+@media (max-width: 1024px) {
     .home-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         row-gap: var(--space-8);
 
         padding: var(--space-6) 5% var(--space-8);
     }
 
     .home-cards {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     }
 
     .hero-title {
-        font-size: var(--font-size-2xl);
+        font-size: var(--font-size-3xl);
     }
 
     .hero-subtitle {
+        font-size: var(--font-size-xl);
+    }
+
+    .panel-eventos,
+    .panel-avisos {
+        min-height: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .home-container {
+        row-gap: var(--space-6);
+
+        padding: var(--space-4) 4% var(--space-8);
+    }
+
+    /* Hero más bajo y con texto acotado al ancho disponible */
+    .hero {
+        aspect-ratio: auto;
+        min-height: 150px;
+    }
+
+    .hero-text {
+        right: 4%;
+        left: 5%;
+        top: 50%;
+
+        width: auto;
+    }
+
+    .hero-title {
+        font-size: var(--font-size-xl);
+    }
+
+    .hero-subtitle {
+        margin-top: var(--space-2);
+
+        font-size: var(--font-size-sm);
+    }
+
+    /* Tarjetas compactas: imagen a la izquierda, texto a la derecha */
+    .home-cards {
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-3);
+
+        margin-top: var(--space-4);
+    }
+
+    .home-cards ::deep .home-card {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    .card-img-wrap {
+        flex: 0 0 96px;
+
+        height: auto;
+        min-height: 80px;
+    }
+
+    .card-img-wrap img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+    }
+
+    .home-cards ::deep .home-card-content {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        justify-content: center;
+
+        min-width: 0;
+        padding: var(--space-3) var(--space-4);
+
+        text-align: left;
+    }
+
+    .home-card-title {
         font-size: var(--font-size-base);
+    }
+
+    .home-card-subtitle {
+        margin-top: var(--space-1);
+
+        font-size: var(--font-size-sm);
+    }
+
+    /* Paneles */
+    .panel-eventos,
+    .panel-avisos {
+        min-height: 0;
+
+        padding: var(--space-4);
+    }
+
+    .panel-titulo {
+        margin-bottom: var(--space-4);
+
+        font-size: var(--font-size-xl);
+    }
+
+    .evento-card,
+    .aviso-card {
+        gap: var(--space-3);
+
+        min-height: 64px;
+        padding: var(--space-2) var(--space-3);
+    }
+
+    .evento-titulo,
+    .aviso-texto {
+        font-size: var(--font-size-base);
+    }
+
+    .evento-subtitulo {
+        font-size: var(--font-size-sm);
     }
 }

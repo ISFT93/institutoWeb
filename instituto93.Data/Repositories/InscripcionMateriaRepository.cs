@@ -24,7 +24,7 @@ namespace instituto93.Data.Repositories
             var lista = new List<InscripcionMateria>();
             const string sql = "SELECT a.AlumnoId, cac.Estado, cac.Cursada FROM Alumnos AS a " +
                 "INNER JOIN AlumnosCarreras AS ac ON a.AlumnoId = ac.AlumnoId " +
-                "INNER JOIN CursadaAlumnoCarreras AS cac ON cac.AlumnoCarreraId = ac.AlumnoCarreraId";                         
+                "INNER JOIN CursadaAlumnoCarreras AS cac ON cac.AlumnoCarreraId = ac.AlumnoCarreraId";
 
             try
             {
@@ -44,7 +44,7 @@ namespace instituto93.Data.Repositories
             }
             finally
             {
-                _conexion.Close();                
+                _conexion.Close();
             }
 
             return lista;
@@ -82,7 +82,7 @@ namespace instituto93.Data.Repositories
             }
         }
 
-        public async Task<int> CreateAsync(int alumnoCarreraId,int cursadaId,int anioCicloLectivo,string estado,int horasCursada,DateTime ultimoPresentismo, decimal porcentajeAsistencia,string cursada,bool activo, CancellationToken cancellationToken = default)
+        public async Task<int> CreateAsync(int alumnoCarreraId, int cursadaId, int anioCicloLectivo, string estado, int horasCursada, DateTime ultimoPresentismo, decimal porcentajeAsistencia, string cursada, bool activo, CancellationToken cancellationToken = default)
         {
             const string sql = "INSERT INTO CursadaAlumnoCarreras VALUES(@AlumnoCarreraId," +
                 "@CursadaId,@AnioCicloLectivo,@Estado,@HorasCursadas,@UltimoPresentimos,@PorcentajeAsistencia,@Cursada,@Activo)";
@@ -92,14 +92,14 @@ namespace instituto93.Data.Repositories
                 await _conexion.OpenAsync(cancellationToken);
                 using var cmd = _conexion.Conector.CreateCommand();
                 cmd.CommandText = sql;
-                cmd.Parameters.AddWithValue("@AlumnoCarreraId",alumnoCarreraId);
-                cmd.Parameters.AddWithValue("@CursadaId",cursadaId);
-                cmd.Parameters.AddWithValue("@AnioCicloLectivo",anioCicloLectivo);
-                cmd.Parameters.AddWithValue("@Estado",estado);
-                cmd.Parameters.AddWithValue("@HorasCursadas",horasCursada);
-                cmd.Parameters.AddWithValue("@UltimoPresentimos",ultimoPresentismo);
-                cmd.Parameters.AddWithValue("@Cursada",cursada);
-                cmd.Parameters.AddWithValue("@Activo",activo);
+                cmd.Parameters.AddWithValue("@AlumnoCarreraId", alumnoCarreraId);
+                cmd.Parameters.AddWithValue("@CursadaId", cursadaId);
+                cmd.Parameters.AddWithValue("@AnioCicloLectivo", anioCicloLectivo);
+                cmd.Parameters.AddWithValue("@Estado", estado);
+                cmd.Parameters.AddWithValue("@HorasCursadas", horasCursada);
+                cmd.Parameters.AddWithValue("@UltimoPresentimos", ultimoPresentismo);
+                cmd.Parameters.AddWithValue("@Cursada", cursada);
+                cmd.Parameters.AddWithValue("@Activo", activo);
                 var result = await cmd.ExecuteScalarAsync(cancellationToken);
                 return Convert.ToInt32(result);
             }
@@ -112,7 +112,7 @@ namespace instituto93.Data.Repositories
 
         public async Task<bool> UpdateAsync(int id, InscripcionMateria inscripcionMateria, CancellationToken cancellationToken = default)
         {
-            if (inscripcionMateria == null) throw new ArgumentNullException(nameof(inscripcionMateria));          
+            if (inscripcionMateria == null) throw new ArgumentNullException(nameof(inscripcionMateria));
             string sql = "UPDATE CursadaAlumnoCarreras SET Estado =  @Estado, Cursada = @Cursada WHERE CursadaAlumnoCarreraId = @CursadaAlumnoCarreraId";
 
             try
@@ -151,6 +151,6 @@ namespace instituto93.Data.Repositories
             }
         }
 
-        
+
     }
 }

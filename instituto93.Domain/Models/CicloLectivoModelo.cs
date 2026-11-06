@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace instituto93.Domain.Models
 {
-    public class CicloLectivoModelo:ICicloLectivo
+    public class CicloLectivoModelo : ICicloLectivo
     {
         //Lautaro Mansilla
         public int AnioLectivo { get; set; }

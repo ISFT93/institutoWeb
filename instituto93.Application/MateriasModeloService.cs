@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace instituto93.Application
 {
-    public class MateriasModeloService:IMateriasModeloService
+    public class MateriasModeloService : IMateriasModeloService
     {
         private readonly IMateriasModeloRepository _repo;
         public MateriasModeloService(IMateriasModeloRepository repo)

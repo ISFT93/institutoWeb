@@ -10,7 +10,7 @@ namespace instituto93.Application.Interfaces
     public interface IInscripcionMateriaService
     {
         Task<List<InscripcionMateria>> GetInscripcionMateriaAsync(CancellationToken cancellationToken = default);
-        Task<InscripcionMateria?> GetInscripcionMateriaByIdAsync(int id, CancellationToken cancellationToken = default);        
+        Task<InscripcionMateria?> GetInscripcionMateriaByIdAsync(int id, CancellationToken cancellationToken = default);
         Task<int> CreateInscripcionMateriaAsync(int alumnoCarreraId, int cursadaId, int anioCicloLectivo, string estado,
             int horasCursada, DateTime ultimoPresentismo, decimal porcentajeAsistencia, string cursada, bool activo, CancellationToken cancellationToken = default);
         Task<bool> UpdateInscripcionMateriaAsync(int id, InscripcionMateria inscripcionMateria, CancellationToken cancellationToken = default);
