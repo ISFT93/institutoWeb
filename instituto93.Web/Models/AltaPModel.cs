@@ -27,6 +27,8 @@ namespace instituto93.Web.Models
         [Required(ErrorMessage = "La fecha de nacimiento es obligatoria.")]
         public DateTime? FechaNacimiento { get; set; }
 
+        public string PaisNacimiento { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "El sexo es obligatorio.")]
         public string Sexo { get; set; } = string.Empty;
 

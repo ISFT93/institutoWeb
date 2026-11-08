@@ -20,5 +20,7 @@ namespace instituto93.Application
             CancellationToken cancellationToken = default);
 
         Task<int> CreateAltaPAsync(AltaPDto altaP, CancellationToken cancellationToken = default);
+
+        public Task<AlumnoPruebaDto> GetAlumnoPruebaByDniAsync(int id, CancellationToken cancellationToken = default);
     }
 }

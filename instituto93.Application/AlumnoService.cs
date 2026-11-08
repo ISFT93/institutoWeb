@@ -3,6 +3,7 @@ using instituto93.Data.Repositories.Interfaces;
 using instituto93.Domain.Interfaces;
 using instituto93.Domain.Models;
 using instituto93.Domain.DTOs;
+using System.Data;
 
 
 namespace instituto93.Application
@@ -220,6 +221,7 @@ namespace instituto93.Application
                 NumeroDocumento = altaP.NumeroDocumento,
                 Sexo = altaP.Sexo,
                 FechaNacimiento = altaP.FechaNacimiento.Value,
+                PaisNacimiento=altaP.PaisNacimiento,
                 Calle = altaP.Calle,
                 Localidad = altaP.Localidad,
                 Telefono = altaP.Telefono,
@@ -263,6 +265,11 @@ namespace instituto93.Application
                 }, cancellationToken);
 
             return alumnoId;
+        }
+
+        public Task<AlumnoPruebaDto> GetAlumnoPruebaByDniAsync(int id, CancellationToken cancellationToken = default)
+        {
+            return _repo.GetByDocumentPruebaAsync(id, cancellationToken);
         }
     }
 

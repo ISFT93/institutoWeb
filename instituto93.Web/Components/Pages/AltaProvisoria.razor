@@ -31,6 +31,44 @@
             @* <ValidationSummary /> *@
 
             <article class="form-section">
+                <h2>Dni y otros</h2>
+                <div class="form-grid">
+                    <MudNumericField Label="Número de documento *"
+                                     @bind-Value="_model.NumeroDocumento"
+                                     @bind-Value:after="VerificarDni"
+                                     For="@(() => _model.NumeroDocumento)"
+                                     Variant="Variant.Outlined"
+                                     MaxLength="8"
+                                     FullWidth
+                                     HideSpinButtons />
+                </div>
+            </article>
+
+            <article class="form-section">
+                <h2>Libro y folio</h2>
+                <div class="form-grid">
+                    @if (_alumnoEncontrado != null)
+                    {
+                        <MudTextField Label="Libro"
+                                      Value="@_alumnoEncontrado.Libro"
+                                      ReadOnly="true"
+                                      Variant="Variant.Outlined"
+                                      FullWidth />
+
+                        <MudTextField Label="Folio"
+                                      Value="@_alumnoEncontrado.Folio"
+                                      ReadOnly="true"
+                                      Variant="Variant.Outlined"
+                                      FullWidth />
+                    }
+                    else
+                    {
+                        <p class="text-muted">Ingrese un DNI de 8 dígitos para consultar los datos de libro y folio si los tiene.</p>
+                    }
+                </div>
+            </article>
+
+            <article class="form-section">
                 <h2>Carrera de interés</h2>
                 <div class="form-grid">
                     <MudSelect T="int?"
@@ -80,6 +118,7 @@
                                   @bind-Value="_model.Nombre"
                                   For="@(() => _model.Nombre)"
                                   Variant="Variant.Outlined"
+                                  ReadOnly="@(_alumnoEncontrado != null)"
                                   MaxLength="50"
                                   FullWidth />
 
@@ -87,6 +126,7 @@
                                   @bind-Value="_model.Apellido"
                                   For="@(() => _model.Apellido)"
                                   Variant="Variant.Outlined"
+                                  ReadOnly="@(_alumnoEncontrado != null)"
                                   MaxLength="50"
                                   FullWidth />
 
@@ -94,6 +134,7 @@
                                @bind-Value="_model.TipoDocumento"
                                For="@(() => _model.TipoDocumento)"
                                Variant="Variant.Outlined"
+                               ReadOnly="@(_alumnoEncontrado != null)"
                                MaxLength="10"
                                FullWidth>
                         @foreach (var tipo in _tiposDocumento)
@@ -102,21 +143,19 @@
                         }
                     </MudSelect>
 
-                    <MudNumericField Label="Número de documento *"
-                                     @bind-Value="_model.NumeroDocumento"
-                                     For="@(() => _model.NumeroDocumento)"
-                                     Variant="Variant.Outlined"
-                                     MaxLength="8"
-                                     FullWidth
-                                     HideSpinButtons />
-
-
-
                     <MudDatePicker Label="Fecha de nacimiento *"
                                    @bind-Date="_model.FechaNacimiento"
                                    For="@(() => _model.FechaNacimiento)"
                                    Variant="Variant.Outlined"
                                    DateFormat="dd/MM/yyyy" />
+
+                    <MudTextField Label="País de nacimiento *"
+                                  @bind-Value="_model.PaisNacimiento"
+                                  For="@(() => _model.PaisNacimiento)"
+                                  Variant="Variant.Outlined"
+                                  ReadOnly="@(_alumnoEncontrado != null)"
+                                  MaxLength="50"
+                                  FullWidth />
 
                     <MudSelect Label="Sexo *"
                                @bind-Value="_model.Sexo"
@@ -250,13 +289,14 @@
 
 @code {
 
+    private string documento=String.Empty;
     private bool _sending = false;
-
     private string? _submitSuccess;
 
     private string? _submitError;
 
     private AltaPModel _model = new AltaPModel();
+    private AlumnoPruebaModel? _alumnoEncontrado;
 
     private List<CarrerasLookupModel> _carreras = new();
 
@@ -281,9 +321,7 @@
             if (result.IsSuccess)
             {
                 _carreras = result.Carreras;
-
-                if (_carreras.Count == 0)
-                    _carrerasError = "No hay carreras cargadas en la base de datos.";
+                if (_carreras.Count == 0) _carrerasError = "No hay carreras cargadas en la base de datos.";
             }
             else
             {
@@ -294,6 +332,32 @@
         finally
         {
             _carrerasLoading = false;
+        }
+    }
+
+    private async Task VerificarDni()
+    {
+        documento = _model.NumeroDocumento?.ToString() ?? string.Empty;
+
+        if (documento.Length == 8)
+        {
+            _alumnoEncontrado = await AltaPApi.GetByDniAsync(Convert.ToInt32(documento));
+
+            if (_alumnoEncontrado != null)
+            {
+                _model.TipoDocumento = "DNI";
+                _model.Apellido = _alumnoEncontrado.Apellido;
+                _model.Nombre = _alumnoEncontrado.Nombre;
+                _model.PaisNacimiento = _alumnoEncontrado.Nacionalidad;
+            }
+            else
+            {
+                _alumnoEncontrado=null;
+            }
+        }
+        else
+        {
+            _alumnoEncontrado = null;
         }
     }
 
@@ -313,25 +377,20 @@
     {
         _submitSuccess = null;
 
-        _submitError =
-            "No se pudo realizar el alta porque hay campos obligatorios o datos inválidos. Revisá el formulario.";
+        _submitError = "No se pudo realizar el alta porque hay campos obligatorios o datos inválidos. Revisá el formulario.";
     }
 
     private async Task HandleSubmit()
     {
-        if (_sending)
-            return;
+        if (_sending) return;
 
         _sending = true;
-
         _submitSuccess = null;
         _submitError = null;
 
         try
         {
-            var result =
-                await AltaPApi.CreateAsync(
-                    _model);
+            var result = await AltaPApi.CreateAsync(_model);
 
             if (!result.IsSuccess)
             {
@@ -340,13 +399,12 @@
                 return;
             }
 
-            _submitSuccess =
-                result.AlumnoId is { } alumnoId
+            _submitSuccess = result.AlumnoId is { } alumnoId
                     ? $"Alta realizada correctamente. AlumnoId: {alumnoId}"
                     : "Alta realizada correctamente.";
 
-            _model =
-                new AltaPModel();
+            _model = new AltaPModel();
+            _alumnoEncontrado = null;
         }
         catch (HttpRequestException ex)
         {
@@ -366,6 +424,9 @@
             _sending = false;
         }
     }
+
+
+
 
 
 

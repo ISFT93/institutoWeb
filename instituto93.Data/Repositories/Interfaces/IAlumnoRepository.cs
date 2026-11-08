@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using instituto93.Domain.Models;
+using instituto93.Domain.DTOs;
 
 namespace instituto93.Data.Repositories
 {
@@ -14,5 +15,6 @@ namespace instituto93.Data.Repositories
         Task<int> CreateAsync(AlumnoModelo alumno, CancellationToken cancellationToken = default);
         Task<bool> UpdateAsync(AlumnoModelo alumno, CancellationToken cancellationToken = default);
         Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default);
+        public Task<AlumnoPruebaDto> GetByDocumentPruebaAsync(int Dni, CancellationToken cancellationToken = default);
     }
 }

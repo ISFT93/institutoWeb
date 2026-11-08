@@ -1,4 +1,5 @@
 ﻿using instituto93.Domain.Models;
+using instituto93.Domain.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -486,6 +487,38 @@ namespace instituto93.Data.Repositories
             {
                 _conexion.Close();
             }
+        }
+
+        public async Task<AlumnoPruebaDto> GetByDocumentPruebaAsync(int Dni, CancellationToken cancellationToken = default)
+        {
+            const string sql = $"Select * from AlumnosPrueba where Dni=@dni";
+            try
+            {
+                await _conexion.OpenAsync(cancellationToken);
+                using var cmd = _conexion.Conector.CreateCommand();
+                cmd.CommandText = sql;
+                cmd.Parameters.AddWithValue("dni", Dni);
+                using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+                if(await reader.ReadAsync(cancellationToken))
+                {
+                    return new AlumnoPruebaDto
+                    {
+                        Dni = reader.GetInt32(0),
+                        Nombre = reader.GetString(1),
+                        Apellido = reader.GetString(2),
+                        Libro = reader.GetString(3),
+                        Folio = reader.GetInt32(4),
+                        Ingreso = reader.GetInt32(5),
+                        Nacionalidad = reader.GetString(6)
+                    };
+                }
+                return null;
+            }
+            finally
+            {
+                _conexion.Close();
+            }
+
         }
     }
 }

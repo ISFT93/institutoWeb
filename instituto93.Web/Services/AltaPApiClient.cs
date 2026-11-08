@@ -20,6 +20,18 @@ public sealed class AltaPApiClient(HttpClient httpClient)
 
         return AltaPResult.Failure(await ReadErrorAsync(response, "No se pudo realizar el alta provisoria.", cancellationToken));
     }
+
+    public async Task<AlumnoPruebaModel?> GetByDniAsync(int dni, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            return await httpClient.GetFromJsonAsync<AlumnoPruebaModel>($"Alumno/Alumno Prueba{dni}", cancellationToken);
+        }
+        catch
+        {
+            return null;
+        }
+    }
     private static AltaPRequest ToRequest(AltaPModel model) =>
         new()
         {
@@ -30,6 +42,7 @@ public sealed class AltaPApiClient(HttpClient httpClient)
             NumeroDocumento = model.NumeroDocumento,
             Sexo = model.Sexo,
             FechaNacimiento = model.FechaNacimiento,
+            PaisNacimiento=model.PaisNacimiento,
             Calle = model.Calle,
             Localidad = model.Localidad,
             Telefono = model.Telefono,
@@ -90,6 +103,8 @@ public sealed class AltaPApiClient(HttpClient httpClient)
         public string Sexo { get; set; } = string.Empty;
 
         public DateTime? FechaNacimiento { get; set; }
+
+        public string PaisNacimiento { get; set; } = string.Empty;
 
         public string Calle { get; set; } = string.Empty;
 
