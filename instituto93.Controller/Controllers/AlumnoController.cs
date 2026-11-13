@@ -84,6 +84,26 @@ namespace instituto93.Controller.Controllers
             }
         }
 
+        [HttpGet("Alumno Prueba{dni:int}")]
+        public async Task<ActionResult<AlumnoPruebaDto>> GetAlumnoPruebaByDni(int dni, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var alumno = await _service.GetAlumnoPruebaByDniAsync(dni, cancellationToken);
+                if (alumno == null) return NotFound(404);
+                return Ok(alumno);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "No se pudo obtener el alumno. ",
+                    detail = ex.Message
+                });
+            }
+        }
+
+
         [HttpPost("preinscripcion")]
         public async Task<ActionResult> CreatePreinscripcion(
             [FromBody]
@@ -187,6 +207,7 @@ namespace instituto93.Controller.Controllers
                     });
             }
         }
+
     }
 }
 

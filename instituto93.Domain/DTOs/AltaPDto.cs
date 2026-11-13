@@ -26,6 +26,8 @@ namespace instituto93.Domain.DTOs
         [Required]
         public DateTime? FechaNacimiento { get; set; }
 
+        public string PaisNacimiento { get; set; } = string.Empty;
+
         [Required]
         public string Calle { get; set; } = string.Empty;
 
@@ -43,6 +45,7 @@ namespace instituto93.Domain.DTOs
 
         [Required]
         [Compare(nameof(Password), ErrorMessage = "Las contraseñas no coinciden.")]
+
         public string ConfirmarPassword { get; set; } = string.Empty;
     }
 }
