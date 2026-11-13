@@ -31,7 +31,7 @@
             @* <ValidationSummary /> *@
 
             <article class="form-section">
-                <h2>Dni y otros</h2>
+                <h2>Documento Nacional de Identidad</h2>
                 <div class="form-grid">
                     <MudNumericField Label="Número de documento *"
                                      @bind-Value="_model.NumeroDocumento"
@@ -45,7 +45,7 @@
             </article>
 
             <article class="form-section">
-                <h2>Libro y folio</h2>
+                <h2>Libro-folio</h2>
                 <div class="form-grid">
                     @if (_alumnoEncontrado != null)
                     {
@@ -63,7 +63,7 @@
                     }
                     else
                     {
-                        <p class="text-muted">Ingrese un DNI de 8 dígitos para consultar los datos de libro y folio si los tiene.</p>
+                        <p class="text-muted">.</p>
                     }
                 </div>
             </article>
@@ -149,7 +149,7 @@
                                    Variant="Variant.Outlined"
                                    DateFormat="dd/MM/yyyy" />
 
-                    <MudTextField Label="País de nacimiento *"
+                    <MudTextField Label="País de origen *"
                                   @bind-Value="_model.PaisNacimiento"
                                   For="@(() => _model.PaisNacimiento)"
                                   Variant="Variant.Outlined"
@@ -157,7 +157,7 @@
                                   MaxLength="50"
                                   FullWidth />
 
-                    <MudSelect Label="Sexo *"
+                    <MudSelect Label="Género *"
                                @bind-Value="_model.Sexo"
                                For="@(() => _model.Sexo)"
                                Variant="Variant.Outlined"
@@ -171,12 +171,7 @@
                         }
                     </MudSelect>
 
-                </div>
-            </article>
 
-            <article class="form-section">
-                <h2>Domicilio</h2>
-                <div class="form-grid">
                     <MudTextField Label="Calle *"
                                   @bind-Value="_model.Calle"
                                   For="@(() => _model.Calle)"
@@ -191,12 +186,8 @@
                                   MaxLength="50"
                                   FullWidth />
 
-                </div>
-            </article>
 
-            <article class="form-section">
-                <h2>Contacto</h2>
-                <div class="form-grid">
+
                     <MudTextField Label="Correo electrónico *"
                                   @bind-Value="_model.Email"
                                   For="@(() => _model.Email)"
@@ -213,9 +204,14 @@
                                      FullWidth
                                      HideSpinButtons />
 
-                    
+
+
                 </div>
             </article>
+
+            
+
+
 
             <article class="form-section">
                 <h2>Contraseña</h2>
