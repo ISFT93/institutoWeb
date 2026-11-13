@@ -170,7 +170,7 @@ public sealed class MesasFinalesDocenteRepository(Conexion conexion) : IMesasFin
     {
         const string verificarMesaSql = """
             SELECT FinalEstadoId
-            FROM MesasFinales
+            FROM MesasFinales WITH (UPDLOCK, HOLDLOCK)
             WHERE MesaFinalId = @mesaId
               AND (PresidenteId = @profesorId OR VocalId = @profesorId);
             """;
@@ -189,6 +189,62 @@ public sealed class MesasFinalesDocenteRepository(Conexion conexion) : IMesasFin
             WHERE MesaFinalId = @mesaId
               AND (PresidenteId = @profesorId OR VocalId = @profesorId)
               AND FinalEstadoId <> 2;
+            """;
+
+        const string guardarAnaliticoSql = """
+            IF NOT EXISTS (
+                SELECT 1 FROM dbo.MesaAlumno
+                WHERE MesaFinalId = @mesaId AND Ausente = 0 AND NotaDefinitiva >= @notaAprobacion
+            )
+                RETURN;
+
+            ;WITH MateriasOrdenadas AS (
+                SELECT MateriaId,
+                       ROW_NUMBER() OVER (PARTITION BY AnioCarreraId ORDER BY Nombre, MateriaId) AS Orden
+                FROM dbo.Materias
+                WHERE Activo = 1
+            )
+            INSERT INTO dbo.Analitico (
+                NroAnalitico, CursadaAlumnoCarreraId, AlumnoCarreraId, MesaFinalId, MesaAlumnoId,
+                CodigoBloqueMateria, AnioCicloLectivo, EstadoCursada,
+                NroLibro, NroFolio, NotaMesa, NotaLetra, FechaMesa
+            )
+            SELECT COALESCE(anterior.NroAnalitico, orden.Orden),
+                   cac.CursadaAlumnoCarreraId, ac.AlumnoCarreraId, mf.MesaFinalId, ma.MesaAlumnoId,
+                   m.MateriasCodigoBloque, COALESCE(cac.AnioCicloLectivo, c.AnioLectivo),
+                   CASE RTRIM(cac.Estado)
+                       WHEN N'R' THEN N'REG'
+                       WHEN N'CU' THEN N'CURSANDO'
+                       ELSE RTRIM(cac.Estado)
+                   END,
+                   libro.LibroNumero, TRY_CONVERT(int, mf.NroFolio),
+                   ma.NotaDefinitiva, ma.NotaLetra, mf.Fecha
+            FROM dbo.MesaAlumno ma
+            INNER JOIN dbo.MesasFinales mf ON mf.MesaFinalId = ma.MesaFinalId
+            LEFT JOIN dbo.CursadaAlumnoCarreras cac ON cac.CursadaAlumnoCarreraId = ma.CursadaAlumnoCarreraId
+            LEFT JOIN dbo.AlumnosCarreras ac ON ac.AlumnoCarreraId = cac.AlumnoCarreraId
+            LEFT JOIN dbo.Cursadas c ON c.CursadaId = cac.CursadaId
+            LEFT JOIN dbo.CursoMaterias cm ON cm.CursoMateriaId = c.CursoMateriaId
+            LEFT JOIN dbo.Materias m ON m.MateriaId = cm.MateriaId AND m.MateriaId = mf.MateriaId
+            LEFT JOIN MateriasOrdenadas orden ON orden.MateriaId = m.MateriaId
+            LEFT JOIN dbo.LibroActas libro ON libro.LibroActaId = mf.LibroActaId
+            OUTER APPLY (
+                SELECT TOP (1) a.NroAnalitico
+                FROM dbo.Analitico a
+                WHERE a.CursadaAlumnoCarreraId = cac.CursadaAlumnoCarreraId
+                  AND a.AlumnoCarreraId = ac.AlumnoCarreraId
+                  AND m.MateriaId IS NOT NULL
+                ORDER BY a.AnaliticoId DESC
+            ) anterior
+            WHERE ma.MesaFinalId = @mesaId
+              AND ma.Ausente = 0
+              AND ma.NotaDefinitiva >= @notaAprobacion
+              AND NOT EXISTS (
+                  SELECT 1 FROM dbo.Analitico a WITH (UPDLOCK, HOLDLOCK)
+                  WHERE a.MesaAlumnoId = ma.MesaAlumnoId AND a.MesaFinalId = mf.MesaFinalId
+                    AND a.CursadaAlumnoCarreraId = cac.CursadaAlumnoCarreraId
+                    AND a.AlumnoCarreraId = ac.AlumnoCarreraId
+              );
             """;
 
         const string actualizarSql = """
@@ -211,7 +267,8 @@ public sealed class MesasFinalesDocenteRepository(Conexion conexion) : IMesasFin
             """;
 
         await conexion.OpenAsync(cancellationToken);
-        await using var transaction = (SqlTransaction)await conexion.Conector.BeginTransactionAsync(cancellationToken);
+        await using var transaction = (SqlTransaction)await conexion.Conector.BeginTransactionAsync(
+            IsolationLevel.Serializable, cancellationToken);
         try
         {
             using (var command = conexion.Conector.CreateCommand())
@@ -271,6 +328,13 @@ public sealed class MesasFinalesDocenteRepository(Conexion conexion) : IMesasFin
                 cerrarCommand.Parameters.Add("@profesorId", SqlDbType.Int).Value = profesorId;
                 if (await cerrarCommand.ExecuteNonQueryAsync(cancellationToken) != 1)
                     throw new DBConcurrencyException();
+
+                using var analiticoCommand = conexion.Conector.CreateCommand();
+                analiticoCommand.Transaction = transaction;
+                analiticoCommand.CommandText = guardarAnaliticoSql;
+                analiticoCommand.Parameters.Add("@mesaId", SqlDbType.Int).Value = mesaId;
+                analiticoCommand.Parameters.Add("@notaAprobacion", SqlDbType.Decimal).Value = NotaFinalRules.Aprobacion;
+                await analiticoCommand.ExecuteNonQueryAsync(cancellationToken);
             }
 
             await transaction.CommitAsync(cancellationToken);
@@ -278,7 +342,8 @@ public sealed class MesasFinalesDocenteRepository(Conexion conexion) : IMesasFin
         }
         catch
         {
-            await transaction.RollbackAsync(CancellationToken.None);
+            if (transaction.Connection is not null)
+                await transaction.RollbackAsync(CancellationToken.None);
             throw;
         }
         finally

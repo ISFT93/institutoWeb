@@ -6,13 +6,16 @@ using instituto93.Domain.DTOs;
 using instituto93.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 
 namespace instituto93.Controller.Controllers;
 
 [ApiController]
 [Route("api/mesas-finales/docente")]
 [Authorize(Roles = Rol.Docente)]
-public sealed class MesasFinalesDocenteController(IMesasFinalesDocenteService service) : ControllerBase
+public sealed class MesasFinalesDocenteController(
+    IMesasFinalesDocenteService service,
+    ILogger<MesasFinalesDocenteController> logger) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetMesas(CancellationToken cancellationToken)
@@ -67,6 +70,17 @@ public sealed class MesasFinalesDocenteController(IMesasFinalesDocenteService se
         catch (DBConcurrencyException)
         {
             return Conflict(new { message = "Las notas fueron modificadas por otra persona. Recargá la mesa antes de volver a guardar." });
+        }
+        catch (SqlException exception)
+        {
+            logger.LogError(exception, "Error al guardar las notas de la mesa {MesaId}. Cierre solicitado: {CerrarMesa}",
+                mesaId, request.CerrarMesa);
+            return StatusCode(StatusCodes.Status500InternalServerError, new
+            {
+                message = request.CerrarMesa
+                    ? "No se pudo confirmar el cierre de la mesa ni el guardado del analítico. Recargá la mesa y verificá su estado."
+                    : "No se pudieron guardar las notas. Recargá la mesa y verificá su estado."
+            });
         }
     }
 
